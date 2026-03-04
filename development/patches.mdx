@@ -1,11 +1,11 @@
 ---
 title: "Patch System"
-description: "Understanding Cromite's 333 patches to Chromium"
+description: "Understanding Cromite's 332 patches to Chromium"
 ---
 
 # Patch System
 
-Cromite applies **333 patches** to the Chromium source code to enhance privacy, security, and user control. These patches are maintained in the `build/patches/` directory and must be applied in a specific order.
+Cromite applies **332 patches** to the Chromium source code to enhance privacy, security, and user control. These patches are maintained in the `build/patches/` directory and must be applied in a specific order.
 
 ## Overview
 
@@ -23,7 +23,7 @@ The patch system is the core of what makes Cromite different from vanilla Chromi
 
 ## Patch Categories
 
-Cromite's 333 patches can be organized into several major categories:
+Cromite's 332 patches can be organized into several major categories:
 
 <AccordionGroup>
   <Accordion title="Privacy Patches (80+ patches)">
@@ -304,13 +304,13 @@ Patches must be applied using `git am` in the exact order listed in `cromite_pat
     ```
     
     <Info>
-      The patch list contains 333 patches that must be applied sequentially. Each patch builds upon the previous ones.
+      The patch list contains 332 patches that must be applied sequentially. Each patch builds upon the previous ones.
     </Info>
   </Step>
   
   <Step title="Verify Patches Applied">
     ```bash
-    git log --oneline | head -n 333
+    git log --oneline | head -n 332
     ```
     
     You should see all Cromite patches in the git history.
