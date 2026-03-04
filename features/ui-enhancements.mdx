@@ -1,0 +1,432 @@
+---
+title: 'UI Enhancements'
+description: 'User interface improvements and customization options'
+icon: 'paintbrush'
+---
+
+Cromite includes numerous user interface improvements and customization options, particularly on Android, to enhance usability while maintaining privacy and security.
+
+## Address Bar and Navigation
+
+### Omnibox Improvements
+
+<CardGroup cols={2}>
+  <Card title="Alt+D Hotkey (Android)" icon="keyboard">
+    Quickly focus the address bar with Alt+D keyboard shortcut
+  </Card>
+  <Card title="Increased Autocomplete" icon="list">
+    Autocomplete matches increased to 10 results for better suggestions
+  </Card>
+  <Card title="Disable History Search" icon="eye-slash">
+    Flag to disable omnibox search through browsing history for privacy
+  </Card>
+  <Card title="Dictionary Suggestions" icon="book">
+    Experimental dictionary suggestions for the Omnibox
+  </Card>
+</CardGroup>
+
+### URL Display
+
+<Info>
+**Disable omission of URL elements** - Cromite shows the full URL without hiding "trivial" subdomains.
+</Info>
+
+Many browsers hide parts of URLs (like "www" or "m"), which can be exploited for phishing. Cromite shows complete URLs for security.
+
+### Search Engine Settings
+
+<Note>
+Android version includes desktop UI for search engine settings, providing better control over search engine configuration.
+</Note>
+
+**Enhanced search engines:**
+- Google search engine that forces English language
+- Disables RLZ and field experiment parameters
+- DuckDuckGo Lite added as option
+
+## Bookmark Management
+
+Cromite significantly improves bookmark functionality, especially on Android:
+
+<AccordionGroup>
+  <Accordion title="Import/Export">
+    **Add bookmark import/export actions (Android)**
+    
+    - Import bookmarks from HTML file
+    - Export bookmarks to HTML file
+    - Backup and restore bookmarks easily
+    - Cross-device bookmark migration
+  </Accordion>
+
+  <Accordion title="Bulk Operations">
+    **Selection and bulk actions:**
+    
+    - Allows selection of all bookmarks at once
+    - Bulk delete, move, or organize
+    - Efficient bookmark management
+    - Multi-select support
+  </Accordion>
+
+  <Accordion title="Bookmark All Tabs">
+    **Add menu item to bookmark all tabs**
+    
+    - Save entire browsing session
+    - Bookmark multiple tabs at once
+    - Quick session saving
+    - Restore later from bookmarks
+  </Accordion>
+
+  <Accordion title="Improved UI">
+    **Enable improved bookmarks UI by default**
+    
+    - Better visual design
+    - Easier navigation
+    - Enhanced organization
+    - Modern interface
+  </Accordion>
+</AccordionGroup>
+
+## Tab Management
+
+### Tab Behavior
+
+<Accordion title="Tab Switcher">
+  **Use list mode for tab switcher** - More efficient vertical list instead of card stack
+  
+  - Easier to scan open tabs
+  - More tabs visible at once
+  - Faster tab switching
+  - Better for many open tabs
+</Accordion>
+
+<Accordion title="Tab Groups">
+  **Web search in tab group** - Option to open searches in tab groups
+  
+  - Organize search results
+  - Keep related tabs together
+  - Better tab organization
+</Accordion>
+
+<Accordion title="Tab Opening Behavior">
+  **Opens tabs in foreground** - Option to control whether new tabs open in foreground or background
+  
+  - Customize tab opening behavior
+  - Immediate visibility or background loading
+  - User preference control
+</Accordion>
+
+<Accordion title="Tab Persistence">
+  **Keep empty tabs between sessions** - Empty tabs are preserved when restarting
+  
+  - Maintain workspace layout
+  - No lost empty tabs
+  - Session consistency
+</Accordion>
+
+### New Tab Page
+
+<Info>
+**Show New Tab Page at startup** - Cromite can be configured to always start with the new tab page.
+</Info>
+
+**NTP customization:**
+- Use home page as new tab page (option)
+- Never fetch popular sites (privacy)
+- Disable remote suggestions by default
+- No Google integration
+
+### Close All Tabs
+
+<Note>
+Re-introduced modal dialog flag to close all tabs - Confirmation dialog when closing all tabs to prevent accidents.
+</Note>
+
+## Navigation Controls
+
+### Bottom Navigation Bar
+
+<Tip>
+**Move navigation bar to bottom (Android)** - More ergonomic for one-handed use on large phones.
+</Tip>
+
+- Better reachability
+- Modern mobile UI pattern
+- Easier thumb access
+- Optional configuration
+
+### Browser Controls
+
+**Always open browser controls in new tab** - Consistent behavior for browser control visibility
+
+### Reload Button Menu
+
+**Enable menu on reload button (Desktop)** - Additional options when clicking reload:
+- Normal reload
+- Hard reload
+- Clear cache and reload
+
+## Reading and Viewing
+
+### View Source
+
+<CardGroup cols={2}>
+  <Card title="View Source Menu (Android)" icon="code">
+    Add menu item to view page source directly from mobile browser
+  </Card>
+  <Card title="Easy Access" icon="eye">
+    Quick access to HTML source for developers and power users
+  </Card>
+</CardGroup>
+
+### Dark Mode
+
+<Warning>
+**Enable darken websites checkbox in themes** - Fingerprinting risk, activate with caution.
+</Warning>
+
+Forces dark mode on websites:
+- Reduces eye strain
+- Battery savings on OLED
+- Consistent dark theme
+- **Fingerprinting risk** - Can be detected by sites
+
+### Pull-to-Refresh
+
+**Readded disable-pull-to-refresh-effect flag** - Option to disable pull-to-refresh gesture
+
+- Prevents accidental refreshes
+- Better for reading
+- User preference
+
+## Media Playback
+
+### Background Audio
+
+<Info>
+**Allow playing audio in background by default (Android)** - Audio continues when switching apps or locking screen.
+</Info>
+
+Perfect for:
+- Music streaming
+- Podcasts
+- Video audio
+- Audio content
+
+### Video Playback Controls
+
+<Accordion title="Video Resume Feature">
+  **Flag to control video playback resume** - Video playback whenever switching between tabs is not blocked
+  
+  - Videos continue playing when switching tabs
+  - Or pause when tab is not active
+  - User configurable
+  - Battery saving option
+</Accordion>
+
+### Media Format Support
+
+<Note>
+Enhanced media codec support:
+</Note>
+
+- **Platform AAC audio** - Enabled due to license restrictions
+- **H.264 video** - Enabled due to license restrictions  
+- **HEVC enabled by default** - H.265 video support
+- **JXL support** - JPEG XL image format enabled
+
+## Pop-up and Selection Handling
+
+### Pop-up Selection Options
+
+<Accordion title="Pop-up Selection Behavior (Android)">
+  Options for handling text selection pop-ups:
+  
+  - **Opens tabs in foreground** - Selected text search opens in foreground
+  - **Move web search to top of items** - Web search first in context menu
+  - **Web search in tab group** - Group search result tabs
+  - **Enable smart text selection** - AI-powered selection (disabled by default for privacy)
+</Accordion>
+
+### Tap Behavior
+
+**Add setting to invert tap and long tap** - Accessibility option for different tap preferences
+
+- Helps users with motor difficulties
+- Customize interaction model
+- Accessibility improvement
+
+## Home Page and Startup
+
+<CardGroup cols={2}>
+  <Card title="Use Home Page as NTP" icon="home">
+    Option to use custom home page as new tab page (Android)
+  </Card>
+  <Card title="New Tab at Startup" icon="door-open">
+    Show New Tab Page at startup (Android)
+  </Card>
+  <Card title="Browser Controls" icon="bars">
+    Always open browser controls in new tab (Android)
+  </Card>
+</CardGroup>
+
+## Privacy UI
+
+### Incognito Mode
+
+<Info>
+**Disable screenshots in Incognito mode (Android)** - Prevents screenshot capture for privacy.
+</Info>
+
+**Always-incognito mode available** - Option to always browse in incognito mode
+
+### Add to Home Screen
+
+**Disable add to home screen prompt** - Removes annoying PWA install prompts
+
+- Less clutter
+- No unwanted prompts
+- User-initiated only
+
+## Promo and Help Dialogs
+
+<Warning>
+**Disable all promo dialogs** - No promotional popups or notifications.
+</Warning>
+
+- No feature promos
+- No upgrade nags
+- No marketing popups
+- Clean experience
+
+**Remove help menu item** - Help menu item removed to reduce clutter
+
+## Paint Preview
+
+**Disable Paint Preview by default** - Disables page preview generation feature
+
+- Saves memory
+- Improves privacy
+- Reduces storage use
+
+## Downloads
+
+**Do not ignore download location prompt setting** - Always respects download location preference
+
+- Consistent behavior
+- User control
+- No default location forcing
+
+## Autofill
+
+<Tip>
+**Enable native Android autofill** - Uses Android's native autofill framework instead of Chrome's.
+</Tip>
+
+Benefits:
+- Better integration with password managers
+- System-level autofill
+- More secure
+- Works with Android autofill services
+
+## Certificate Display
+
+**EV Certificates appear as normal** - Extended Validation certificates don't get special UI treatment
+
+<Note>
+EV certificates don't provide additional security, so Cromite doesn't give users a false sense of extra security.
+</Note>
+
+## Customization Options
+
+### User Agent
+
+**User agent customization** - Ability to customize browser user agent string
+
+- Spoof different browsers
+- Compatibility testing
+- Site compatibility
+- Advanced use cases
+
+### Proxy Configuration
+
+<Info>
+**Proxy configuration page** available at `chrome://proxy`
+</Info>
+
+Comprehensive proxy configuration:
+- HTTP/HTTPS proxies
+- SOCKS proxies
+- PAC file support
+- Per-host rules
+
+Reference: https://chromium.googlesource.com/chromium/src/+/HEAD/net/docs/proxy.md
+
+### Theme Customization
+
+- Dark mode support
+- Darken websites (optional, fingerprinting risk)
+- System theme integration
+- Custom color schemes
+
+## User Scripts (Android)
+
+<Tip>
+**User scripts support (Android)** - Run custom JavaScript on pages for advanced customization.
+</Tip>
+
+Use cases:
+- Custom page modifications
+- Automation scripts
+- Privacy enhancements
+- Feature additions
+
+## Experimental Features
+
+<Note>
+Experimental UI features available via `chrome://flags`:
+</Note>
+
+- **Dictionary suggestions** - Omnibox dictionary lookups
+- **Ask to restart on connection change** - Prompt to restart when network changes
+
+## Platform-Specific UI
+
+### Android
+
+- Exit menu item
+- Bottom navigation bar
+- Improved bookmarks UI
+- Tab switcher list mode
+- Native autofill
+- User scripts
+- Always-incognito mode
+
+### Desktop
+
+- Menu on reload button
+- Traditional desktop UI
+- Extension toolbar
+- Multi-window management
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Customize Address Bar" icon="location-dot">
+    Disable history search if you value privacy over convenience
+  </Card>
+  <Card title="Use List Tab Switcher" icon="list">
+    Enable list mode for better tab management with many tabs
+  </Card>
+  <Card title="Export Bookmarks" icon="download">
+    Regularly export bookmarks for backup
+  </Card>
+  <Card title="Bottom Nav on Mobile" icon="arrow-down">
+    Enable bottom navigation for better ergonomics on large phones
+  </Card>
+  <Card title="Background Audio" icon="volume-high">
+    Keep background audio enabled for media streaming
+  </Card>
+  <Card title="Disable Promos" icon="ban">
+    Already disabled by default - enjoy clean interface
+  </Card>
+</CardGroup>

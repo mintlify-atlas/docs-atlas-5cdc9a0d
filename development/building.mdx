@@ -1,0 +1,354 @@
+---
+title: "Building from Source"
+description: "Build Cromite from source using Docker or manual setup"
+---
+
+# Building from Source
+
+This guide covers how to build Cromite from the Chromium source code. You can use either a pre-built Docker image for a streamlined experience or manually set up your build environment.
+
+## Prerequisites
+
+Before building Cromite, familiarize yourself with the [official Chromium build documentation](https://www.chromium.org/developers/how-tos/get-the-code) to understand the basic Chromium build process.
+
+## Build Configuration Files
+
+Cromite uses several key files to configure the build:
+
+<CardGroup cols={2}>
+  <Card title="RELEASE" icon="tag">
+    Contains the Chromium version tag (currently **145.0.7632.120**)
+    
+    Location: `build/RELEASE`
+  </Card>
+  
+  <Card title="cromite.gn_args" icon="gear">
+    GN build arguments that configure Cromite's features
+    
+    Location: `build/cromite.gn_args`
+  </Card>
+  
+  <Card title="cromite_patches_list.txt" icon="file-lines">
+    Lists all 333 patches applied to Chromium
+    
+    Location: `build/cromite_patches_list.txt`
+  </Card>
+  
+  <Card title="build_cromite.yaml" icon="github">
+    GitHub Actions workflow for automated builds
+    
+    Location: `.github/workflows/build_cromite.yaml`
+  </Card>
+</CardGroup>
+
+## Building with Docker (Recommended)
+
+The easiest way to build Cromite is using the pre-built Docker images. Each release includes a corresponding Docker image.
+
+<Steps>
+  <Step title="Set Build Variables">
+    Define your build environment variables:
+    
+    ```bash
+    SHA=fac696b3a422f196f698e6543913946ddaba1ef3
+    VERSION=145.0.7632.120
+    CHVERSION=uazo/cromite-build:$VERSION-$SHA
+    CONTAINER=dev1
+    BDEBUG=false
+    ```
+    
+    <Note>
+      The Docker image format is: `uazo/cromite-build:(VERSION)-(COMMIT)`
+      
+      All available images are listed at [Docker Hub](https://hub.docker.com/r/uazo/cromite-build/tags)
+    </Note>
+  </Step>
+  
+  <Step title="Create and Start Container">
+    Create a Docker container with the build environment:
+    
+    ```bash
+    docker create --name $CONTAINER \
+        -e "WORKSPACE=/home/lg/working_dir" \
+        -e "TARGET_ISDEBUG=$BDEBUG" \
+        --entrypoint "tail" $CHVERSION "-f" "/dev/null"
+    
+    docker start $CONTAINER
+    docker exec -ti $CONTAINER bash
+    ```
+  </Step>
+  
+  <Step title="Configure Build Environment">
+    Inside the container, set up the PATH and navigate to the source directory:
+    
+    ```bash
+    PATH=$WORKSPACE/chromium/src/third_party/llvm-build/Release+Asserts/bin:$WORKSPACE/depot_tools/:/usr/local/go/bin:$WORKSPACE/mtool/bin:$PATH
+    export HOME=/home/lg/working_dir
+    cd $HOME/chromium/src/
+    ```
+  </Step>
+  
+  <Step title="Build Cromite">
+    The container is now ready to build. Run your build commands based on the target platform (see platform-specific sections below).
+  </Step>
+</Steps>
+
+## Key GN Build Arguments
+
+Cromite uses custom GN arguments to configure the build. Here are the key settings from `cromite.gn_args`:
+
+<AccordionGroup>
+  <Accordion title="Core Build Settings">
+    ```gn
+    is_official_build=true
+    is_debug=false
+    is_component_build=false
+    symbol_level=1
+    treat_warnings_as_errors=true
+    use_official_google_api_keys=false
+    ```
+  </Accordion>
+  
+  <Accordion title="Privacy & Security">
+    ```gn
+    disable_fieldtrial_testing_config=true
+    enable_reporting=false
+    enable_bound_session_credentials=false
+    enable_request_header_integrity=false
+    safe_browsing_use_unrar=false
+    ```
+  </Accordion>
+  
+  <Accordion title="Media Codecs">
+    ```gn
+    proprietary_codecs=true
+    ffmpeg_branding="Chrome"
+    enable_av1_decoder=true
+    enable_dav1d_decoder=true
+    enable_platform_aac_audio=true
+    enable_platform_h264_video=true
+    enable_platform_hevc=true
+    media_use_openh264=false
+    ```
+  </Accordion>
+  
+  <Accordion title="Disabled Features">
+    ```gn
+    enable_mdns=false
+    enable_remoting=false
+    enable_vr=false
+    enable_arcore=false
+    enable_openxr=false
+    enable_glic=false  # Disable Gemini integration
+    build_contextual_search=false
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Platform-Specific Builds
+
+<Tabs>
+  <Tab title="Android">
+    ### Building for Android
+    
+    Android builds support multiple architectures: **arm64-v8a**, **arm32-v7a**, and **x86_64**.
+    
+    #### Android-Specific GN Args
+    
+    ```gn
+    target_os = "android"
+    android_channel = "stable"
+    chrome_public_manifest_package = "org.cromite.cromite"
+    system_webview_package_name = "org.cromite.webview"
+    
+    # PGO optimization
+    chrome_pgo_phase = 2
+    
+    # High-end device optimization
+    is_high_end_android = true
+    
+    # Hardware codec support
+    enable_platform_aac_audio = true
+    enable_platform_h264_video = true
+    enable_platform_hevc = true
+    ```
+    
+    <Note>
+      The Docker commands shown above are valid for Android and Linux builds.
+    </Note>
+    
+    #### Build Outputs
+    
+    Successful Android builds produce:
+    - `arm64_ChromePublic.apk`
+    - `arm_ChromePublic.apk`
+    - `x64_ChromePublic.apk`
+    - `SystemWebView.apk` (separate build)
+  </Tab>
+  
+  <Tab title="Linux">
+    ### Building for Linux
+    
+    Linux builds target **x86_64** architecture.
+    
+    #### Linux-Specific GN Args
+    
+    ```gn
+    target_os = "linux"
+    target_cpu = "x64"
+    symbol_level = 0
+    
+    # Enable PDF and plugin support
+    enable_pdf = true
+    pdf_is_complete_lib = true
+    enable_plugins = true
+    
+    # Use system root for dependencies
+    use_sysroot = true
+    
+    # PGO optimization
+    chrome_pgo_phase = 2
+    ```
+    
+    #### Build Output
+    
+    - `chrome-lin64.tar.gz`
+  </Tab>
+  
+  <Tab title="Windows">
+    ### Building for Windows (Cross-Compilation)
+    
+    Windows builds are created using **cross-compilation from Linux**.
+    
+    #### Windows-Specific GN Args
+    
+    ```gn
+    target_os = "win"
+    target_cpu = "x64"
+    symbol_level = 0
+    use_large_pdbs = true
+    
+    # Enable PDF and plugin support
+    enable_pdf = true
+    pdf_is_complete_lib = true
+    enable_plugins = true
+    
+    # PGO optimization
+    chrome_pgo_phase = 2
+    
+    # Disable CFI for Windows
+    is_cfi = false
+    use_cfi_cast = false
+    
+    # Windows-specific codec support
+    enable_platform_ac3_eac3_audio = true
+    ```
+    
+    <Warning>
+      You need to configure the cross-build mode from Linux. Use the [Windows SDK preparation script](https://github.com/uazo/cromite/blob/master/tools/images/win-sdk/prepare.sh) to set up the environment.
+    </Warning>
+    
+    #### Build Output
+    
+    - `chrome-win.zip`
+  </Tab>
+</Tabs>
+
+## Applying Patches
+
+Cromite applies 333 patches to Chromium. These patches must be applied in the order specified in `cromite_patches_list.txt`.
+
+```bash
+# Apply patches using git am
+cd chromium/src/
+while read patch; do
+  git am < "../../cromite/build/patches/$patch"
+done < ../../cromite/build/cromite_patches_list.txt
+```
+
+<Info>
+  See the [Patch System](/development/patches) documentation for detailed information about Cromite's patches.
+</Info>
+
+## Debug Builds
+
+To create a debug build, set the debug environment variable:
+
+```bash
+BDEBUG=true
+TARGET_ISDEBUG=true
+```
+
+Debug builds use different GN arguments:
+
+```gn
+is_debug = true
+is_official_build = false
+dcheck_always_on = true
+symbol_level = 1
+strip_debug_info = false
+generate_linker_map = false
+android_static_analysis = "off"
+v8_enable_debugging_features = false
+```
+
+## Build Automation
+
+Cromite uses GitHub Actions for automated builds. The workflow file at `.github/workflows/build_cromite.yaml` shows the complete build process:
+
+- Builds Docker containers for dependencies (`uazo/build-deps`)
+- Pulls Chromium source (`uazo/chromium`)
+- Applies Cromite patches (`uazo/cromite`)
+- Creates final build image (`uazo/cromite-build`)
+- Compiles for all platforms (Android arm/arm64/x64, Windows, Linux)
+
+<Tip>
+  You can reference the [GitHub Actions workflow](https://github.com/uazo/cromite/blob/master/.github/workflows/build_cromite.yaml) to see the exact build commands used for releases.
+</Tip>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Build fails with clang errors">
+    Ensure you're using the correct LLVM/Clang version bundled with Chromium:
+    
+    ```bash
+    PATH=$WORKSPACE/chromium/src/third_party/llvm-build/Release+Asserts/bin:$PATH
+    ```
+  </Accordion>
+  
+  <Accordion title="Out of memory during build">
+    Chromium builds require significant RAM (16GB+ recommended). Consider:
+    - Reducing parallel jobs: `ninja -j 4`
+    - Using swap space
+    - Building with `is_component_build=true` for development
+  </Accordion>
+  
+  <Accordion title="Windows cross-compilation fails">
+    Make sure you've run the Windows SDK preparation script:
+    
+    ```bash
+    ./tools/images/win-sdk/prepare.sh
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Patch System" icon="code-merge" href="/development/patches">
+    Learn about Cromite's 333 patches to Chromium
+  </Card>
+  
+  <Card title="Docker Setup" icon="docker" href="/development/docker-setup">
+    Deep dive into Docker development environment
+  </Card>
+  
+  <Card title="Contributing" icon="code-pull-request" href="/development/contributing">
+    Contribute patches and features to Cromite
+  </Card>
+  
+  <Card title="GitHub Workflow" icon="github" href="https://github.com/uazo/cromite/blob/master/.github/workflows/build_cromite.yaml">
+    View the complete build automation workflow
+  </Card>
+</CardGroup>

@@ -1,0 +1,162 @@
+---
+title: 'Frequently Asked Questions'
+description: 'Common questions about Cromite features, limitations, and usage'
+icon: 'circle-question'
+---
+
+## Does Google Sync/Translate/Data saver/IP protection work?
+
+<Accordion title="Answer">
+No.
+
+This is not a limitation of Cromite but of all Chromium-based projects in general, as general public is not allowed to use Google's APIs for free unless when using Chromium.
+
+Additionally, these features would not be privacy-friendly.
+</Accordion>
+
+## Does Cromite require root?
+
+<Accordion title="Answer">
+No.
+</Accordion>
+
+## Is Cromite de-googled?
+
+<Accordion title="Answer">
+Yes, but if you were to find connections to cloud-based services please report them via the issue tracker.
+
+Cromite uses [Internal firewall patch](https://github.com/uazo/cromite/blob/master/build/patches/Internal-firewall.patch) to disable unwanted connections and [ungoogled-chromium: no special hosts/domains](https://github.com/uazo/cromite/blob/master/build/patches/ungoogled-chromium-no-special-hosts-domains.patch) for the removal of all code that uses pointers to Google servers.
+
+<Note>
+Please note that the patch is called ungoogled-chromium but has nothing to do with the project of the same name.
+</Note>
+</Accordion>
+
+## Does Cromite support DRM media?
+
+<Accordion title="Answer">
+No, since it is unclear whether any externally retrieved DRM required licence is bound to the device and the correct way to delete it.
+</Accordion>
+
+## Is Cromite on Play Store?
+
+<Accordion title="Answer">
+No, but there are plans to activate it.
+</Accordion>
+
+## Is Cromite on F-Droid?
+
+<Accordion title="Answer">
+It is not on the official F-Droid repository.
+
+You can use F-Droid client to install and receive updates via [the official Cromite F-Droid repository](https://www.cromite.org/fdroid/repo).
+</Accordion>
+
+## Using Cromite will favour the monopoly of the Chromium/Blink engine, why do you develop and maintain Cromite?
+
+<Accordion title="Answer">
+Many years of experience with chromium code leads me to think that it is indeed the best browser out there. Its flaws are Google's priority to its customers over its users, but I don't have that problem.
+</Accordion>
+
+## Does Cromite support extensions in Android?
+
+<Accordion title="Answer">
+No. But there is an intention to explore this issue further.
+</Accordion>
+
+## Why do push notifications not work on this website?
+
+<Accordion title="Answer">
+The [Chromium Blink engine](https://www.chromium.org/blink) uses [GCM](https://en.wikipedia.org/wiki/Google_Cloud_Messaging) to deliver messages when websites use the [Push API](https://w3c.github.io/push-api/); this will not work in Cromite because cloud integrations are disabled (GCM in this case).
+</Accordion>
+
+## Can TWA/PWAs be installed?
+
+<Accordion title="Answer">
+No. TWAs will not work because they are generated server-side on googleapis.com (which is not allowed in Cromite).
+
+What is supported is home shortcuts that launch the browser without its interface.
+</Accordion>
+
+## Does Cromite support the Android autofill framework?
+
+<Accordion title="Answer">
+Yes, the native Android autofill can be used.
+</Accordion>
+
+## Does Cromite support casting media content?
+
+<Accordion title="Answer">
+No, this would require Play Store binary blobs.
+</Accordion>
+
+## Can you add this search engine as default?
+
+<Accordion title="Answer">
+No. Cromite does not make any choice related to default search engines, user will have to decide during the first launch.
+
+You are still free to enter any search engine you prefer via the settings ui.
+</Accordion>
+
+## Some websites show ads, how can I fix this?
+
+<Accordion title="Answer">
+Cromite uses public lists for adblock that you see in the settings. Please check if the issue is due to the rules (and if so, report the problem in its correct repo) before requesting a check.
+</Accordion>
+
+## This website is not performing well with Cromite, how can I fix this?
+
+<Accordion title="Answer">
+Cromite comes with [JavaScript JIT](https://hacks.mozilla.org/2017/02/a-crash-course-in-just-in-time-jit-compilers/) disabled by default.
+
+You are free if you prefer to reactivate it via settings.
+</Accordion>
+
+## Why was AdBlock Plus used rather than uBlock?
+
+<Accordion title="Answer">
+ADB is developed in c++ while uBlock is an extension in javascript. Currently, support for extensions is not active in Android.
+
+ADB in Cromite is enhanced with support for cname uncloaking and blocking even in workers (a unique feature of Cromite). Support for "acceptable ads" has been completely removed.
+</Accordion>
+
+## Why don't you accept donations?
+
+<Accordion title="Answer">
+I haven't decided yet. I'm giving it a try.
+</Accordion>
+
+## Why is JIT disabled by default? How to enable JIT selectively per site?
+
+<Accordion title="Answer">
+JIT stands for Just-In-Time compilation and is a feature of chromium v8 which is the module responsible for executing javascript code. The purpose of JIT is to compile javascript to speed up its execution.
+
+However, the use of JIT opens up possible security holes exploited over time to scale the chromium sandbox and allow access to privileged processes by javascript. Technically, the reason is that the memory used by JIT is read/write/execute and can therefore be exploited to insert code from, for example, a UAF (use-after-free) error within a javascript callback. In addition, the activation of JIT allows the exchange of shared memory between different frames, an amazing and at the same time risky feature.
+
+For this reason, in cromite (and its predecessor cromite) it was chosen to disable JIT by default, penalising execution but offering a smaller attack surface.
+
+<Info>
+If you trust the site or have performance needs or need to use WebAssembly, you can activate that feature specifically for that website via UI:
+
+1. Tap the lock icon in the address bar
+2. Go to Site settings
+3. Enable "JavaScript JIT"
+</Info>
+</Accordion>
+
+## Youtube links doesn't open youtube app (Open links in external apps)
+
+<Accordion title="Answer">
+Cromite blocks the ability to open apps from the web by default.
+
+<Warning>
+The reason for this is that, together with the app to be opened, information may be passed on and cannot be filtered out: for example, youtube links definitely send the url of the video, but not necessarily other data. The other information could link your web browsing with that within the app.
+</Warning>
+
+It is however possible to disable this behaviour and allow apps to be opened:
+
+1. Go to Settings
+2. Navigate to Privacy and security
+3. Find "Open links in external apps"
+4. Enable the option
+</Accordion>

@@ -1,0 +1,138 @@
+---
+title: Features Overview
+description: Comprehensive overview of Cromite's privacy, security, and enhancement features
+icon: star
+---
+
+Cromite is a privacy-focused Chromium fork that provides comprehensive protection against tracking, fingerprinting, and unwanted data collection. This page provides a high-level overview of all features organized by category.
+
+## Feature Categories
+
+<CardGroup cols={2}>
+  <Card
+    title="Privacy Features"
+    icon="shield"
+    href="/features/privacy"
+  >
+    Complete Google service removal, tracking protection, and privacy-first settings
+  </Card>
+  <Card
+    title="Ad Blocking"
+    icon="ban"
+    href="/features/ad-blocking"
+  >
+    Built-in AdBlock Plus engine with CNAME uncloaking and advanced filtering
+  </Card>
+  <Card
+    title="Anti-Fingerprinting"
+    icon="fingerprint"
+    href="/features/anti-fingerprinting"
+  >
+    Comprehensive fingerprinting mitigations for Canvas, WebGL, Media APIs, and more
+  </Card>
+  <Card
+    title="Security Features"
+    icon="lock"
+    href="/features/security"
+  >
+    Enhanced security with JIT disabled, DOH, certificate transparency, and sandboxing
+  </Card>
+  <Card
+    title="UI Enhancements"
+    icon="paintbrush"
+    href="/features/ui-enhancements"
+  >
+    User interface improvements and customization options
+  </Card>
+  <Card
+    title="Tracking Navigation"
+    icon="route"
+    href="/features/privacy#tracking-navigation"
+  >
+    Network isolation, cookie partitioning, and cross-origin protections
+  </Card>
+</CardGroup>
+
+## Quick Summary
+
+### Anti-Fingerprinting
+Cromite disables or mitigates dozens of fingerprinting vectors including Battery API, Client Hints, WebGL, Canvas, Media APIs, and more. It provides comprehensive protection against browser fingerprinting techniques.
+
+**Key protections:**
+- Disabled APIs: Battery, GamePad, WebGPU, SpeechSynthesis, Idle Detection
+- Mitigations: Canvas, WebGL, Audio, Media Device partitioning
+- Overrides: Language, connection info, device memory, timezone
+
+### Privacy
+Complete removal of Google services and tracking mechanisms. Cromite blocks preconnections, disables site engagement scoring, removes sync and translation services, and enables Do-Not-Track by default.
+
+**Key features:**
+- No Google services (Sync, Translate, DNS, Updates)
+- Disabled: Site engagement, reporting API, preconnect/prerender
+- Enabled: Do-Not-Track, Global Privacy Control
+
+### Tracking Navigation
+Advanced network isolation features including third-party storage partitioning, cookie partitioning by top frame domain (similar to Firefox Total Cookie Protection), and comprehensive header reduction.
+
+**Key protections:**
+- Cookie partitioning by top frame domain
+- Third-party storage partitioning
+- Network isolation and HSTS cache partitioning
+- Reduced HTTP headers in cross-origin requests
+
+### Ad Blocking
+Built-in modified AdBlock Plus engine with DNS CNAME support, WebSocket blocking, and automatic filter updates. No CSS rules support but effective blocking of network requests.
+
+**Key features:**
+- Modified AdBlock Plus engine
+- DNS CNAME uncloaking
+- WebSocket and WebTransport blocking
+- Daily automatic filter updates
+
+### Security
+Enhanced security posture with JIT compilation disabled by default, DOH secure mode, certificate transparency, and improved sandboxing on Windows.
+
+**Key features:**
+- JIT disabled by default
+- DOH secure mode enabled
+- Certificate Transparency enabled
+- Enhanced sandboxing (Windows: network service sandbox, CIG, ACG)
+
+### UI Enhancements
+Extensive UI improvements for Android including bookmark management, tab handling, improved navigation, and customization options. Desktop version includes menu enhancements.
+
+**Key features:**
+- Bookmark import/export (Android)
+- Tab management improvements
+- Address bar customization
+- Native Android autofill support
+
+<Note>
+Many features can be toggled via flags at `chrome://flags`. Some security features like JIT disabling may impact performance but significantly improve security.
+</Note>
+
+## Platform-Specific Features
+
+### Android
+- Always-incognito mode
+- User scripts support
+- Native autofill integration
+- Improved bookmarks UI
+- Tab grouping and management
+- Audio playback in background
+
+### Desktop
+- ManifestV2 extension support
+- High efficiency mode enabled by default
+- Percent-based mousewheel scrolling
+- Keyboard Layout API mitigation
+
+### Windows
+- Non-standard font blocking
+- Enhanced sandbox (CIG, ACG, network service)
+- Webcam presence hiding
+- PublicKeyCredential fingerprinting mitigations
+
+<Info>
+For detailed information about each feature category, visit the dedicated pages linked above.
+</Info>

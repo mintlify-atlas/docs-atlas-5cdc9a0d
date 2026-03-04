@@ -1,0 +1,340 @@
+---
+title: "Android Installation"
+description: "Complete guide to installing and configuring Cromite on Android devices"
+---
+
+Cromite is available for Android devices running Android 10 and above, with support for ARM64, ARM32, and x86_64 architectures.
+
+## System Requirements
+
+- **Android Version**: Android 10 or higher
+- **Architecture**: ARM64-v8a (recommended), ARM32-v7a, or x86_64
+- **Storage**: ~150MB free space
+- **Root Access**: Not required
+
+<Note>
+  Cromite does not require root access and works on all standard Android devices.
+</Note>
+
+## Installation Methods
+
+<Tabs>
+  <Tab title="Direct APK Installation">
+    ### Download and Install APK
+    
+    <Steps>
+      <Step title="Choose Your Architecture">
+        Determine your device architecture:
+        - **ARM64**: Most modern Android devices (2016+)
+        - **ARM32**: Older devices or budget phones
+        - **x86_64**: Intel/AMD-based devices (rare)
+        
+        If unsure, try ARM64 first - it's the most common.
+      </Step>
+      
+      <Step title="Download the APK">
+        Download the appropriate APK file:
+        - [arm64_ChromePublic.apk](https://github.com/uazo/cromite/releases/latest/download/arm64_ChromePublic.apk) (recommended)
+        - [arm_ChromePublic.apk](https://github.com/uazo/cromite/releases/latest/download/arm_ChromePublic.apk)
+        - [x64_ChromePublic.apk](https://github.com/uazo/cromite/releases/latest/download/x64_ChromePublic.apk)
+      </Step>
+      
+      <Step title="Enable Unknown Sources">
+        If this is your first APK installation:
+        1. Go to **Settings → Security**
+        2. Enable **Install from Unknown Sources** (or allow your file manager/browser to install apps)
+        3. On Android 8+, you'll grant permission per-app when prompted
+      </Step>
+      
+      <Step title="Install the APK">
+        1. Open your Downloads folder or notification
+        2. Tap the Cromite APK file
+        3. Review permissions and tap **Install**
+        4. Wait for installation to complete
+        5. Tap **Open** to launch Cromite
+      </Step>
+    </Steps>
+    
+    <Warning>
+      Always download APKs from the official GitHub releases page: https://github.com/uazo/cromite/releases
+    </Warning>
+  </Tab>
+  
+  <Tab title="F-Droid Repository">
+    ### Install via F-Droid
+    
+    <Steps>
+      <Step title="Install F-Droid">
+        If you don't have F-Droid installed:
+        1. Download F-Droid from https://f-droid.org
+        2. Install the F-Droid APK
+        3. Open the F-Droid app
+      </Step>
+      
+      <Step title="Add Cromite Repository">
+        1. In F-Droid, tap the **Settings** icon (bottom right)
+        2. Tap **Repositories**
+        3. Tap the **+** icon to add a repository
+        4. Paste this URL:
+        ```
+        https://www.cromite.org/fdroid/repo/?fingerprint=49F37E74DEE483DCA2B991334FB5A0200787430D0B5F9A783DD5F13695E9517B
+        ```
+        5. Tap **Add**
+      </Step>
+      
+      <Step title="Update Repository">
+        1. Return to the main F-Droid screen
+        2. Pull down to refresh repositories
+        3. Wait for the update to complete
+      </Step>
+      
+      <Step title="Install Cromite">
+        1. Search for "Cromite" in F-Droid
+        2. Tap the Cromite entry
+        3. Tap **Install**
+        4. Accept permissions and wait for installation
+      </Step>
+    </Steps>
+    
+    <Tip>
+      F-Droid will automatically notify you of future Cromite updates.
+    </Tip>
+  </Tab>
+</Tabs>
+
+## First Launch Setup
+
+When you first launch Cromite, you'll be prompted to configure:
+
+<Steps>
+  <Step title="Auto-Update Configuration">
+    Choose whether to enable automatic update notifications:
+    - **Recommended**: Enable to receive notifications about new versions
+    - Updates check GitHub releases every 3 days
+    - No cookies are used (subject to GitHub's privacy policy)
+    - Can be changed later in **Settings → About Cromite**
+  </Step>
+  
+  <Step title="Search Engine Selection">
+    Select your default search engine:
+    - Cromite doesn't force any default search engine
+    - You can change this later in **Settings → Search engine**
+    - Custom search engines can be added manually
+  </Step>
+  
+  <Step title="Review Permissions">
+    Grant necessary permissions:
+    - **Storage**: For downloads and file uploads
+    - **Camera**: For QR codes and web features (optional)
+    - **Microphone**: For voice input (optional)
+    - **Location**: For location-based services (optional)
+  </Step>
+</Steps>
+
+## Automatic Updates
+
+Cromite includes a built-in auto-updater enabled by default since version 94.0.4606.109.
+
+### How It Works
+
+- Checks for updates every **3 days**
+- Downloads from [GitHub Releases](https://github.com/uazo/cromite/releases)
+- Notifications appear when updates are available
+- One-tap installation from within the app
+- No Google Play Services required
+
+### Managing Auto-Updates
+
+<Steps>
+  <Step title="Access Settings">
+    Open Cromite and tap the menu icon (⋮) → **Settings**
+  </Step>
+  
+  <Step title="Navigate to About">
+    Scroll down and tap **About Cromite**
+  </Step>
+  
+  <Step title="Toggle Auto-Updates">
+    Find the update notification setting and toggle it on or off
+  </Step>
+</Steps>
+
+<Note>
+  Auto-updates use minimal data and only check for updates, not download them automatically. You control when to install updates.
+</Note>
+
+## SystemWebView Installation
+
+Advanced users can install Cromite as a system-wide WebView replacement to enhance privacy across all apps.
+
+<Warning>
+  SystemWebView installation is for advanced users. Incorrect installation can cause app compatibility issues.
+</Warning>
+
+### What is SystemWebView?
+
+Android's SystemWebView is used by apps to display web content. Replacing it with Cromite provides:
+- Ad blocking in all apps using WebView
+- Enhanced privacy protections system-wide
+- Consistent security updates
+
+### Installation Steps
+
+<Steps>
+  <Step title="Download SystemWebView APK">
+    Download the appropriate SystemWebView package:
+    - [arm64_SystemWebView.apk](https://github.com/uazo/cromite/releases/latest/download/arm64_SystemWebView.apk)
+    - [x64_SystemWebView.apk](https://github.com/uazo/cromite/releases/latest/download/x64_SystemWebView.apk)
+    
+    <Note>
+      SystemWebView files may not be immediately available after a new release as they're built separately.
+    </Note>
+  </Step>
+  
+  <Step title="Uninstall Default WebView (if possible)">
+    On some devices, you can uninstall the default WebView:
+    1. Go to **Settings → Apps**
+    2. Find **Android System WebView**
+    3. Tap **Uninstall** or **Uninstall updates**
+    
+    This may not be possible on all devices.
+  </Step>
+  
+  <Step title="Install Cromite WebView">
+    1. Install the downloaded SystemWebView APK
+    2. Follow the same process as installing the main browser
+  </Step>
+  
+  <Step title="Enable as WebView Provider">
+    1. Enable **Developer Options** on your device:
+       - Go to **Settings → About Phone**
+       - Tap **Build Number** 7 times
+    2. Go to **Settings → Developer Options**
+    3. Find **WebView Implementation**
+    4. Select **Cromite SystemWebView**
+  </Step>
+  
+  <Step title="Verify Installation">
+    Test SystemWebView:
+    1. Download [WebView Shell](https://github.com/uazo/cromite/releases/latest/download/arm64_SystemWebViewShell.apk)
+    2. Install and open it
+    3. Try loading websites to verify functionality
+  </Step>
+</Steps>
+
+## Permissions Explained
+
+<Accordion title="Storage Access">
+  Required for:
+  - Downloading files
+  - Uploading files to websites
+  - Caching web content
+  
+  You can grant this permission selectively when needed.
+</Accordion>
+
+<Accordion title="Camera Access">
+  Optional permission for:
+  - Scanning QR codes
+  - Video conferencing on websites
+  - WebRTC features
+  - AR/camera-based web applications
+  
+  Denied by default; grant only when needed.
+</Accordion>
+
+<Accordion title="Microphone Access">
+  Optional permission for:
+  - Voice input in search
+  - Video conferencing on websites
+  - Voice-based web applications
+  
+  Denied by default; grant only when needed.
+</Accordion>
+
+<Accordion title="Location Access">
+  Optional permission for:
+  - Location-based services
+  - Maps and navigation websites
+  - Local business searches
+  
+  <Warning>
+    Cromite includes fingerprinting protections, but location access can still identify you. Grant sparingly.
+  </Warning>
+</Accordion>
+
+<Accordion title="Notification Access">
+  Optional permission for:
+  - Update notifications
+  - Website notification requests (disabled by default)
+  
+  Update notifications are recommended for security.
+</Accordion>
+
+## Troubleshooting
+
+<Accordion title="Installation Failed">
+  **Common causes:**
+  - Wrong architecture (try ARM64 if unsure)
+  - Insufficient storage space
+  - Corrupted download
+  
+  **Solutions:**
+  1. Verify you downloaded the complete APK
+  2. Clear space and try again
+  3. Re-download from the official source
+  4. Try a different file manager
+</Accordion>
+
+<Accordion title="App Not Opening">
+  **Possible issues:**
+  - Incompatible Android version (need Android 10+)
+  - Device architecture mismatch
+  - Corrupted installation
+  
+  **Solutions:**
+  1. Verify your Android version
+  2. Uninstall and reinstall with correct architecture
+  3. Clear app data: Settings → Apps → Cromite → Clear Data
+</Accordion>
+
+<Accordion title="Updates Not Working">
+  **Check these settings:**
+  1. Auto-updates enabled: Settings → About Cromite
+  2. Notifications allowed for Cromite
+  3. Internet connection active
+  4. GitHub not blocked on your network
+  
+  **Manual update:**
+  Download the latest APK and install over existing version (data preserved).
+</Accordion>
+
+<Accordion title="SystemWebView Not Working">
+  **Verify installation:**
+  1. Check Developer Options → WebView Implementation
+  2. Ensure Cromite SystemWebView is selected
+  3. Restart device after installation
+  4. Test with WebView Shell app
+  
+  **If apps crash:**
+  Switch back to default WebView implementation temporarily.
+</Accordion>
+
+## Next Steps
+
+After installation:
+
+<CardGroup cols={2}>
+  <Card title="Privacy Features" icon="shield" href="/features/privacy">
+    Explore built-in privacy protections and anti-fingerprinting
+  </Card>
+  <Card title="Ad Blocking" icon="ban" href="/features/ad-blocking">
+    Configure ad blocking with custom filter lists
+  </Card>
+  <Card title="Settings Guide" icon="gear" href="/guides/settings">
+    Customize Cromite for optimal privacy and performance
+  </Card>
+  <Card title="FAQ" icon="question" href="/reference/faq">
+    Find answers to common questions
+  </Card>
+</CardGroup>

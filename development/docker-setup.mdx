@@ -1,0 +1,482 @@
+---
+title: "Docker Development Setup"
+description: "Use pre-built Docker images for building Cromite"
+---
+
+# Docker Development Setup
+
+The easiest and most reliable way to build Cromite is using the pre-built Docker images. These images contain all dependencies, tools, and the complete Chromium source with Cromite patches already applied.
+
+## Why Use Docker?
+
+Building Chromium from source requires:
+- **Significant disk space** (100GB+ for full build)
+- **Complex dependencies** (specific versions of build tools, libraries, SDKs)
+- **Lengthy setup** (downloading source, applying patches, configuring environment)
+
+Docker images solve these problems by providing a **ready-to-build environment** that works consistently across different host systems.
+
+<Info>
+  All Docker images are available at [uazo/cromite-build on Docker Hub](https://hub.docker.com/r/uazo/cromite-build/tags)
+</Info>
+
+## Docker Image Types
+
+Cromite's build process uses a layered Docker image approach:
+
+<Steps>
+  <Step title="uazo/build-deps">
+    **Base dependencies image**
+    
+    Contains:
+    - Build tools (GCC, Clang, LLVM)
+    - depot_tools (Chromium build system)
+    - Android SDK/NDK
+    - Python, Go, Node.js
+    - System libraries and headers
+    
+    Format: `uazo/build-deps:<VERSION>`
+  </Step>
+  
+  <Step title="uazo/chromium">
+    **Chromium source image**
+    
+    Built on top of build-deps, adds:
+    - Complete Chromium source code
+    - Chromium version from `build/RELEASE`
+    - Synced to specific version tag
+    
+    Format: `uazo/chromium:<VERSION>`
+  </Step>
+  
+  <Step title="uazo/cromite">
+    **Cromite patches applied**
+    
+    Built on top of chromium, adds:
+    - All 333 Cromite patches
+    - Cromite-specific build files
+    - Applied in order from `cromite_patches_list.txt`
+    
+    Format: `uazo/cromite:<VERSION>-<COMMIT>`
+  </Step>
+  
+  <Step title="uazo/cromite-build">
+    **Ready-to-build image** (Recommended)
+    
+    Complete build environment:
+    - All patches applied
+    - Build arguments configured
+    - Dependencies compiled
+    - Ready to run build commands
+    
+    Format: `uazo/cromite-build:<VERSION>-<COMMIT>`
+  </Step>
+</Steps>
+
+## Quick Start
+
+<Steps>
+  <Step title="Find Your Image Version">
+    Each Cromite release description contains the corresponding Docker image name.
+    
+    For example, for Cromite version **145.0.7632.120** with commit **fac696b3a422f196f698e6543913946ddaba1ef3**:
+    
+    ```bash
+    VERSION=145.0.7632.120
+    SHA=fac696b3a422f196f698e6543913946ddaba1ef3
+    IMAGE=uazo/cromite-build:$VERSION-$SHA
+    ```
+    
+    <Tip>
+      Check the [Docker Hub tags page](https://hub.docker.com/r/uazo/cromite-build/tags) to see all available images.
+    </Tip>
+  </Step>
+  
+  <Step title="Set Environment Variables">
+    ```bash
+    # Image configuration
+    VERSION=145.0.7632.120
+    SHA=fac696b3a422f196f698e6543913946ddaba1ef3
+    CHVERSION=uazo/cromite-build:$VERSION-$SHA
+    
+    # Container configuration
+    CONTAINER=cromite-dev
+    BDEBUG=false
+    ```
+  </Step>
+  
+  <Step title="Create Docker Container">
+    ```bash
+    docker create --name $CONTAINER \
+        -e "WORKSPACE=/home/lg/working_dir" \
+        -e "TARGET_ISDEBUG=$BDEBUG" \
+        --entrypoint "tail" $CHVERSION "-f" "/dev/null"
+    ```
+    
+    This creates a container that stays running in the background.
+  </Step>
+  
+  <Step title="Start Container">
+    ```bash
+    docker start $CONTAINER
+    ```
+  </Step>
+  
+  <Step title="Enter Container">
+    ```bash
+    docker exec -ti $CONTAINER bash
+    ```
+    
+    You're now inside the container with a full build environment!
+  </Step>
+</Steps>
+
+## Container Workspace Setup
+
+Once inside the container, set up your environment:
+
+<CodeGroup>
+```bash Set PATH
+# Add build tools to PATH
+PATH=$WORKSPACE/chromium/src/third_party/llvm-build/Release+Asserts/bin:$WORKSPACE/depot_tools/:/usr/local/go/bin:$WORKSPACE/mtool/bin:$PATH
+```
+
+```bash Set Home Directory
+export HOME=/home/lg/working_dir
+cd $HOME
+```
+
+```bash Navigate to Source
+cd chromium/src/
+```
+</CodeGroup>
+
+### Workspace Directory Structure
+
+The container workspace is organized as:
+
+```
+/home/lg/working_dir/
+├── chromium/
+│   └── src/                    # Chromium source with patches
+│       ├── chrome/
+│       ├── content/
+│       ├── build/
+│       └── out/                # Build output directory
+├── depot_tools/                # Chromium build tools
+├── cromite/                    # Cromite repository
+│   ├── build/
+│   │   ├── RELEASE            # Version: 145.0.7632.120
+│   │   ├── cromite.gn_args    # Build arguments
+│   │   └── patches/           # 333 patch files
+│   └── tools/
+└── mtool/                      # Additional build utilities
+```
+
+## Building Inside Docker
+
+### Android Build
+
+<CodeGroup>
+```bash ARM64 (arm64-v8a)
+cd $HOME/chromium/src/
+autoninja -C out/Default chrome_public_apk
+```
+
+```bash ARM32 (armeabi-v7a)
+cd $HOME/chromium/src/
+autoninja -C out/Default_arm chrome_public_apk
+```
+
+```bash x86_64
+cd $HOME/chromium/src/
+autoninja -C out/Default_x64 chrome_public_apk
+```
+
+```bash SystemWebView
+cd $HOME/chromium/src/
+autoninja -C out/Default system_webview_apk
+```
+</CodeGroup>
+
+### Linux Build
+
+```bash
+cd $HOME/chromium/src/
+autoninja -C out/Linux chrome
+```
+
+### Windows Build (Cross-Compilation)
+
+```bash
+cd $HOME/chromium/src/
+autoninja -C out/Windows chrome
+```
+
+<Note>
+  Build times vary:
+  - **Full build**: 2-4 hours (depending on CPU cores)
+  - **Incremental build**: 5-30 minutes
+  - **Android APK**: ~3 hours
+  - **Linux/Windows**: ~2.5 hours
+</Note>
+
+## Docker Environment Variables
+
+Key environment variables you can configure:
+
+<ResponseField name="WORKSPACE" type="string" default="/home/lg/working_dir">
+  Base workspace directory inside the container
+</ResponseField>
+
+<ResponseField name="TARGET_ISDEBUG" type="boolean" default="false">
+  Build debug version instead of release
+  
+  - `true`: Debug build with symbols
+  - `false`: Optimized release build
+</ResponseField>
+
+<ResponseField name="USE_KEYSTORE" type="string">
+  Path to Android keystore for signing APKs
+</ResponseField>
+
+<ResponseField name="KEYSTORE_PASSWORD" type="string">
+  Password for Android keystore
+</ResponseField>
+
+<ResponseField name="CROMITE_PREF_HASH_SEED_BIN" type="string">
+  Preference hash seed for secure preferences
+</ResponseField>
+
+## Docker Build Workflow
+
+The complete Docker build process (as used in GitHub Actions):
+
+<Steps>
+  <Step title="Pull or Build build-deps">
+    ```bash
+    docker pull uazo/build-deps:$VERSION || \
+    DOCKER_BUILDKIT=1 docker build -t uazo/build-deps:$VERSION \
+      --build-arg VERSION=$VERSION \
+      cromite/tools/images/build-deps/.
+    ```
+  </Step>
+  
+  <Step title="Pull or Build chromium">
+    ```bash
+    docker pull uazo/chromium:$VERSION || \
+    DOCKER_BUILDKIT=1 docker build -t uazo/chromium:$VERSION \
+      --build-arg VERSION=$VERSION \
+      cromite/tools/images/chr-source/.
+    ```
+  </Step>
+  
+  <Step title="Pull or Build cromite">
+    ```bash
+    docker pull uazo/cromite:$VERSION-$SHA || \
+    DOCKER_BUILDKIT=1 docker build -t uazo/cromite:$VERSION-$SHA \
+      --build-arg CROMITE_SHA=$SHA \
+      --build-arg VERSION=$VERSION \
+      cromite/tools/images/cromite-source/.
+    ```
+  </Step>
+  
+  <Step title="Pull or Build cromite-build">
+    ```bash
+    docker pull uazo/cromite-build:$VERSION-$SHA || \
+    DOCKER_BUILDKIT=1 docker build -t uazo/cromite-build:$VERSION-$SHA \
+      --build-arg CROMITE_SHA=$SHA \
+      --build-arg VERSION=$VERSION \
+      cromite/tools/images/cromite-build/.
+    ```
+  </Step>
+</Steps>
+
+<Info>
+  This workflow pulls pre-built images if available, otherwise builds them locally. The GitHub Actions workflow at `.github/workflows/build_cromite.yaml` shows the complete process.
+</Info>
+
+## Docker Image Maintenance
+
+### Cleaning Up Old Images
+
+```bash
+# Remove old containers
+docker rm cromite-dev
+
+# Remove old images
+docker rmi uazo/cromite-build:old-version-hash
+
+# Clean up dangling images
+docker image prune -f
+
+# Full cleanup (careful!)
+docker system prune -a
+```
+
+### Inspecting Images
+
+<CodeGroup>
+```bash List Local Images
+docker images | grep cromite
+```
+
+```bash Image Details
+docker inspect uazo/cromite-build:$VERSION-$SHA
+```
+
+```bash Image Size
+docker images uazo/cromite-build:$VERSION-$SHA --format "{{.Size}}"
+```
+
+```bash Image History
+docker history uazo/cromite-build:$VERSION-$SHA
+```
+</CodeGroup>
+
+## Platform Support
+
+The Docker images support building for:
+
+<CardGroup cols={2}>
+  <Card title="Android" icon="android">
+    - arm64-v8a
+    - armeabi-v7a
+    - x86_64
+    - SystemWebView
+  </Card>
+  
+  <Card title="Linux" icon="linux">
+    - x86_64
+    - Desktop browser
+  </Card>
+  
+  <Card title="Windows" icon="windows">
+    - x86_64
+    - Cross-compiled from Linux
+  </Card>
+  
+  <Card title="Building macOS" icon="apple">
+    Not supported
+    
+    (Requires macOS host)
+  </Card>
+</CardGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Container won't start">
+    Check if the image exists:
+    ```bash
+    docker images | grep cromite-build
+    ```
+    
+    If not found, pull from Docker Hub:
+    ```bash
+    docker pull uazo/cromite-build:$VERSION-$SHA
+    ```
+  </Accordion>
+  
+  <Accordion title="Out of disk space">
+    Docker images are large (20-40GB). Free up space:
+    ```bash
+    # Check Docker disk usage
+    docker system df
+    
+    # Clean up unused images
+    docker image prune -a
+    ```
+  </Accordion>
+  
+  <Accordion title="Build fails with permission errors">
+    Ensure you're running as the correct user inside the container:
+    ```bash
+    whoami  # Should be 'lg'
+    cd $HOME  # Should work without errors
+    ```
+  </Accordion>
+  
+  <Accordion title="PATH not set correctly">
+    Re-run the PATH setup:
+    ```bash
+    PATH=$WORKSPACE/chromium/src/third_party/llvm-build/Release+Asserts/bin:$WORKSPACE/depot_tools/:/usr/local/go/bin:$WORKSPACE/mtool/bin:$PATH
+    export HOME=/home/lg/working_dir
+    ```
+  </Accordion>
+  
+  <Accordion title="Image version mismatch">
+    Make sure the VERSION matches the RELEASE file:
+    ```bash
+    cat $HOME/cromite/build/RELEASE
+    # Should output: 145.0.7632.120
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Advanced Usage
+
+### Mounting Local Directories
+
+To persist build outputs or work with local patches:
+
+```bash
+docker create --name $CONTAINER \
+    -e "WORKSPACE=/home/lg/working_dir" \
+    -e "TARGET_ISDEBUG=$BDEBUG" \
+    -v "$(pwd)/out:/home/lg/working_dir/chromium/src/out" \
+    -v "$(pwd)/patches:/home/lg/patches" \
+    --entrypoint "tail" $CHVERSION "-f" "/dev/null"
+```
+
+### Using Proxy
+
+If you need to use a proxy:
+
+```bash
+docker create --name $CONTAINER \
+    -e "WORKSPACE=/home/lg/working_dir" \
+    -e "HTTP_PROXY=http://proxy.example.com:8080" \
+    -e "HTTPS_PROXY=http://proxy.example.com:8080" \
+    --entrypoint "tail" $CHVERSION "-f" "/dev/null"
+```
+
+### Running Specific Build Targets
+
+<CodeGroup>
+```bash Content Shell (for testing)
+autoninja -C out/Default content_shell_apk
+```
+
+```bash Chrome Modern APK
+autoninja -C out/Default chrome_modern_public_apk
+```
+
+```bash Unit Tests
+autoninja -C out/Default chrome_public_test_apk
+```
+
+```bash All Targets
+autoninja -C out/Default
+```
+</CodeGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Building Guide" icon="hammer" href="/development/building">
+    Complete guide to building Cromite from source
+  </Card>
+  
+  <Card title="Patch System" icon="code-merge" href="/development/patches">
+    Understanding Cromite's 333 patches
+  </Card>
+  
+  <Card title="Docker Hub" icon="docker" href="https://hub.docker.com/r/uazo/cromite-build/tags">
+    Browse all available Docker images
+  </Card>
+  
+  <Card title="GitHub Workflow" icon="github" href="https://github.com/uazo/cromite/blob/master/.github/workflows/build_cromite.yaml">
+    See the complete build automation
+  </Card>
+</CardGroup>

@@ -1,0 +1,555 @@
+---
+title: "Linux Installation"
+description: "Deploy Cromite on Linux distributions with AppArmor configuration"
+---
+
+Cromite for Linux provides a privacy-focused browsing experience with support for modern Linux distributions. Special configuration is required for Ubuntu 24.04 and derivatives due to AppArmor restrictions.
+
+## System Requirements
+
+- **Linux Distribution**: Most modern distributions (Ubuntu, Debian, Fedora, Arch, etc.)
+- **Architecture**: x64 (64-bit)
+- **Storage**: ~200MB free space
+- **Dependencies**: Standard Linux libraries (usually pre-installed)
+
+## Installation
+
+<Steps>
+  <Step title="Download Linux Package">
+    Download the latest Linux release:
+    - [chrome-lin64.tar.gz](https://github.com/uazo/cromite/releases/latest/download/chrome-lin64.tar.gz)
+    
+    Save it to your preferred location, such as:
+    - `~/Downloads/`
+    - `/tmp/`
+  </Step>
+  
+  <Step title="Extract the Archive">
+    Open a terminal and extract the tarball:
+    
+    ```bash
+    cd ~/Downloads
+    tar -xzf chrome-lin64.tar.gz
+    ```
+    
+    This creates a `chrome-lin` directory containing the Cromite browser.
+  </Step>
+  
+  <Step title="Move to Installation Directory">
+    Move Cromite to a permanent location:
+    
+    <Tabs>
+      <Tab title="User Installation">
+        Install for current user only (no sudo required):
+        ```bash
+        mv chrome-lin ~/.local/share/cromite
+        ```
+        
+        Or create a custom location:
+        ```bash
+        mkdir -p ~/Applications
+        mv chrome-lin ~/Applications/cromite
+        ```
+      </Tab>
+      
+      <Tab title="System-Wide Installation">
+        Install for all users (requires sudo):
+        ```bash
+        sudo mv chrome-lin /opt/cromite
+        ```
+        
+        Make executable accessible:
+        ```bash
+        sudo ln -s /opt/cromite/chrome /usr/local/bin/cromite
+        ```
+      </Tab>
+    </Tabs>
+  </Step>
+  
+  <Step title="Launch Cromite">
+    Run Cromite from the command line:
+    
+    ```bash
+    # If installed in ~/.local/share/cromite
+    ~/.local/share/cromite/chrome
+    
+    # If installed in /opt/cromite with symlink
+    cromite
+    ```
+    
+    On first launch:
+    1. Choose your default search engine
+    2. Review initial settings
+    3. Grant necessary permissions if prompted
+  </Step>
+</Steps>
+
+## Ubuntu 24.04 and Derivatives
+
+Ubuntu 24.04, Kubuntu, Xubuntu, and other Ubuntu derivatives implement AppArmor restrictions on unprivileged user namespaces. This prevents Chromium-based browsers from launching without additional configuration.
+
+<Warning>
+  If you see an error like "namespace creation failed" or Cromite won't start, you need to apply one of the solutions below.
+</Warning>
+
+### Why This Happens
+
+Starting with Ubuntu 24.04, AppArmor restricts the use of unprivileged user namespaces for security reasons. Chromium's sandbox requires these namespaces to function properly.
+
+### Solution 1: Create AppArmor Profile (Recommended)
+
+This solution allows Cromite to use namespaces while maintaining system security.
+
+<Steps>
+  <Step title="Create Profile File">
+    Create the AppArmor profile file with sudo:
+    
+    ```bash
+    sudo nano /etc/apparmor.d/chrome
+    ```
+  </Step>
+  
+  <Step title="Add Profile Configuration">
+    Paste the following configuration, **replacing the path** with your actual Cromite installation path:
+    
+    ```apparmor
+    abi <abi/4.0>,
+    include <tunables/global>
+    
+    profile cromite /home/user/cromite/chrome-lin/chrome flags=(unconfined) {
+      userns,
+    
+      include if exists <local/chrome>
+    }
+    ```
+    
+    **Example paths:**
+    - User install: `/home/username/.local/share/cromite/chrome`
+    - System install: `/opt/cromite/chrome`
+    - Custom location: `/home/username/Applications/cromite/chrome`
+    
+    <Note>
+      Replace `/home/user/cromite/chrome-lin/chrome` with the **absolute path** to your `chrome` binary.
+    </Note>
+  </Step>
+  
+  <Step title="Save and Exit">
+    Press `Ctrl+O` to save, then `Ctrl+X` to exit nano.
+  </Step>
+  
+  <Step title="Apply the Profile">
+    Load the new AppArmor profile:
+    
+    ```bash
+    sudo apparmor_parser -r /etc/apparmor.d/chrome
+    ```
+    
+    If successful, you'll see no output. Any errors will be displayed.
+  </Step>
+  
+  <Step title="Verify and Launch">
+    Check the profile is loaded:
+    
+    ```bash
+    sudo aa-status | grep cromite
+    ```
+    
+    Launch Cromite normally:
+    ```bash
+    ~/.local/share/cromite/chrome
+    ```
+  </Step>
+</Steps>
+
+<Tip>
+  This profile persists across reboots and system updates. You only need to create it once.
+</Tip>
+
+### Solution 2: Temporary Disable (Until Reboot)
+
+Quickly disable the restriction for testing or temporary use:
+
+```bash
+sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+```
+
+**Characteristics:**
+- Takes effect immediately
+- No reboot required
+- Reverts on next reboot
+- Affects all applications, not just Cromite
+
+<Warning>
+  This reduces system security. Use for testing only, not for permanent solutions.
+</Warning>
+
+### Solution 3: Permanent Disable (Not Recommended)
+
+Permanently disable unprivileged namespace restrictions:
+
+<Steps>
+  <Step title="Create Configuration File">
+    ```bash
+    sudo nano /etc/sysctl.d/60-apparmor-namespace.conf
+    ```
+  </Step>
+  
+  <Step title="Add Configuration">
+    Add this single line:
+    ```
+    kernel.apparmor_restrict_unprivileged_userns=0
+    ```
+  </Step>
+  
+  <Step title="Apply Configuration">
+    ```bash
+    sudo sysctl -p /etc/sysctl.d/60-apparmor-namespace.conf
+    ```
+  </Step>
+</Steps>
+
+<Warning>
+  This disables the restriction system-wide and permanently. It reduces security for all applications. Use Solution 1 (AppArmor profile) instead.
+</Warning>
+
+## Creating Desktop Integration
+
+### Desktop Entry (Application Menu)
+
+Create a `.desktop` file to add Cromite to your application menu:
+
+<Steps>
+  <Step title="Create Desktop Entry">
+    ```bash
+    nano ~/.local/share/applications/cromite.desktop
+    ```
+  </Step>
+  
+  <Step title="Add Desktop Entry Configuration">
+    ```ini
+    [Desktop Entry]
+    Version=1.0
+    Name=Cromite
+    Comment=Privacy-focused Chromium fork
+    Exec=/home/username/.local/share/cromite/chrome %U
+    Terminal=false
+    Icon=/home/username/.local/share/cromite/product_logo_256.png
+    Type=Application
+    Categories=Network;WebBrowser;
+    MimeType=text/html;text/xml;application/xhtml+xml;x-scheme-handler/http;x-scheme-handler/https;
+    StartupNotify=true
+    StartupWMClass=cromite
+    ```
+    
+    **Replace** `/home/username/.local/share/cromite` with your actual installation path.
+  </Step>
+  
+  <Step title="Update Desktop Database">
+    ```bash
+    update-desktop-database ~/.local/share/applications
+    ```
+  </Step>
+  
+  <Step title="Launch from Application Menu">
+    Cromite should now appear in your application menu under "Internet" or "Network".
+  </Step>
+</Steps>
+
+### Command Line Alias
+
+Add a convenient command-line alias:
+
+<Tabs>
+  <Tab title="Bash">
+    Edit `~/.bashrc`:
+    ```bash
+    echo 'alias cromite="~/.local/share/cromite/chrome"' >> ~/.bashrc
+    source ~/.bashrc
+    ```
+    
+    Now you can launch with just:
+    ```bash
+    cromite
+    ```
+  </Tab>
+  
+  <Tab title="Zsh">
+    Edit `~/.zshrc`:
+    ```bash
+    echo 'alias cromite="~/.local/share/cromite/chrome"' >> ~/.zshrc
+    source ~/.zshrc
+    ```
+    
+    Now you can launch with just:
+    ```bash
+    cromite
+    ```
+  </Tab>
+  
+  <Tab title="Fish">
+    Create alias:
+    ```bash
+    alias -s cromite="~/.local/share/cromite/chrome"
+    funcsave cromite
+    ```
+    
+    Now you can launch with just:
+    ```bash
+    cromite
+    ```
+  </Tab>
+</Tabs>
+
+## Automatic Updates
+
+Automatic updates for Linux are currently under development.
+
+<Note>
+  Linux auto-update development is tracked in [Issue #771](https://github.com/uazo/cromite/issues/771).
+</Note>
+
+### Manual Update Process
+
+Until automatic updates are available, manually update Cromite:
+
+<Steps>
+  <Step title="Download Latest Release">
+    ```bash
+    cd ~/Downloads
+    wget https://github.com/uazo/cromite/releases/latest/download/chrome-lin64.tar.gz
+    ```
+  </Step>
+  
+  <Step title="Backup User Data (Optional)">
+    Your profile data is separate from the application, but to be safe:
+    ```bash
+    cp -r ~/.config/chromium ~/.config/chromium.backup
+    ```
+  </Step>
+  
+  <Step title="Extract New Version">
+    ```bash
+    tar -xzf chrome-lin64.tar.gz
+    ```
+  </Step>
+  
+  <Step title="Replace Installation">
+    ```bash
+    # For user installation
+    rm -rf ~/.local/share/cromite
+    mv chrome-lin ~/.local/share/cromite
+    
+    # For system installation
+    sudo rm -rf /opt/cromite
+    sudo mv chrome-lin /opt/cromite
+    ```
+  </Step>
+  
+  <Step title="Update AppArmor Profile">
+    If you created an AppArmor profile and the path changed:
+    ```bash
+    sudo apparmor_parser -r /etc/apparmor.d/chrome
+    ```
+  </Step>
+</Steps>
+
+### Update Notification Script
+
+Create a simple script to check for updates:
+
+```bash
+#!/bin/bash
+# Save as ~/bin/cromite-check-update.sh
+
+CURRENT_VERSION=$(~/.local/share/cromite/chrome --version | awk '{print $2}')
+LATEST_VERSION=$(curl -s https://api.github.com/repos/uazo/cromite/releases/latest | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
+
+if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
+    notify-send "Cromite Update Available" "New version $LATEST_VERSION is available (current: $CURRENT_VERSION)"
+fi
+```
+
+Make it executable and add to cron:
+```bash
+chmod +x ~/bin/cromite-check-update.sh
+
+# Add to crontab (check daily at 9 AM)
+(crontab -l 2>/dev/null; echo "0 9 * * * ~/bin/cromite-check-update.sh") | crontab -
+```
+
+## Troubleshooting
+
+<Accordion title="Won't Launch on Ubuntu 24.04">
+  **Error messages:**
+  - "The namespace sandbox failed to initialize"
+  - "Failed to move to new namespace"
+  - Silent crash with no window
+  
+  **Solutions:**
+  1. Apply AppArmor profile (Solution 1 above) - **recommended**
+  2. Temporarily disable restrictions for testing
+  3. Check AppArmor logs: `sudo journalctl -xe | grep apparmor`
+</Accordion>
+
+<Accordion title="AppArmor Profile Not Working">
+  **Verify profile path:**
+  ```bash
+  # Check where chrome binary actually is
+  which cromite
+  # or
+  ls -la ~/.local/share/cromite/chrome
+  ```
+  
+  **Update profile path:**
+  1. Edit `/etc/apparmor.d/chrome`
+  2. Fix the path to match your installation
+  3. Reload: `sudo apparmor_parser -r /etc/apparmor.d/chrome`
+  
+  **Check for errors:**
+  ```bash
+  sudo aa-status | grep cromite
+  sudo journalctl -xe | grep apparmor
+  ```
+</Accordion>
+
+<Accordion title="Missing Dependencies">
+  If Cromite won't start due to missing libraries:
+  
+  <Tabs>
+    <Tab title="Ubuntu/Debian">
+      ```bash
+      sudo apt update
+      sudo apt install -y libnss3 libatk1.0-0 libatk-bridge2.0-0 \
+        libcups2 libdrm2 libxkbcommon0 libxcomposite1 \
+        libxdamage1 libxrandr2 libgbm1 libpango-1.0-0 \
+        libcairo2 libasound2 libxshmfence1
+      ```
+    </Tab>
+    
+    <Tab title="Fedora">
+      ```bash
+      sudo dnf install -y nss atk at-spi2-atk cups-libs libdrm \
+        libxkbcommon libXcomposite libXdamage libXrandr \
+        mesa-libgbm pango cairo alsa-lib
+      ```
+    </Tab>
+    
+    <Tab title="Arch">
+      ```bash
+      sudo pacman -S nss atk at-spi2-atk cups libdrm \
+        libxkbcommon libxcomposite libxdamage libxrandr \
+        mesa pango cairo alsa-lib
+      ```
+    </Tab>
+  </Tabs>
+</Accordion>
+
+<Accordion title="Permission Denied">
+  If you get "Permission denied" when trying to launch:
+  
+  ```bash
+  # Make the chrome binary executable
+  chmod +x ~/.local/share/cromite/chrome
+  
+  # If installed system-wide
+  sudo chmod +x /opt/cromite/chrome
+  ```
+</Accordion>
+
+<Accordion title="Desktop Entry Not Showing">
+  **Refresh desktop database:**
+  ```bash
+  update-desktop-database ~/.local/share/applications
+  
+  # Force cache refresh (may vary by desktop environment)
+  killall plasmashell && plasmashell &  # KDE
+  killall gnome-shell && gnome-shell &   # GNOME
+  ```
+  
+  **Verify file syntax:**
+  ```bash
+  desktop-file-validate ~/.local/share/applications/cromite.desktop
+  ```
+</Accordion>
+
+<Accordion title="Runs But No Sound">
+  Check audio libraries:
+  ```bash
+  # Ubuntu/Debian
+  sudo apt install libasound2 pulseaudio
+  
+  # Test if ALSA works
+  speaker-test -t wav -c 2
+  ```
+  
+  Verify Cromite can access audio:
+  1. Launch Cromite from terminal to see error messages
+  2. Visit a website with audio
+  3. Check volume settings in system and Cromite
+</Accordion>
+
+## Advanced Configuration
+
+### Command Line Flags
+
+Launch Cromite with additional flags:
+
+```bash
+# Custom user data directory
+~/.local/share/cromite/chrome --user-data-dir=~/.config/cromite-custom
+
+# Enable debug logging
+~/.local/share/cromite/chrome --enable-logging --v=1
+
+# Disable GPU acceleration (if graphics issues)
+~/.local/share/cromite/chrome --disable-gpu
+
+# Multiple profiles
+~/.local/share/cromite/chrome --profile-directory="Profile 1"
+```
+
+Create a wrapper script with your preferred flags:
+
+```bash
+#!/bin/bash
+# Save as ~/bin/cromite
+
+exec ~/.local/share/cromite/chrome \
+  --user-data-dir="$HOME/.config/cromite" \
+  --disable-background-networking \
+  "$@"
+```
+
+### Wayland Support
+
+For native Wayland support (better HiDPI, security):
+
+```bash
+~/.local/share/cromite/chrome --ozone-platform=wayland
+```
+
+Make it permanent by adding to your desktop entry or alias:
+```bash
+alias cromite="~/.local/share/cromite/chrome --ozone-platform=wayland"
+```
+
+<Tip>
+  Wayland support provides better security isolation and HiDPI scaling on supported desktop environments.
+</Tip>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Privacy Features" icon="shield" href="/features/privacy">
+    Explore built-in privacy protections
+  </Card>
+  <Card title="Ad Blocking" icon="ban" href="/features/ad-blocking">
+    Configure content blocking and filters
+  </Card>
+  <Card title="Settings Guide" icon="gear" href="/guides/settings">
+    Customize Cromite settings
+  </Card>
+  <Card title="FAQ" icon="question" href="/reference/faq">
+    Find answers to common questions
+  </Card>
+</CardGroup>

@@ -1,0 +1,416 @@
+---
+title: "Patch System"
+description: "Understanding Cromite's 333 patches to Chromium"
+---
+
+# Patch System
+
+Cromite applies **333 patches** to the Chromium source code to enhance privacy, security, and user control. These patches are maintained in the `build/patches/` directory and must be applied in a specific order.
+
+## Overview
+
+The patch system is the core of what makes Cromite different from vanilla Chromium. Each patch modifies specific aspects of the browser to:
+
+- Remove tracking and telemetry
+- Enhance privacy protections
+- Add user-facing features
+- Improve security hardening
+- Disable unwanted integrations
+
+<Info>
+  All patches are listed in `build/cromite_patches_list.txt` and must be applied in the exact order specified.
+</Info>
+
+## Patch Categories
+
+Cromite's 333 patches can be organized into several major categories:
+
+<AccordionGroup>
+  <Accordion title="Privacy Patches (80+ patches)">
+    Patches that enhance user privacy and limit data collection:
+    
+    - **webRTC-do-not-expose-local-IP-addresses.patch** - Prevents WebRTC IP address leaks
+    - **Multiple-fingerprinting-mitigations.patch** - Reduces browser fingerprinting
+    - **Battery-API-return-nothing.patch** - Blocks battery status API tracking
+    - **Disable-various-metrics.patch** - Removes telemetry and metrics collection
+    - **Fonts-fingerprinting-mitigation.patch** - Prevents font enumeration fingerprinting
+    - **Media-fingerprinting-mitigations.patch** - Protects against media device fingerprinting
+    - **AudioBuffer-AnalyserNode-fp-mitigations.patch** - Audio fingerprinting protection
+    - **PublicKeyCredential-fingerprinting-mitigations.patch** - WebAuthn fingerprinting mitigation
+    - **High-Resolution-Timing-Mitigation.patch** - Prevents timing-based fingerprinting
+    - **Override-Navigator-Language.patch** - Language fingerprinting protection
+    
+    <Note>
+      These mitigations are not comprehensive. For journalists or users in restrictive countries, use [Tor Browser](https://www.torproject.org/download/) instead.
+    </Note>
+  </Accordion>
+  
+  <Accordion title="Ad-Blocking & Tracking (8 patches)">
+    Built-in ad-blocking functionality integrated from Eyeo (AdBlock Plus):
+    
+    - **eyeo-133.0.6943.49-base.patch** - Core ad-blocking engine
+    - **eyeo-133.0.6943.49-chrome_integration.patch** - Chrome integration layer
+    - **eyeo-133.0.6943.49-android_api.patch** - Android API bindings
+    - **eyeo-133.0.6943.49-android_settings.patch** - Settings UI for Android
+    - **eyeo-133.0.6943.49-extension_api.patch** - Extension API support
+    - **Eyeo-Adblock-for-Cromite.patch** - Cromite-specific ad-blocking integration
+    - **Bromite-subresource-adblocker.patch** - Additional subresource blocking
+    - **disable-AdsBlockedInfoBar.patch** - Remove ads blocked notification
+  </Accordion>
+  
+  <Accordion title="Google Service Removal (30+ patches)">
+    Patches that remove or disable Google service integrations:
+    
+    - **ungoogled-chromium-Disable-translate-integration.patch** - Remove Google Translate
+    - **ungoogled-chromium-Disable-untraceable-URLs.patch** - Block Google tracking URLs
+    - **ungoogled-chromium-Disable-webRTC-log-uploader.patch** - Disable WebRTC log uploads
+    - **ungoogled-chromium-Disable-intranet-detector.patch** - Remove intranet detection
+    - **ungoogled-chromium-Disable-Network-Time-Tracker.patch** - Disable Google time sync
+    - **Disable-references-to-fonts.googleapis.com.patch** - Block Google Fonts CDN
+    - **Disable-GSA-by-default.patch** - Disable Google Search App integration
+    - **Disable-Feeback-Collector.patch** - Remove feedback submission
+    - **Disable-integration-with-Gemini.patch** - Block Gemini AI integration
+    - **Remove-binary-blob-integrations.patch** - Remove proprietary blobs
+    - **Disable-privacy-sandbox.patch** - Disable Google Privacy Sandbox/Topics API
+    - **Disable-FedCm.patch** - Disable Federated Credential Management
+  </Accordion>
+  
+  <Accordion title="Network Privacy (25+ patches)">
+    Patches that enhance network-level privacy:
+    
+    - **Partition-HSTS-cache-by-NAK.patch** - Isolate HSTS cache per network
+    - **Enable-third-party-storage-partitioning.patch** - Partition storage by site
+    - **Partitioning-all-cookies-by-top-frame-domain.patch** - First-party cookie isolation
+    - **Partition-blobs-by-top-frame-URL.patch** - Blob storage partitioning
+    - **Partition-Blink-memory-cache.patch** - Memory cache isolation
+    - **Partition-MediaDeviceId-by-default.patch** - Media device ID partitioning
+    - **DoH-improvements.patch** - DNS-over-HTTPS enhancements
+    - **Replace-DoH-probe-domain-with-RIPE-domain.patch** - Use neutral probe domain
+    - **Reduce-HTTP-headers-in-DoH-requests-to-bare-minimum.patch** - Minimize DoH headers
+    - **Never-use-HTTP-probes-for-connection-detection.patch** - Disable connectivity checks
+    - **Remove-detection-of-captive-portals.patch** - Disable captive portal detection
+    - **Remove-HTTP-referrals-in-cross-origin-navigation.patch** - Strip cross-origin referrers
+    - **Remove-auth-header-upon-cross-origin-redirect.patch** - Clear auth on redirects
+    - **Clear-CORS-Preflight-Cache-on-clearing-data.patch** - CORS cache clearing
+    - **Close-Sessions-On-Ip-Change.patch** - Reset sessions on IP change
+    - **Enable-Global-Privacy-Control.patch** - Enable GPC signal
+    - **Enable-Do-Not-Track-by-default.patch** - Enable DNT header
+  </Accordion>
+  
+  <Accordion title="Security Hardening (20+ patches)">
+    Patches that improve browser security:
+    
+    - **Switch-to-fstack-protector-strong.patch** - Enable stack protection
+    - **Enable-fwrapv-in-Clang-for-non-UBSan-builds.patch** - Integer overflow protection
+    - **enable-ftrivial-auto-var-init-zero.patch** - Zero-initialize variables
+    - **Improve-the-browser-sandbox.patch** - Enhanced sandboxing
+    - **Enable-StrictOriginIsolation-and-SitePerProcess.patch** - Process isolation
+    - **Use-64-bit-WebView-processes.patch** - 64-bit process enforcement
+    - **Enable-Certificate-Transparency.patch** - CT log validation
+    - **Invalidate-components-public-key.patch** - Disable component verification
+    - **Disable-TLS-resumption.patch** - Force fresh TLS sessions
+    - **Supporting-Dangling-Ptr-Detection-via-BackupRefPtr.patch** - Memory safety
+    - **Enable-gwp-asan-on-Android.patch** - Hardware-assisted memory safety
+    - **Enable-ClientHello-Segmentation.patch** - TLS fingerprinting protection
+    - **Enable-Socket-Pool-Limit-Randomization.patch** - Connection pool randomization
+    - **Block-gateway-attacks-via-websockets.patch** - WebSocket security
+    - **Hardening-against-incognito-mode-detection.patch** - Prevent incognito detection
+    - **Lock-Profile-Cookie-Database.patch** - Database security
+  </Accordion>
+  
+  <Accordion title="User Features (40+ patches)">
+    Patches that add or modify user-facing functionality:
+    
+    - **Add-an-always-incognito-mode.patch** - Always-incognito option
+    - **Add-exit-menu-item.patch** - Exit button in menu
+    - **Add-menu-item-to-view-source.patch** - View source menu item
+    - **Add-menu-item-to-bookmark-all-tabs.patch** - Bookmark all tabs
+    - **Add-bookmark-import-export-actions.patch** - Import/export bookmarks
+    - **Bookmarks-select-all-menu-entry.patch** - Select all bookmarks
+    - **Add-option-to-not-persist-tabs-across-sessions.patch** - Ephemeral tabs
+    - **Add-setting-to-clear-data-on-exit.patch** - Clear on exit
+    - **Add-a-proxy-configuration-page.patch** - Proxy settings UI
+    - **Add-custom-tab-intents-privacy-option.patch** - Custom tabs control
+    - **History-number-of-days-privacy-setting.patch** - History retention setting
+    - **Add-option-to-use-home-page-as-NTP.patch** - Custom homepage as NTP
+    - **Add-option-to-force-tablet-UI.patch** - Tablet mode toggle
+    - **Add-Alt-D-hotkey-to-focus-address-bar.patch** - Alt+D keyboard shortcut
+    - **User-agent-customization.patch** - Custom user agent strings
+    - **Add-lifetime-options-for-permissions.patch** - Temporary permissions
+    - **Add-setting-to-invert-tap-and-long-tap.patch** - Touch gesture customization
+    - **Add-option-to-disable-snapshots.patch** - Disable UI snapshots
+    - **Customize-selection-popup.patch** - Custom text selection menu
+    - **Enable-menu-on-reload-button.patch** - Reload button menu
+    - **Android-Toolbar-Scroll-Ablation-setting.patch** - Toolbar scroll behavior
+    - **Enable-snackbar-swipe.patch** - Swipeable notifications
+  </Accordion>
+  
+  <Accordion title="Site Settings & Permissions (15+ patches)">
+    Content settings infrastructure and per-site controls:
+    
+    - **Content-settings-infrastructure.patch** - Core content settings system
+    - **Add-autoplay-site-setting.patch** - Per-site autoplay control
+    - **Site-setting-for-images.patch** - Per-site image blocking
+    - **JIT-site-settings.patch** - Per-site JavaScript JIT control
+    - **Add-webGL-site-setting.patch** - Per-site WebGL control
+    - **Add-webRTC-site-settings.patch** - Per-site WebRTC control
+    - **Show-site-settings-for-cookies-javascript-and-ads.patch** - Enhanced site settings UI
+    - **Change-popup-site-setting.patch** - Popup blocking improvements
+    - **Private-network-access-content-settings.patch** - Local network access control
+    - **Viewport-Protection-flag.patch** - Viewport fingerprinting protection
+    - **Keyboard-protection-flag.patch** - Keyboard API protection
+    - **Add-a-flag-to-disable-GamePad-API.patch** - Gamepad API toggle
+    - **Block-Intents-While-Locked.patch** - Lock screen protection
+  </Accordion>
+  
+  <Accordion title="API Restrictions (30+ patches)">
+    Patches that disable or restrict web APIs:
+    
+    - **Disable-WebGPU.patch** - Disable WebGPU API
+    - **Disable-GetInstalledRelatedApps-API.patch** - Block app detection
+    - **Disallowing-MIDI-permission-by-default.patch** - Restrict MIDI API
+    - **Disable-idle-detection.patch** - Block Idle Detection API
+    - **Disable-speechSynthesis-getVoices-API.patch** - Block speech synthesis
+    - **Disable-support-for-pointer-device-id.patch** - Pointer fingerprinting protection
+    - **Disable-CSS-blink-feature-support.patch** - Disable CSS blink features
+    - **Disable-Posture-API.patch** - Block device posture API
+    - **Disable-Device-Attributes-API.patch** - Disable device attributes
+    - **Disable-Viewport-Segments.patch** - Disable viewport segments
+    - **Disable-prefers-reduced-motion.patch** - Block motion preference detection
+    - **Disable-prefers-reduced-transparency-media-query.patch** - Block transparency detection
+    - **Disable-css-preferred-text-scale.patch** - Disable text scale detection
+    - **Disable-Compression-Dictionary-Transport.patch** - Disable compression dictionary
+    - **Keep-disabled-FetchLaterAPI.patch** - Disable FetchLater
+    - **Keep-disabled-CpuPerformance.patch** - Disable CPU performance API
+    - **Keep-ComputePressure-disabled.patch** - Disable Compute Pressure API
+    - **Disable-conversion-measurement-api.patch** - Disable attribution API
+    - **Keep-disabled-cache-sharing-for-pervasive-scripts.patch** - Disable cache sharing
+  </Accordion>
+  
+  <Accordion title="UI & Branding (15+ patches)">
+    User interface and Cromite branding:
+    
+    - **Cromite-Branding.patch** - Cromite branding and icons
+    - **Cromite-Branding--improve-settings-ui.patch** - Enhanced settings UI
+    - **Restore-classic-new-tab-page.patch** - Classic NTP design
+    - **Always-use-new-tab-page-for-default-home-page.patch** - NTP as default
+    - **Show-NTP-at-startup.patch** - Show NTP on startup
+    - **Restore-Simplified-NTP-launch.patch** - Simplified NTP
+    - **Welcome-screen.patch** - Custom welcome screen
+    - **Move-navigation-bar-to-bottom.patch** - Bottom navigation bar
+    - **Use-list-mode-for-tab-switcher.patch** - List view for tabs
+    - **Restore-adaptive-button-in-top-toolbar-customization.patch** - Adaptive toolbar
+    - **Enable-search-engine-settings-desktop-ui.patch** - Desktop search settings UI
+    - **Enable-ImprovedBookmarks-by-default.patch** - Enhanced bookmarks
+    - **Improve-plain-text-rendering-on-mobile.patch** - Better text rendering
+    - **Enable-darken-websites-checkbox-in-themes.patch** - Dark mode toggle
+  </Accordion>
+  
+  <Accordion title="Performance & Optimization (10+ patches)">
+    Performance improvements and optimizations:
+    
+    - **Enable-HighEfficiencyMode-by-default.patch** - Memory optimization
+    - **Enable-Android-Dynamic-Performance-Framework.patch** - Android performance
+    - **Add-PartialLowEndModeOnMidRangeDevices-flag.patch** - Mid-range device optimization
+    - **Android-Pixel-Perfect-Mode.patch** - Pixel-perfect rendering
+    - **Set-the-screen-frame-rate-to-60-Hz.patch** - Fixed 60Hz refresh rate
+    - **Set-caret-blink-interval-to-default.patch** - Default caret timing
+    - **Compress-libchrome-to-free-up-some-space.patch** - APK size reduction
+    - **Disable-offline-autofetch-flag.patch** - Disable offline prefetch
+    - **Disable-Paint-Preview-by-default.patch** - Disable paint preview
+    - **Immediately-destroy-shared-workers-when-closing-the-page.patch** - Worker cleanup
+    - **Disable-minikin-hyphenation.patch** - Disable hyphenation
+  </Accordion>
+  
+  <Accordion title="Windows-Specific (10 patches)">
+    Patches specific to Windows builds:
+    
+    - **WIN-enable-pdf-plugin.patch** - Enable PDF viewer
+    - **WIN-disable-annotate-downloads.patch** - Disable download annotation
+    - **WIN-Disable-TabHoverCard-images.patch** - Disable tab hover cards
+    - **WIN-Fix-log-to-file.patch** - Fix logging
+    - **WIN-Disable-updater.patch** - Disable auto-updater
+    - **WIN-Disable-first-run.patch** - Disable first run experience
+    - **WIN-Add-some-prefs-to-secure-preferences.patch** - Secure preferences
+    - **WIN-Disable-search-for-image.patch** - Disable image search
+    - **Prevent-mouse-wheel-fingerprinting-on-Windows.patch** - Mouse wheel protection
+    - **Do-not-use-Windows-ClearType-Text-Tuner-setting.patch** - ClearType protection
+  </Accordion>
+  
+  <Accordion title="Extensions & Experimental (5 patches)">
+    Extension support and experimental features:
+    
+    - **Experimental-support-for-extensions-on-Android.patch** - Android extension support
+    - **Enable-extension-in-incognito.patch** - Extensions in incognito mode
+    - **Override-the-MV2-deprecation.patch** - Manifest V2 support
+    - **Experimental-user-scripts-support.patch** - User script support
+    - **Chrome-web-store-protection.patch** - Web Store compatibility
+  </Accordion>
+  
+  <Accordion title="Build System & Utilities (15+ patches)">
+    Build configuration and utility patches:
+    
+    - **bromite-build-utils.patch** - Cromite build utilities
+    - **Add-cromite-flags-support.patch** - Cromite flags infrastructure
+    - **Add-cromite-test-support.patch** - Testing infrastructure
+    - **Force-use-vpython3-for-all-scripts.patch** - Python 3 enforcement
+    - **Permit-PGO-for-debug-builds.patch** - PGO in debug builds
+    - **Fix-chromium-vanilla.patch** - Vanilla Chromium fixes
+    - **Final-patch-for-chromium-vanilla.patch** - Final vanilla fixes
+    - **Allow-building-without-enable_reporting.patch** - Build without reporting
+    - **Allow-building-without-supervised-users.patch** - Build without supervised users
+    - **Add-a-GN-flag-to-disable-trybot-verification.patch** - Disable trybot checks
+    - **do-not-hide-.orig-files.patch** - Keep .orig files
+    - **do-not-block-build-incompatible-profiles.patch** - Profile compatibility
+    - **Never-treat-Proguard-warnings-as-errors.patch** - Proguard handling
+  </Accordion>
+  
+  <Accordion title="Temporary & WIP Patches (15+ patches)">
+    Temporary fixes and work-in-progress patches:
+    
+    - **Temp-disable-predictive-back-gesture.patch** - Disable back gesture
+    - **TEMP-Add-a-log-to-track-strange-behavior.patch** - Debug logging
+    - **Temp-guard-FileSystemAccessPersistentPermissions.patch** - File system guard
+    - **Temp-disable-experimental-web-platform-features.patch** - Disable experimental features
+    - **Temp-use-PREVIEW-for-IDCompositionDevice5.patch** - Windows composition fix
+    - **Temp-disable-UseContextSnapshot.patch** - V8 snapshot fix
+    - **Try-to-fix-2082.patch** - Specific bug fix
+    - **Fix-chromium-build-bugs.patch** - Build fixes
+    - **Block-leakage-of-urls-in-sandbox-iframes.patch** - Sandbox URL leak fix
+    
+    <Warning>
+      Temporary patches may be removed or modified in future releases once proper solutions are implemented.
+    </Warning>
+  </Accordion>
+</AccordionGroup>
+
+## Applying Patches
+
+Patches must be applied using `git am` in the exact order listed in `cromite_patches_list.txt`:
+
+<Steps>
+  <Step title="Navigate to Chromium Source">
+    ```bash
+    cd chromium/src/
+    ```
+  </Step>
+  
+  <Step title="Apply Patches in Order">
+    ```bash
+    while read patch; do
+      echo "Applying $patch..."
+      git am < "../../cromite/build/patches/$patch"
+    done < ../../cromite/build/cromite_patches_list.txt
+    ```
+    
+    <Info>
+      The patch list contains 333 patches that must be applied sequentially. Each patch builds upon the previous ones.
+    </Info>
+  </Step>
+  
+  <Step title="Verify Patches Applied">
+    ```bash
+    git log --oneline | head -n 333
+    ```
+    
+    You should see all Cromite patches in the git history.
+  </Step>
+</Steps>
+
+## Patch Structure
+
+Each patch file follows standard unified diff format:
+
+```diff
+From abc123... Mon Sep 17 00:00:00 2001
+From: Author <email@example.com>
+Date: Mon, 1 Jan 2024 12:00:00 +0000
+Subject: [PATCH] Patch description
+
+---
+ src/chrome/browser/example.cc | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/src/chrome/browser/example.cc b/src/chrome/browser/example.cc
+index abc123..def456 100644
+--- a/src/chrome/browser/example.cc
++++ b/src/chrome/browser/example.cc
+@@ -10,6 +10,8 @@
+ // Patch changes here
+```
+
+## Patch Licensing
+
+<Card title="License Information" icon="scale-balanced">
+  - Bromite patches: **GNU GPL v3**
+  - Cromite-specific patches: **GNU GPL-2+**
+  - Each patch contains specific license information in the header
+</Card>
+
+## Viewing Patch Details
+
+To examine a specific patch:
+
+<CodeGroup>
+```bash View Patch Content
+cat build/patches/Multiple-fingerprinting-mitigations.patch
+```
+
+```bash Search Patches
+grep -l "fingerprint" build/patches/*.patch
+```
+
+```bash Count Patches by Category
+grep -c "ungoogled-chromium" build/cromite_patches_list.txt
+grep -c "eyeo-" build/cromite_patches_list.txt
+grep -c "WIN-" build/cromite_patches_list.txt
+```
+</CodeGroup>
+
+## Contributing Patches
+
+When contributing new patches to Cromite:
+
+1. **Create patch against Chromium base**: Your patch should apply cleanly to the Chromium version in `build/RELEASE`
+
+2. **Follow naming conventions**: Use descriptive names that indicate the patch purpose
+
+3. **Add to patch list**: Insert your patch in the appropriate position in `cromite_patches_list.txt`
+
+4. **Test thoroughly**: Ensure patches don't break existing functionality
+
+5. **Document changes**: Add comments explaining why the patch is needed
+
+<Tip>
+  See the [Contributing Guide](/development/contributing) for detailed information on submitting patches.
+</Tip>
+
+## Patch Maintenance
+
+Patches must be rebased for each new Chromium version:
+
+1. **Rebase to new Chromium tag**: `git rebase <new-version-tag>`
+2. **Resolve conflicts**: Fix any merge conflicts that arise
+3. **Test build**: Ensure all patches apply cleanly
+4. **Update RELEASE file**: Update to new Chromium version
+5. **Update Docker images**: Rebuild with new version
+
+## Related Resources
+
+<CardGroup cols={2}>
+  <Card title="Build Guide" icon="hammer" href="/development/building">
+    Learn how to build Cromite with these patches
+  </Card>
+  
+  <Card title="Patch List (GitHub)" icon="github" href="https://github.com/uazo/cromite/blob/master/build/cromite_patches_list.txt">
+    View the complete patch list on GitHub
+  </Card>
+  
+  <Card title="Patches Directory" icon="folder" href="https://github.com/uazo/cromite/tree/master/build/patches">
+    Browse all patch files on GitHub
+  </Card>
+  
+  <Card title="Contributing" icon="code-pull-request" href="/development/contributing">
+    Submit your own patches to Cromite
+  </Card>
+</CardGroup>

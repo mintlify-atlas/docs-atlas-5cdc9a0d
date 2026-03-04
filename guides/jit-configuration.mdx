@@ -1,0 +1,346 @@
+---
+title: JIT Configuration
+description: Understanding and configuring JavaScript JIT compilation
+icon: gauge-high
+---
+
+Cromite disables JavaScript Just-In-Time (JIT) compilation by default for security reasons. This guide explains why and how to enable it selectively.
+
+## What is JIT?
+
+JIT (Just-In-Time compilation) is a feature of Chromium's V8 JavaScript engine that compiles JavaScript code to native machine code at runtime for faster execution.
+
+<Info>
+  JIT can significantly improve JavaScript performance, especially for complex web applications, but introduces security risks.
+</Info>
+
+## Why is JIT Disabled by Default?
+
+### Security Implications
+
+JIT compilation creates several security vulnerabilities:
+
+<Warning>
+  JIT is a common attack vector for browser exploits.
+</Warning>
+
+#### Memory Permissions
+
+JIT requires memory regions with **read/write/execute** permissions simultaneously. This combination:
+
+- Enables code injection attacks
+- Allows exploitation of memory corruption bugs
+- Provides attackers with executable memory regions
+- Can be exploited through Use-After-Free (UAF) vulnerabilities
+
+<CodeGroup>
+```text Memory Permissions (JIT Enabled)
+Memory Region: RWX (Read/Write/Execute)
+Risk Level: High
+Attack Surface: Large
+```
+
+```text Memory Permissions (JIT Disabled)
+Memory Region: RW (Read/Write) or RX (Read/Execute)
+Risk Level: Lower
+Attack Surface: Reduced
+```
+</CodeGroup>
+
+#### Sandbox Escapes
+
+JIT vulnerabilities have been exploited to:
+
+- Escape the Chromium sandbox
+- Gain access to privileged processes
+- Execute arbitrary code outside the renderer process
+- Compromise system security
+
+#### Shared Memory
+
+JIT enables shared memory exchange between different frames:
+
+- Powerful performance feature
+- Significant security risk
+- Potential for cross-frame attacks
+- Information leakage between origins
+
+### Performance Trade-off
+
+Disabling JIT provides security benefits at the cost of JavaScript performance:
+
+<CardGroup cols={2}>
+  <Card title="Security Benefits" icon="shield">
+    - Smaller attack surface
+    - Reduced sandbox escape risk
+    - Protection against JIT-specific exploits
+    - Stronger memory protections
+  </Card>
+  <Card title="Performance Impact" icon="gauge">
+    - Slower JavaScript execution
+    - Reduced responsiveness on complex sites
+    - WebAssembly may not function
+    - Heavy web apps may struggle
+  </Card>
+</CardGroup>
+
+## When to Enable JIT
+
+Consider enabling JIT in these scenarios:
+
+<Accordion title="Trusted Websites">
+  Enable JIT for websites you trust completely, such as:
+  - Banking sites
+  - Work applications
+  - Personal projects
+  - Known-safe services
+</Accordion>
+
+<Accordion title="Performance Requirements">
+  Sites with heavy JavaScript workloads:
+  - Online IDEs and code editors
+  - Video conferencing platforms
+  - 3D visualization tools
+  - Complex web applications
+  - Online gaming platforms
+</Accordion>
+
+<Accordion title="WebAssembly Support">
+  WebAssembly requires JIT to function:
+  - Compiled C/C++ applications
+  - High-performance web apps
+  - Advanced graphics applications
+  - Scientific computing tools
+</Accordion>
+
+<Warning>
+  Only enable JIT for websites you trust. Never enable it globally for all sites.
+</Warning>
+
+## How to Enable JIT Per-Site
+
+Cromite allows you to enable JIT selectively for specific websites through the UI:
+
+<Steps>
+  <Step title="Visit the Website">
+    Navigate to the website where you want to enable JIT.
+  </Step>
+  
+  <Step title="Open Site Settings">
+    Tap the **lock icon** (or site info icon) in the address bar to open the site information panel.
+    
+    <Frame>
+      <img src="https://github.com/user-attachments/assets/e350754d-6dbf-4d86-a532-27dd390ca0ff" alt="Open site settings" />
+    </Frame>
+  </Step>
+  
+  <Step title="Access Permissions">
+    Tap **Site settings** or **Permissions** to view all permissions for the current site.
+    
+    <Frame>
+      <img src="https://github.com/user-attachments/assets/ef112ee5-f4ac-48bb-be46-9e21cbf9a165" alt="Site settings menu" />
+    </Frame>
+  </Step>
+  
+  <Step title="Enable JavaScript JIT">
+    Find the **JavaScript JIT** option and toggle it to **Allowed**.
+    
+    <Frame>
+      <img src="https://github.com/user-attachments/assets/f90811cd-46aa-4327-b36d-1c87150a2bb2" alt="Enable JIT for site" />
+    </Frame>
+  </Step>
+  
+  <Step title="Reload the Page">
+    Refresh the page for the changes to take effect. JavaScript will now be JIT-compiled for this site.
+  </Step>
+</Steps>
+
+<Tip>
+  JIT settings are remembered per-site. You only need to enable it once for each domain.
+</Tip>
+
+## Managing JIT Settings
+
+### View All JIT Permissions
+
+Check which sites have JIT enabled:
+
+<Steps>
+  <Step title="Open Settings">
+    Navigate to **Settings** in Cromite.
+  </Step>
+  
+  <Step title="Site Settings">
+    Go to **Site settings** → **JavaScript JIT**.
+  </Step>
+  
+  <Step title="Review Permissions">
+    View and manage all sites with JIT enabled.
+  </Step>
+</Steps>
+
+### Remove JIT Permission
+
+Revoke JIT access for a specific site:
+
+<Steps>
+  <Step title="Find Site">
+    In **Site settings** → **JavaScript JIT**, locate the site.
+  </Step>
+  
+  <Step title="Tap Site">
+    Tap on the site to open its individual settings.
+  </Step>
+  
+  <Step title="Change Permission">
+    Change JavaScript JIT from **Allowed** to **Blocked**.
+  </Step>
+</Steps>
+
+## Global JIT Settings
+
+<Warning>
+  Enabling JIT globally is NOT recommended for security reasons.
+</Warning>
+
+If you must enable JIT globally (not recommended):
+
+<Steps>
+  <Step title="Open chrome://flags">
+    Navigate to `chrome://flags` in the address bar.
+  </Step>
+  
+  <Step title="Search for JIT">
+    Search for "javascript jit" or "enable-javascript-jit".
+  </Step>
+  
+  <Step title="Enable Flag">
+    Change the flag to **Enabled**.
+  </Step>
+  
+  <Step title="Restart Browser">
+    Relaunch Cromite for the change to take effect.
+  </Step>
+</Steps>
+
+## Performance Comparison
+
+### With JIT Disabled (Default)
+
+- **Startup**: Fast
+- **Simple scripts**: Minimal impact
+- **Complex apps**: Noticeably slower
+- **WebAssembly**: Non-functional
+- **Security**: Enhanced
+
+### With JIT Enabled
+
+- **Startup**: Slightly slower (compilation overhead)
+- **Simple scripts**: Faster after warm-up
+- **Complex apps**: Significantly faster
+- **WebAssembly**: Fully functional
+- **Security**: Reduced (larger attack surface)
+
+## WebAssembly Support
+
+<Info>
+  WebAssembly (Wasm) requires JIT to be enabled for the site.
+</Info>
+
+If a website uses WebAssembly and you see errors:
+
+1. Check browser console for Wasm-related errors
+2. Enable JIT for the site using the steps above
+3. Reload the page
+
+<Note>
+  Sites that rely on WebAssembly will typically display an error message or fail to load properly when JIT is disabled.
+</Note>
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Whitelist Approach" icon="list-check">
+    - Keep JIT disabled by default
+    - Enable only for trusted sites
+    - Regularly review enabled sites
+    - Remove permission when no longer needed
+  </Card>
+  
+  <Card title="Security First" icon="shield-halved">
+    - Never enable globally
+    - Avoid enabling for unknown sites
+    - Be cautious with user-generated content sites
+    - Monitor for suspicious behavior
+  </Card>
+</CardGroup>
+
+## Troubleshooting
+
+### Site Not Working After Disabling JIT
+
+If a site stops working after you disable JIT:
+
+<Steps>
+  <Step title="Check Console">
+    Open Developer Tools (if available) to check for JavaScript errors.
+  </Step>
+  
+  <Step title="Test with JIT">
+    Temporarily enable JIT to confirm it's the cause.
+  </Step>
+  
+  <Step title="Report Issue">
+    If the site should work without JIT, report the issue to the website owner.
+  </Step>
+</Steps>
+
+### Performance Issues
+
+<Accordion title="Slow Page Loading">
+  If pages load slowly:
+  - Enable JIT for frequently visited sites
+  - Consider performance vs. security trade-offs
+  - Check if the site uses WebAssembly
+</Accordion>
+
+<Accordion title="Unresponsive Web Apps">
+  For unresponsive applications:
+  - Enable JIT specifically for that app
+  - Check network conditions
+  - Verify the app is compatible with Cromite
+</Accordion>
+
+## Security Recommendations
+
+<Warning>
+  Exercise extreme caution when enabling JIT, especially on public or unsecured networks.
+</Warning>
+
+1. **Default State**: Keep JIT disabled globally
+2. **Trust Level**: Only enable for explicitly trusted sites
+3. **Review Regularly**: Periodically audit enabled sites
+4. **Limit Scope**: Enable per-site, never globally
+5. **Revoke Access**: Remove JIT permission after completing tasks
+6. **Public Networks**: Avoid enabling JIT on public Wi-Fi
+7. **High-Value Targets**: Never enable on financial or sensitive sites unless absolutely necessary
+
+## Technical Details
+
+### V8 Engine Behavior
+
+With JIT disabled:
+- JavaScript is interpreted or uses baseline compiler
+- No optimizing compiler (TurboFan)
+- No inline caching optimizations
+- Reduced peak performance but safer execution
+
+With JIT enabled:
+- Full V8 optimization pipeline
+- TurboFan optimizing compiler active
+- Inline caching and speculative optimizations
+- Maximum performance but larger attack surface
+
+<Info>
+  For more technical details on V8 JIT compilation, see the [V8 documentation](https://v8.dev/docs).
+</Info>

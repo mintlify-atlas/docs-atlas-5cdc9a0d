@@ -1,0 +1,163 @@
+---
+title: "Installation"
+description: "Download and install Cromite on Android, Windows, and Linux"
+---
+
+Cromite is available for Android (arm64-v8a, arm32-v7a, and x86_64), Windows x64, and Linux x64. All platforms support Android 10 and above.
+
+## Quick Download
+
+<CardGroup cols={3}>
+  <Card title="Android" icon="android" href="/platform-guides/android">
+    Download APK for ARM64, ARM32, or x86_64 devices
+  </Card>
+  <Card title="Windows" icon="windows" href="/platform-guides/windows">
+    Install with enhanced security on Windows x64
+  </Card>
+  <Card title="Linux" icon="linux" href="/platform-guides/linux">
+    Deploy on Linux with AppArmor support
+  </Card>
+</CardGroup>
+
+## Download Links
+
+All releases are available on GitHub. Choose your platform:
+
+<Tabs>
+  <Tab title="Android">
+    ### Browser APK Files
+    
+    Download the appropriate APK for your device architecture:
+    
+    - **ARM64** (most modern devices): [arm64_ChromePublic.apk](https://github.com/uazo/cromite/releases/latest/download/arm64_ChromePublic.apk)
+    - **ARM32** (older devices): [arm_ChromePublic.apk](https://github.com/uazo/cromite/releases/latest/download/arm_ChromePublic.apk)
+    - **x86_64** (Intel/AMD devices): [x64_ChromePublic.apk](https://github.com/uazo/cromite/releases/latest/download/x64_ChromePublic.apk)
+    
+    ### SystemWebView
+    
+    Advanced users can also install Cromite as a SystemWebView replacement:
+    
+    - [arm64_SystemWebView.apk](https://github.com/uazo/cromite/releases/latest/download/arm64_SystemWebView.apk)
+    - [x64_SystemWebView.apk](https://github.com/uazo/cromite/releases/latest/download/x64_SystemWebView.apk)
+    
+    <Note>
+      SystemWebView files are created by an additional build process and may not be immediately available after a new release.
+    </Note>
+  </Tab>
+  
+  <Tab title="Windows">
+    ### Windows Package
+    
+    - **Windows x64**: [chrome-win.zip](https://github.com/uazo/cromite/releases/latest/download/chrome-win.zip)
+    
+    ### Auto-Update Tool
+    
+    - [updateurl.txt](https://github.com/uazo/cromite/releases/latest/download/updateurl.txt) (for chrlauncher)
+    
+    <Tip>
+      Windows users should set up automatic updates using chrlauncher for the best experience.
+    </Tip>
+  </Tab>
+  
+  <Tab title="Linux">
+    ### Linux Package
+    
+    - **Linux x64**: [chrome-lin64.tar.gz](https://github.com/uazo/cromite/releases/latest/download/chrome-lin64.tar.gz)
+    
+    <Warning>
+      Ubuntu 24.04 and its derivatives require additional AppArmor configuration. See the [Linux installation guide](/platform-guides/linux) for details.
+    </Warning>
+  </Tab>
+</Tabs>
+
+## Installation Methods
+
+### F-Droid Repository (Android)
+
+For automatic updates on Android without Google Play, add Cromite's official F-Droid repository:
+
+**Repository URL:**
+```
+https://www.cromite.org/fdroid/repo/?fingerprint=49F37E74DEE483DCA2B991334FB5A0200787430D0B5F9A783DD5F13695E9517B
+```
+
+<Steps>
+  <Step title="Open F-Droid">
+    Launch the F-Droid app on your Android device.
+  </Step>
+  <Step title="Add Repository">
+    Navigate to Settings → Repositories → Add Repository (+ icon).
+  </Step>
+  <Step title="Paste Repository URL">
+    Paste the Cromite repository URL including the fingerprint parameter.
+  </Step>
+  <Step title="Update and Install">
+    Update the repository list and search for Cromite to install.
+  </Step>
+</Steps>
+
+### Built-in Auto-Update (Android)
+
+Cromite includes a built-in auto-update feature that checks for new releases every 3 days.
+
+<Note>
+  Auto-update is enabled by default since version 94.0.4606.109. You'll be asked whether to activate it during first startup.
+</Note>
+
+The updater:
+- Checks [GitHub releases](https://github.com/uazo/cromite/releases) every 3 days
+- Notifies you when updates are available
+- Allows in-app installation of new versions
+- Uses no cookies (subject to [GitHub Privacy Statement](https://docs.github.com/en/github/site-policy/github-privacy-statement))
+
+You can enable or disable this feature in **Settings → About Cromite**.
+
+## Platform-Specific Guides
+
+Choose your platform for detailed installation instructions:
+
+<CardGroup cols={2}>
+  <Card title="Android Setup" icon="mobile" href="/platform-guides/android">
+    APK installation, F-Droid setup, permissions, and SystemWebView configuration
+  </Card>
+  <Card title="Windows Setup" icon="desktop" href="/platform-guides/windows">
+    Network sandbox, RendererAppContainer, and automatic updates with chrlauncher
+  </Card>
+  <Card title="Linux Setup" icon="server" href="/platform-guides/linux">
+    Ubuntu 24.04 AppArmor configuration and namespace restrictions
+  </Card>
+  <Card title="Release Page" icon="github" href="https://github.com/uazo/cromite/releases">
+    View all releases and additional build artifacts
+  </Card>
+</CardGroup>
+
+## Verification
+
+<Warning>
+  Always download Cromite from official sources:
+  - GitHub releases: https://github.com/uazo/cromite/releases
+  - Official F-Droid repository: https://www.cromite.org/fdroid/repo
+  - Official website: https://www.cromite.org
+</Warning>
+
+## Additional Files
+
+Each release includes additional files for developers and advanced users:
+
+- **Debugging symbols**: `arm64_symbols.zip`
+- **ProGuard mapping files**: `*.apk.mapping` (for Java stacktrace deobfuscation)
+- **Build analysis**: `arm64_ninja_log_trace.html`
+- **Vanilla Chromium**: For testing and comparison purposes
+
+## Need Help?
+
+If you encounter issues during installation:
+
+1. Check the [FAQ](/reference/faq) for common problems
+2. Review platform-specific guides for detailed troubleshooting
+3. Visit [GitHub Discussions](https://github.com/uazo/cromite/discussions) for community support
+4. Report bugs using the [issue tracker](https://github.com/uazo/cromite/issues)
+
+<Note>
+  GitHub does not display issue templates on mobile devices. Please use a desktop browser when submitting issues.
+</Note>

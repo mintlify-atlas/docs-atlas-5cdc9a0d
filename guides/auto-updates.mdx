@@ -1,0 +1,305 @@
+---
+title: Auto-Updates
+description: Configure automatic updates for Android, Windows, and Linux
+icon: arrows-rotate
+---
+
+Cromite supports automatic updates across Android, Windows, and Linux platforms. Stay up-to-date with the latest security patches and features.
+
+## Android Auto-Updates
+
+### Built-in Update Notifications
+
+Cromite includes a built-in auto-updater that checks for new releases automatically.
+
+<Note>
+  Auto-update notifications are enabled by default since version `94.0.4606.109`.
+</Note>
+
+<Steps>
+  <Step title="First Launch">
+    During the first startup, you'll be prompted to activate the auto-updater functionality. Choose whether to enable automatic update notifications.
+  </Step>
+  
+  <Step title="Automatic Checks">
+    When enabled, Cromite checks the [GitHub releases](https://github.com/uazo/cromite/releases) every 3 days for new updates.
+  </Step>
+  
+  <Step title="Update Notifications">
+    You'll receive notifications when a new version is available and can install updates directly through the notification.
+  </Step>
+</Steps>
+
+### Managing Update Settings
+
+You can enable or disable update notifications at any time:
+
+<Steps>
+  <Step title="Open Settings">
+    Navigate to **Settings** in Cromite.
+  </Step>
+  
+  <Step title="About Cromite">
+    Go to **About Cromite** section.
+  </Step>
+  
+  <Step title="Toggle Updates">
+    Enable or disable the update notification setting.
+  </Step>
+</Steps>
+
+<Info>
+  No cookies are used when checking for updates. Cromite only interacts with the GitHub releases page. See the [GitHub Privacy Statement](https://docs.github.com/en/github/site-policy/github-privacy-statement) for details.
+</Info>
+
+### F-Droid Repository
+
+Alternatively, install Cromite via F-Droid for automatic updates through the F-Droid app.
+
+<Tabs>
+  <Tab title="Add Repository">
+    Add the official Cromite F-Droid repository to your F-Droid client:
+    
+    ```
+    https://www.cromite.org/fdroid/repo/
+    ```
+    
+    **Fingerprint:**
+    ```
+    49F37E74DEE483DCA2B991334FB5A0200787430D0B5F9A783DD5F13695E9517B
+    ```
+  </Tab>
+  
+  <Tab title="Install">
+    1. Open F-Droid app
+    2. Go to **Settings** → **Repositories**
+    3. Add the Cromite repository URL
+    4. Update repository list
+    5. Search for "Cromite" and install
+  </Tab>
+</Tabs>
+
+<Warning>
+  Cromite is not available on the official F-Droid repository, only through the custom Cromite repository.
+</Warning>
+
+## Windows Auto-Updates
+
+Cromite for Windows uses **chrlauncher** to manage automatic updates.
+
+### Prerequisites
+
+<Steps>
+  <Step title="Download chrlauncher">
+    Download chrlauncher from the [official releases page](https://github.com/henrypp/chrlauncher/releases).
+  </Step>
+  
+  <Step title="Extract Files">
+    Extract chrlauncher to your desired installation directory.
+  </Step>
+</Steps>
+
+### Configuration
+
+Create a `chrlauncher.ini` file in the same directory as chrlauncher:
+
+<CodeGroup>
+```ini chrlauncher.ini (Basic)
+[chrlauncher]
+
+# Custom Chromium update URL (string):
+ChromiumUpdateUrl=https://github.com/uazo/cromite/releases/latest/download/updateurl.txt
+
+# Command line for Chromium (string):
+# note --user-data-dir= works better if path is absolute
+# See here: http://peter.sh/experiments/chromium-command-line-switches/
+ChromiumCommandLine=--user-data-dir="%LOCALAPPDATA%\Cromite\User Data" --no-default-browser-check
+
+# Chromium executable file name (string):
+ChromiumBinary=chrome.exe
+
+# Chromium binaries directory (string):
+# Relative (to chrlauncher directory) or full path (env. variables supported).
+ChromiumDirectory=.\bin
+```
+
+```ini chrlauncher.ini (With Logging)
+[chrlauncher]
+
+# Custom Chromium update URL (string):
+ChromiumUpdateUrl=https://github.com/uazo/cromite/releases/latest/download/updateurl.txt
+
+# Command line with full logging enabled (daily rotate, no automatic deletion)
+ChromiumCommandLine=--enable-logging --v=0 --log-file=C:\temp\log.txt --user-data-dir="%LOCALAPPDATA%\Cromite\User Data" --no-default-browser-check
+
+# Chromium executable file name (string):
+ChromiumBinary=chrome.exe
+
+# Chromium binaries directory (string):
+ChromiumDirectory=.\bin
+```
+</CodeGroup>
+
+<Tip>
+  To prevent Microsoft Defender from deleting files each time the browser updates, add the `user-data-dir` folder to your exclusions list.
+</Tip>
+
+### Enable Network Process Sandbox
+
+For enhanced security, enable the network process sandbox manually:
+
+<Steps>
+  <Step title="Open Command Prompt">
+    Open Command Prompt as Administrator.
+  </Step>
+  
+  <Step title="Navigate to Directory">
+    Change to the directory where `chrome.exe` is located:
+    ```batch
+    cd C:\path\to\cromite\bin
+    ```
+  </Step>
+  
+  <Step title="Run icacls Command">
+    Execute the following command:
+    ```batch
+    icacls . /grant "*S-1-15-2-2:(OI)(CI)(RX)"
+    ```
+  </Step>
+</Steps>
+
+<Info>
+  This command grants the necessary permissions for the network sandbox. See [issue #51](https://github.com/uazo/bromite-buildtools/issues/51) for details.
+</Info>
+
+### Enable Renderer AppContainer
+
+<Warning>
+  Highly recommended for additional security.
+</Warning>
+
+Activate the `RendererAppContainer` flag by adding it to your command line:
+
+```ini
+ChromiumCommandLine=--enable-features=RendererAppContainer --user-data-dir="%LOCALAPPDATA%\Cromite\User Data" --no-default-browser-check
+```
+
+<Note>
+  The icacls command must also be executed when using RendererAppContainer.
+</Note>
+
+## Linux Auto-Updates
+
+Linux auto-update functionality is currently under development.
+
+<Info>
+  Track progress in [issue #771](https://github.com/uazo/cromite/issues/771).
+</Info>
+
+### Manual Updates
+
+Until auto-update support is available, manually update Cromite on Linux:
+
+<Steps>
+  <Step title="Download Latest Release">
+    Download `chrome-lin64.tar.gz` from the [latest release](https://github.com/uazo/cromite/releases/latest).
+  </Step>
+  
+  <Step title="Extract Archive">
+    ```bash
+    tar -xzf chrome-lin64.tar.gz
+    ```
+  </Step>
+  
+  <Step title="Replace Existing Files">
+    Copy the extracted files to your Cromite installation directory, replacing existing files.
+  </Step>
+</Steps>
+
+### Ubuntu 24.04 Compatibility
+
+Ubuntu 24.04 and derivatives (Kubuntu, etc.) use AppArmor restrictions that may prevent Cromite from running.
+
+<Tabs>
+  <Tab title="AppArmor Profile (Recommended)">
+    Create an AppArmor profile for Cromite:
+    
+    <Steps>
+      <Step title="Create Profile">
+        Create `/etc/apparmor.d/cromite` with the following content:
+        
+        ```text
+        abi <abi/4.0>,
+        include <tunables/global>
+        
+        profile cromite /home/user/cromite/chrome-lin/chrome flags=(unconfined) {
+          userns,
+        
+          include if exists <local/chrome>
+        }
+        ```
+        
+        Replace `/home/user/cromite/chrome-lin/chrome` with your actual Cromite binary path.
+      </Step>
+      
+      <Step title="Apply Profile">
+        Run:
+        ```bash
+        sudo apparmor_parser -r /etc/apparmor.d/cromite
+        ```
+      </Step>
+    </Steps>
+  </Tab>
+  
+  <Tab title="Temporary Disable">
+    Disable the restriction until next reboot:
+    
+    ```bash
+    sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+    ```
+    
+    <Warning>
+      This change is lost on reboot.
+    </Warning>
+  </Tab>
+  
+  <Tab title="Permanent Disable">
+    Permanently disable the restriction:
+    
+    <Steps>
+      <Step title="Edit Configuration">
+        Add the following line to `/etc/sysctl.d/60-apparmor-namespace.conf` (create if it doesn't exist):
+        
+        ```text
+        kernel.apparmor_restrict_unprivileged_userns=0
+        ```
+      </Step>
+      
+      <Step title="Reboot">
+        Reboot your system for the change to take effect.
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
+
+## Available Releases
+
+All Cromite releases are available on GitHub:
+
+### Android Packages
+- **ARM64**: `arm64_ChromePublic.apk`
+- **ARM32**: `arm_ChromePublic.apk`
+- **x86_64**: `x64_ChromePublic.apk`
+
+### Desktop Packages
+- **Linux**: `chrome-lin64.tar.gz`
+- **Windows**: `chrome-win.zip`
+
+### Additional Files
+- **chrlauncher config**: `updateurl.txt`
+- **System WebView**: `arm64_SystemWebView.apk`, `x64_SystemWebView.apk`
+- **Debug symbols**: `*_symbols.zip`
+
+<Tip>
+  Additional files may not be immediately available as they're built separately from the main release process.
+</Tip>

@@ -1,0 +1,440 @@
+---
+title: External App Integration
+description: Control how Cromite interacts with external applications
+icon: mobile-screen
+---
+
+Cromite blocks external app launches by default to protect your privacy. This guide explains why and how to manage external app integration.
+
+## Understanding External App Blocking
+
+### What is External App Integration?
+
+When you click a link in a browser, it can:
+- Open within the browser
+- Launch an external app (e.g., YouTube app for YouTube links)
+- Open a Custom Tab within another app
+
+<Warning>
+  External app launches can leak browsing data and link your web activity with in-app activity.
+</Warning>
+
+## Privacy Implications
+
+### Data Sharing Risk
+
+When a browser opens an external app:
+
+<CardGroup cols={2}>
+  <Card title="Information Passed" icon="share">
+    - URL being opened
+    - Referrer information
+    - User agent data
+    - Session identifiers
+    - Timing information
+  </Card>
+  <Card title="Privacy Impact" icon="user-secret">
+    - Links web and app browsing
+    - Creates cross-platform profiles
+    - Enables tracking correlation
+    - Bypasses browser protections
+  </Card>
+</CardGroup>
+
+### Example: YouTube Links
+
+When clicking a YouTube link:
+
+```text
+Default Cromite Behavior:
+✓ Opens in Cromite browser
+✓ Video URL stays in browser
+✓ No data shared with YouTube app
+✓ Browser privacy protections apply
+
+With External Apps Enabled:
+✗ Launches YouTube app
+✗ Video URL shared with app
+✗ Additional metadata may be passed
+✗ App tracking can correlate activity
+```
+
+<Info>
+  The YouTube app may receive not just the video URL, but also information that can link your browser session with your app usage.
+</Info>
+
+## Default Behavior
+
+Cromite disables external app integration by default:
+
+<Accordion title="External Intent Requests">
+  **Status**: Disabled by default
+  
+  Blocks the browser from launching external apps when clicking links or following redirects.
+</Accordion>
+
+<Accordion title="Custom Tab Intents">
+  **Status**: Disabled by default
+  
+  Prevents other apps from opening Cromite in "Custom Tab" mode, which can pass tracking data.
+</Accordion>
+
+<Accordion title="Android App Scheme Blocking">
+  **Status**: Enabled by default
+  
+  Blocks `intent://` and other app scheme URLs that attempt to launch external applications.
+</Accordion>
+
+## Enabling External Apps
+
+You can enable external app launches if needed:
+
+<Steps>
+  <Step title="Visit Website">
+    Navigate to a website where you want to allow external app launches (e.g., YouTube).
+  </Step>
+  
+  <Step title="Open Site Settings">
+    Tap the **lock icon** or **site info** icon in the address bar.
+    
+    <Frame>
+      <img src="https://github.com/user-attachments/assets/b852f2da-8560-4431-aa8f-157ceb05c058" alt="Open site information" />
+    </Frame>
+  </Step>
+  
+  <Step title="Access Permissions">
+    Tap **Site settings** to view permissions for the current site.
+  </Step>
+  
+  <Step title="Enable External Apps">
+    Find **Open links in external apps** and toggle it to **Allowed**.
+    
+    <Frame>
+      <img src="https://github.com/user-attachments/assets/3926128a-21ab-4df1-a773-a0a9545155ad" alt="Enable external apps" />
+    </Frame>
+  </Step>
+  
+  <Step title="Test Behavior">
+    Click a link that would normally open an external app (e.g., YouTube video). Android will now prompt you to choose the app.
+  </Step>
+</Steps>
+
+<Tip>
+  Enable external apps only for specific sites you trust, not globally.
+</Tip>
+
+## Managing External App Permissions
+
+### View All Permissions
+
+Check which sites can launch external apps:
+
+<Steps>
+  <Step title="Open Settings">
+    Navigate to **Settings** in Cromite.
+  </Step>
+  
+  <Step title="Site Settings">
+    Go to **Site settings** → **Open links in external apps**.
+  </Step>
+  
+  <Step title="Review Sites">
+    View all sites with external app permissions.
+  </Step>
+</Steps>
+
+### Revoke Permission
+
+Remove external app access from a site:
+
+<Steps>
+  <Step title="Find Site">
+    In **Site settings** → **Open links in external apps**, locate the site.
+  </Step>
+  
+  <Step title="Open Site Settings">
+    Tap on the site entry.
+  </Step>
+  
+  <Step title="Change Permission">
+    Change the setting from **Allowed** to **Blocked**.
+  </Step>
+</Steps>
+
+## Custom Tab Intents
+
+Custom Tabs are a feature that allows apps to open web content in a lightweight browser instance.
+
+### Privacy Concerns
+
+<Warning>
+  Custom Tabs can pass referrer information that links app usage with browser activity.
+</Warning>
+
+When an app opens a Custom Tab:
+- The app knows what URL you're visiting
+- Referrer headers may include app-specific identifiers
+- Your browsing session can be correlated with app activity
+- The app may receive navigation events
+
+### Cromite's Protection
+
+Cromite disables Custom Tab intents by default:
+
+```text
+External App Request:
+"Open https://example.com in Custom Tab
+ with referrer: android-app://com.example.app"
+
+Cromite Response:
+✓ Blocks Custom Tab intent
+✓ Prevents referrer leakage
+✓ Opens in normal browser tab instead
+✓ No app correlation data
+```
+
+## App Scheme URLs
+
+App scheme URLs attempt to launch apps directly:
+
+<CodeGroup>
+```text Intent Scheme
+intent://example.com/#Intent;scheme=https;package=com.example.app;end
+```
+
+```text App-Specific Scheme
+youtube://watch?v=VIDEO_ID
+market://details?id=com.example.app
+telegram://msg?text=Hello
+```
+</CodeGroup>
+
+### Cromite's Blocking
+
+These schemes are blocked by default:
+
+<Accordion title="intent:// URLs">
+  Blocked to prevent automatic app launches and data sharing.
+</Accordion>
+
+<Accordion title="Custom App Schemes">
+  Blocked to prevent apps from being launched without explicit user consent.
+</Accordion>
+
+<Accordion title="Android App Referrers">
+  Removed to prevent linking between web and app contexts.
+</Accordion>
+
+## Use Cases
+
+### When to Enable External Apps
+
+<CardGroup cols={2}>
+  <Card title="Media Streaming" icon="play">
+    - YouTube videos
+    - Spotify music
+    - Twitch streams
+    - Video conferencing apps
+  </Card>
+  <Card title="Productivity" icon="briefcase">
+    - Opening documents in Office apps
+    - Launching calendar events
+    - Opening maps in navigation apps
+    - Email client integration
+  </Card>
+  <Card title="Social Media" icon="users">
+    - Opening Twitter/X in app
+    - Instagram links
+    - Facebook posts
+    - Messaging apps
+  </Card>
+  <Card title="Utilities" icon="wrench">
+    - App store links
+    - File management
+    - Banking apps
+    - Payment apps
+  </Card>
+</CardGroup>
+
+### When to Keep Disabled
+
+<Warning>
+  Keep external apps disabled for:
+</Warning>
+
+- General web browsing
+- News sites
+- Shopping sites
+- Sites with sensitive information
+- Unknown or untrusted sites
+- Public Wi-Fi usage
+- Privacy-focused browsing
+
+## Alternative Approaches
+
+### Share Instead of Open
+
+Instead of allowing automatic app launches:
+
+<Steps>
+  <Step title="Copy Link">
+    Long-press on a link and select **Copy link address**.
+  </Step>
+  
+  <Step title="Open App Manually">
+    Open the target app directly.
+  </Step>
+  
+  <Step title="Paste Link">
+    Paste the link in the app's search or address field.
+  </Step>
+</Steps>
+
+<Tip>
+  This approach gives you more control and doesn't automatically share data between browser and app.
+</Tip>
+
+### Use Share Menu
+
+Share content explicitly through Android's share menu:
+
+<Steps>
+  <Step title="Navigate to Content">
+    Open the page you want to share in Cromite.
+  </Step>
+  
+  <Step title="Open Share Menu">
+    Tap the **Share** button in Cromite's menu.
+  </Step>
+  
+  <Step title="Choose App">
+    Select the app you want to share to from the share menu.
+  </Step>
+</Steps>
+
+## Technical Details
+
+### Intent Filtering
+
+Cromite modifies Android intent handling:
+
+```text
+External Intent Request:
+- Action: ACTION_VIEW
+- Data URI: youtube://watch?v=VIDEO_ID
+- Package: com.google.android.youtube
+
+Cromite's Response (Default):
+✓ Intent blocked
+✓ Opens URL in browser instead
+✓ No package-specific handling
+✓ No referrer information passed
+```
+
+### Referrer Blocking
+
+When external apps ARE enabled, Cromite still:
+- Removes Android app referrers
+- Blocks intent-specific metadata
+- Sanitizes URLs where possible
+
+<Note>
+  Even with external apps enabled, Cromite provides more privacy protection than standard browsers.
+</Note>
+
+## Global Settings
+
+### Enable External Apps Globally
+
+<Warning>
+  Not recommended for privacy reasons.
+</Warning>
+
+To enable external apps for all sites:
+
+<Steps>
+  <Step title="Open Settings">
+    Navigate to **Settings** → **Site settings**.
+  </Step>
+  
+  <Step title="External Apps">
+    Find **Open links in external apps**.
+  </Step>
+  
+  <Step title="Change Default">
+    Change the default from **Blocked** to **Allowed**.
+  </Step>
+</Steps>
+
+### Disable External Apps Globally
+
+Ensure maximum privacy:
+
+<Steps>
+  <Step title="Open Settings">
+    Navigate to **Settings** → **Site settings**.
+  </Step>
+  
+  <Step title="External Apps">
+    Find **Open links in external apps**.
+  </Step>
+  
+  <Step title="Block All">
+    Set default to **Blocked** and clear all site exceptions.
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+<Accordion title="YouTube Links Won't Open in App">
+  **Expected Behavior**: This is by design for privacy.
+  
+  **To Enable**:
+  1. Follow steps in [Enabling External Apps](#enabling-external-apps)
+  2. Enable permission for YouTube.com specifically
+  3. Click a YouTube link
+  4. Choose YouTube app when prompted
+</Accordion>
+
+<Accordion title="App Keeps Opening in Browser">
+  **Check**:
+  1. External app permission is enabled for the site
+  2. The target app is installed
+  3. Android system has default app associations set
+  4. The link is actually an app-compatible URL
+</Accordion>
+
+<Accordion title="Custom Tabs Not Working">
+  **Expected Behavior**: Custom Tabs are disabled by default.
+  
+  **Note**: There is no built-in way to enable Custom Tabs in Cromite due to privacy concerns. Consider using the Share menu instead.
+</Accordion>
+
+## Privacy Recommendations
+
+<CardGroup cols={2}>
+  <Card title="Best Practices" icon="shield-check">
+    - Keep external apps disabled by default
+    - Only enable for specific trusted sites
+    - Regularly review permissions
+    - Use Share menu for explicit sharing
+  </Card>
+  <Card title="High Privacy" icon="user-lock">
+    - Never enable external apps globally
+    - Avoid app launches on sensitive sites
+    - Use isolated browser profiles
+    - Copy/paste links manually when needed
+  </Card>
+</CardGroup>
+
+## Related Settings
+
+External app integration is part of Cromite's broader privacy features:
+
+- [Site Settings](/guides/settings#site-settings) - Manage all site-specific permissions
+- [Privacy Settings](/guides/settings#privacy-settings) - Configure global privacy options
+- [Security Settings](/guides/settings#security-settings) - Additional security protections
+
+<Info>
+  For maximum privacy, combine external app blocking with other Cromite privacy features like cookie partitioning and referrer removal.
+</Info>

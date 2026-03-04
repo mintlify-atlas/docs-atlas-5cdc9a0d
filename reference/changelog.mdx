@@ -1,0 +1,210 @@
+---
+title: 'Changelog'
+description: 'Release history and version information'
+icon: 'clock-rotate-left'
+---
+
+## Current Version
+
+Cromite follows the Chromium release cycle and version numbering.
+
+<Card title="Latest Stable Release" icon="rocket" href="https://github.com/uazo/cromite/releases/latest">
+  **Version 145.0.7632.120**
+  
+  Based on Chromium 145.0.7632.120
+</Card>
+
+## Versioning System
+
+Cromite uses Chromium's version numbering system:
+
+```
+MAJOR.MINOR.BUILD.PATCH
+145  . 0   . 7632. 120
+```
+
+- **Major version**: Matches Chromium's major release (e.g., 145)
+- **Minor version**: Typically 0, following Chromium
+- **Build number**: Incremental Chromium build
+- **Patch**: Chromium patch level
+
+<Info>
+Cromite releases align with Chromium Stable channel updates, typically every 4 weeks for major versions and more frequently for security patches.
+</Info>
+
+## Release Channels
+
+Cromite is released through multiple channels:
+
+<CardGroup cols={2}>
+  <Card title="Stable" icon="circle-check">
+    Production-ready releases based on Chromium Stable
+  </Card>
+  <Card title="Beta" icon="flask">
+    Preview releases for testing new features
+  </Card>
+</CardGroup>
+
+## Where to Find Releases
+
+### GitHub Releases
+
+All Cromite releases are published on GitHub with detailed release notes:
+
+<Card title="View All Releases" icon="github" href="https://github.com/uazo/cromite/releases">
+  Browse the complete release history, download APKs, and read release notes on GitHub
+</Card>
+
+### F-Droid Repository
+
+Install and receive automatic updates via the official F-Droid repository:
+
+<Steps>
+  <Step title="Add Repository">
+    Add the repository URL to your F-Droid client:
+    ```
+    https://www.cromite.org/fdroid/repo
+    ```
+  </Step>
+  <Step title="Refresh">
+    Refresh your F-Droid app list
+  </Step>
+  <Step title="Install">
+    Search for Cromite and install
+  </Step>
+</Steps>
+
+## Update Mechanism
+
+<Info>
+Cromite includes an **optional** in-app update checker that is **disabled by default**.
+</Info>
+
+To enable update notifications:
+
+1. Open Cromite Settings
+2. Navigate to "About Cromite"
+3. Enable "Check for updates"
+
+<Note>
+When enabled, Cromite checks `https://github.com/uazo/cromite/releases/download` once per day. No personal data is transmitted during update checks.
+</Note>
+
+## Release Notes
+
+Each GitHub release includes:
+
+- **Changes from upstream Chromium** - Security fixes and new features from the base Chromium version
+- **Cromite-specific changes** - New patches, privacy enhancements, and bug fixes
+- **Known issues** - Important bugs or limitations in that release
+- **Download links** - APKs for different architectures (arm64-v8a, armeabi-v7a, x86, x86_64)
+
+## Security Updates
+
+<Warning>
+Cromite follows Chromium's security update schedule. When Chromium releases security patches, Cromite is typically updated within a few days.
+</Warning>
+
+Security updates are released as soon as possible after Chromium publishes fixes for:
+
+- Critical security vulnerabilities
+- High-severity bugs
+- Zero-day exploits
+
+## Version Differences
+
+### Cromite vs Chromium
+
+While Cromite maintains version parity with Chromium, it includes:
+
+- **332 patches** applied to enhance privacy and security
+- **Removed features**: Google Sync, Safe Browsing, metrics collection
+- **Added features**: Built-in ad blocking, extended privacy controls
+- **Modified defaults**: Privacy-first configuration out of the box
+
+See the [Patch List](/reference/patch-list) for complete details.
+
+## Historical Releases
+
+<Info>
+For a complete history of all Cromite releases including beta and development builds, visit the [GitHub Releases page](https://github.com/uazo/cromite/releases?page=1).
+</Info>
+
+### Recent Major Versions
+
+Cromite has tracked these recent Chromium major releases:
+
+- **145.x** (Current) - February 2026
+- **144.x** - January 2026  
+- **143.x** - December 2025
+- **142.x** - November 2025
+- **141.x** - October 2025
+- **140.x** - September 2025
+
+<Note>
+Version 145.0.7632.120 is based on Chromium's release from February 2026. Cromite typically releases updates within 1-7 days of the corresponding Chromium release.
+</Note>
+
+## Build Information
+
+Each release includes builds for multiple Android architectures:
+
+<CardGroup cols={2}>
+  <Card title="arm64-v8a" icon="mobile">
+    64-bit ARM (most modern Android devices)
+  </Card>
+  <Card title="armeabi-v7a" icon="mobile-screen">
+    32-bit ARM (older Android devices)
+  </Card>
+  <Card title="x86_64" icon="desktop">
+    64-bit x86 (emulators, Chrome OS)
+  </Card>
+  <Card title="x86" icon="computer">
+    32-bit x86 (older x86 devices)
+  </Card>
+</CardGroup>
+
+## Getting Updates
+
+<Tabs>
+  <Tab title="F-Droid (Recommended)">
+    1. Add Cromite F-Droid repository: `https://www.cromite.org/fdroid/repo`
+    2. Install Cromite from F-Droid
+    3. Enable automatic updates in F-Droid settings
+    
+    Updates will be delivered automatically when new versions are released.
+  </Tab>
+  
+  <Tab title="GitHub Releases">
+    1. Visit [GitHub Releases](https://github.com/uazo/cromite/releases)
+    2. Download the APK for your device architecture
+    3. Install the APK (may require enabling "Install from unknown sources")
+    
+    You'll need to manually check for and install updates.
+  </Tab>
+  
+  <Tab title="In-App Updater">
+    1. Enable in-app update checker in Settings > About Cromite
+    2. Cromite will check for updates once per day
+    3. You'll be notified when updates are available
+    
+    <Note>Downloads still require manual installation from GitHub.</Note>
+  </Tab>
+</Tabs>
+
+## Staying Informed
+
+<CardGroup cols={2}>
+  <Card title="GitHub Releases" icon="github" href="https://github.com/uazo/cromite/releases">
+    Subscribe to release notifications
+  </Card>
+  <Card title="GitHub Discussions" icon="comments" href="https://github.com/uazo/cromite/discussions">
+    Join community discussions
+  </Card>
+  <Card title="Issue Tracker" icon="bug" href="https://github.com/uazo/cromite/issues">
+    Report bugs and request features
+  </Card>
+  <Card title="Documentation" icon="book" href="https://github.com/uazo/cromite/tree/master/docs">
+    Read technical documentation
+  </Card>
+</CardGroup>

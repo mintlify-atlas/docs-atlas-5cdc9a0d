@@ -1,0 +1,594 @@
+---
+title: Troubleshooting
+description: Common issues and solutions for Cromite
+icon: wrench
+---
+
+This guide covers common issues you may encounter while using Cromite and their solutions.
+
+## Performance Issues
+
+<Accordion title="Website is slow or unresponsive">
+  **Cause**: JavaScript JIT is disabled by default for security.
+  
+  **Solution**:
+  
+  <Steps>
+    <Step title="Identify JIT-dependent site">
+      Sites with heavy JavaScript usage may perform poorly without JIT compilation.
+    </Step>
+    
+    <Step title="Enable JIT for the site">
+      Follow the [JIT Configuration guide](/guides/jit-configuration) to enable JIT selectively for that site.
+    </Step>
+    
+    <Step title="Test performance">
+      Reload the page and verify improved responsiveness.
+    </Step>
+  </Steps>
+  
+  <Warning>
+    Only enable JIT for sites you trust. See [JIT Configuration](/guides/jit-configuration) for security implications.
+  </Warning>
+</Accordion>
+
+<Accordion title="Videos won't play or buffer slowly">
+  **Possible causes**:
+  - JavaScript JIT disabled
+  - Ad blocker blocking video resources
+  - DRM content (not supported)
+  
+  **Solutions**:
+  
+  1. **Enable JIT**: Some video players require JIT for optimal performance
+  2. **Check ad blocker**: Visit `chrome://adblock` and temporarily disable for the site
+  3. **Check for DRM**: Cromite does not support DRM-protected content (Netflix, Spotify, etc.)
+  
+  <Info>
+    If a video requires DRM (Widevine), it will not play in Cromite. Use a different browser for DRM content.
+  </Info>
+</Accordion>
+
+<Accordion title="WebAssembly applications don't work">
+  **Cause**: WebAssembly requires JIT to be enabled.
+  
+  **Solution**:
+  
+  Enable JavaScript JIT for the site:
+  1. Tap the lock icon in the address bar
+  2. Go to **Site settings** → **JavaScript JIT**
+  3. Change to **Allowed**
+  4. Reload the page
+  
+  <Note>
+    WebAssembly is commonly used in online IDEs, games, and high-performance web applications.
+  </Note>
+</Accordion>
+
+## Ad Blocking Issues
+
+<Accordion title="Ads still showing on websites">
+  **Cause**: Filter lists may be outdated or incomplete.
+  
+  **Solutions**:
+  
+  <Steps>
+    <Step title="Check filter lists">
+      Navigate to `chrome://adblock` and verify your active filter lists.
+    </Step>
+    
+    <Step title="Update filter lists">
+      Ensure filter lists are up to date (may update automatically).
+    </Step>
+    
+    <Step title="Enable additional lists">
+      Consider enabling additional filter lists for better coverage.
+    </Step>
+    
+    <Step title="Report the issue">
+      If ads persist, report to the filter list maintainer (EasyList, uBlock filters, etc.), not Cromite.
+    </Step>
+  </Steps>
+  
+  <Tip>
+    Cromite uses public filter lists. Issues with specific ads should be reported to the list maintainers.
+  </Tip>
+</Accordion>
+
+<Accordion title="Website broken due to ad blocking">
+  **Cause**: Ad blocker may be blocking legitimate resources.
+  
+  **Solutions**:
+  
+  1. **Whitelist the site**: Go to `chrome://adblock` and add the site to exceptions
+  2. **Disable ad blocking for site**: Use Site Settings to disable ad blocking per-site
+  3. **Check specific rules**: Some filter rules may be too aggressive
+  
+  <Steps>
+    <Step title="Open Site Settings">
+      Tap the lock icon → **Site settings**.
+    </Step>
+    
+    <Step title="Disable ad blocking">
+      Find **Ad blocking** and change to **Allowed**.
+    </Step>
+    
+    <Step title="Reload page">
+      Refresh to see if the issue is resolved.
+    </Step>
+  </Steps>
+</Accordion>
+
+## DRM and Media Issues
+
+<Accordion title="DRM content won't play (Netflix, Spotify, etc.)">
+  **Cause**: Cromite does not support DRM media.
+  
+  **Explanation**:
+  
+  DRM (Digital Rights Management) is disabled in Cromite because:
+  - Unclear whether DRM licenses are bound to the device
+  - No clear way to delete DRM licenses
+  - Privacy concerns about external DRM service connections
+  
+  **Solution**:
+  
+  <Warning>
+    DRM support cannot be enabled in Cromite. Use a different browser for DRM-protected content.
+  </Warning>
+  
+  Affected services:
+  - Netflix
+  - Spotify Web Player
+  - Amazon Prime Video
+  - Disney+
+  - Most streaming platforms
+  - Some audiobooks and ebooks
+</Accordion>
+
+<Accordion title="Audio/video format not supported">
+  **Cause**: Limited codec support due to licensing.
+  
+  **Supported formats**:
+  - ✓ H.264 video
+  - ✓ AAC audio
+  - ✓ HEVC (enabled by default)
+  - ✓ JXL images
+  - ✗ Proprietary DRM formats
+  
+  **Solution**:
+  
+  If a media format is not supported, consider:
+  1. Finding an alternative source with supported formats
+  2. Converting media to supported formats
+  3. Using a native media player app
+</Accordion>
+
+## Push Notifications
+
+<Accordion title="Push notifications don't work">
+  **Cause**: Cromite disables Google Cloud Messaging (GCM) integration.
+  
+  **Explanation**:
+  
+  The Chromium Blink engine uses GCM to deliver push notifications via the Push API. This requires Google services, which are disabled in Cromite for privacy.
+  
+  **Solution**:
+  
+  <Warning>
+    Push notifications cannot be enabled in Cromite due to Google service dependencies.
+  </Warning>
+  
+  **Alternatives**:
+  - Use native apps for services requiring push notifications
+  - Check sites manually for updates
+  - Enable browser-based polling if available
+</Accordion>
+
+## PWA and TWA Issues
+
+<Accordion title="Can't install Progressive Web Apps (PWAs)">
+  **Cause**: TWA/PWA installation is not supported.
+  
+  **Explanation**:
+  
+  Trusted Web Activities (TWAs) are generated server-side on googleapis.com, which is blocked in Cromite.
+  
+  **Alternative**:
+  
+  Cromite supports **home shortcuts** that launch websites without browser UI:
+  
+  <Steps>
+    <Step title="Open Menu">
+      Tap the menu button (three dots) in Cromite.
+    </Step>
+    
+    <Step title="Add to Home Screen">
+      Select **Add to Home screen**.
+    </Step>
+    
+    <Step title="Create Shortcut">
+      Enter a name and confirm to create a home screen shortcut.
+    </Step>
+  </Steps>
+  
+  <Note>
+    Home shortcuts open the browser without UI but don't have the same integration as full PWAs.
+  </Note>
+</Accordion>
+
+## External App Integration
+
+<Accordion title="YouTube links don't open YouTube app">
+  **Cause**: External app launching is disabled by default for privacy.
+  
+  **Solution**:
+  
+  See the [External App Integration guide](/guides/external-apps) for detailed instructions on enabling external apps.
+  
+  <Steps>
+    <Step title="Open Site Settings">
+      Tap the lock icon → **Site settings** on YouTube.com.
+    </Step>
+    
+    <Step title="Enable External Apps">
+      Change **Open links in external apps** to **Allowed**.
+    </Step>
+    
+    <Step title="Click Link">
+      Click a YouTube link and choose the YouTube app when prompted.
+    </Step>
+  </Steps>
+  
+  <Info>
+    Cromite blocks external apps by default to prevent data sharing between browser and apps.
+  </Info>
+</Accordion>
+
+<Accordion title="Custom Tabs not working from other apps">
+  **Cause**: Custom Tab intents are disabled by default.
+  
+  **Explanation**:
+  
+  Custom Tabs can pass tracking information between apps and the browser, linking your app usage with web browsing.
+  
+  **Solution**:
+  
+  <Warning>
+    Custom Tabs cannot be enabled in Cromite due to privacy concerns. Links from apps will open in regular browser tabs.
+  </Warning>
+</Accordion>
+
+## Sync and Google Services
+
+<Accordion title="Google Sync doesn't work">
+  **Cause**: Google Sync is disabled in Cromite.
+  
+  **Explanation**:
+  
+  Cromite cannot use Google APIs for:
+  - Google Sync
+  - Google Translate
+  - Google Safe Browsing
+  - Data Saver
+  - IP Protection
+  
+  This is a limitation of all Chromium-based projects outside of official Chrome. Additionally, these features would compromise privacy.
+  
+  **Alternatives**:
+  - Export bookmarks and import manually
+  - Use third-party bookmark sync services
+  - Manually manage your browsing data
+</Accordion>
+
+<Accordion title="Google Translate not available">
+  **Cause**: Google Translate is disabled.
+  
+  **Alternatives**:
+  - Copy text and use a dedicated translation app
+  - Visit translate.google.com directly
+  - Use other translation services
+</Accordion>
+
+## Certificate and HTTPS Issues
+
+<Accordion title="SSL/TLS certificate errors">
+  **Possible causes**:
+  - Invalid certificate
+  - Corporate proxy with SSL inspection
+  - TLS resumption disabled (expected behavior)
+  
+  **Solutions**:
+  
+  1. **Check certificate validity**: Ensure the site's certificate is valid and not expired
+  2. **Corporate environments**: If using a corporate proxy with SSL inspection:
+     
+     <Steps>
+       <Step title="Enable user certificates">
+         Navigate to `chrome://flags` and search for "user certificates".
+       </Step>
+       
+       <Step title="Enable flag">
+         Enable user certificates support.
+       </Step>
+       
+       <Step title="Install certificate">
+         Install your organization's root certificate via Android/system settings.
+       </Step>
+     </Steps>
+  
+  <Warning>
+    User certificates are disabled by default to prevent man-in-the-middle attacks. Only enable if necessary.
+  </Warning>
+</Accordion>
+
+<Accordion title="Can't connect to corporate network">
+  **Cause**: Corporate networks may require:
+  - User certificates for SSL inspection
+  - Proxy configuration
+  - VPN access
+  
+  **Solutions**:
+  - Enable user certificates (see above)
+  - Configure proxy via [Proxy Configuration](/guides/proxy-configuration)
+  - Check with your IT department for specific requirements
+</Accordion>
+
+## Installation and Update Issues
+
+<Accordion title="Can't install APK on Android">
+  **Solutions**:
+  
+  1. **Enable unknown sources**:
+     - Android 8+: Settings → Apps → Special access → Install unknown apps → Enable for your file manager
+     - Android 7 and below: Settings → Security → Unknown sources
+  
+  2. **Check architecture**:
+     - Download the correct APK for your device (arm64, arm32, or x86_64)
+     - Most modern devices use arm64
+  
+  3. **Verify download**:
+     - Ensure APK downloaded completely
+     - Re-download if file is corrupted
+</Accordion>
+
+<Accordion title="Update notifications not appearing">
+  **Check**:
+  
+  <Steps>
+    <Step title="Verify setting">
+      Go to **Settings** → **About Cromite** and verify update notifications are enabled.
+    </Step>
+    
+    <Step title="Check last check time">
+      Updates are checked every 3 days automatically.
+    </Step>
+    
+    <Step title="Manual check">
+      Visit the [releases page](https://github.com/uazo/cromite/releases) to verify you have the latest version.
+    </Step>
+  </Steps>
+</Accordion>
+
+<Accordion title="Windows auto-update not working">
+  **Check chrlauncher configuration**:
+  
+  1. Verify `chrlauncher.ini` is in the correct location
+  2. Check `ChromiumUpdateUrl` is set correctly:
+     ```ini
+     ChromiumUpdateUrl=https://github.com/uazo/cromite/releases/latest/download/updateurl.txt
+     ```
+  3. Ensure network connectivity to GitHub
+  4. Check chrlauncher logs for errors
+  
+  See [Auto-Updates guide](/guides/auto-updates) for complete setup.
+</Accordion>
+
+## Platform-Specific Issues
+
+<Accordion title="Ubuntu 24.04: Cromite won't start">
+  **Cause**: AppArmor restricts unprivileged user namespaces.
+  
+  **Solutions**:
+  
+  <Tabs>
+    <Tab title="AppArmor Profile (Recommended)">
+      Create `/etc/apparmor.d/cromite`:
+      
+      ```text
+      abi <abi/4.0>,
+      include <tunables/global>
+      
+      profile cromite /path/to/cromite/chrome flags=(unconfined) {
+        userns,
+        include if exists <local/chrome>
+      }
+      ```
+      
+      Apply:
+      ```bash
+      sudo apparmor_parser -r /etc/apparmor.d/cromite
+      ```
+    </Tab>
+    
+    <Tab title="Temporary Fix">
+      ```bash
+      sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+      ```
+      (Lost on reboot)
+    </Tab>
+  </Tabs>
+  
+  See [Auto-Updates guide](/guides/auto-updates#ubuntu-2404-compatibility) for details.
+</Accordion>
+
+<Accordion title="Windows: Browser deleted by Microsoft Defender">
+  **Cause**: Microsoft Defender may flag Cromite as potentially unwanted.
+  
+  **Solutions**:
+  
+  1. **Add exclusion**:
+     - Windows Security → Virus & threat protection → Manage settings
+     - Exclusions → Add or remove exclusions
+     - Add Cromite installation directory
+  
+  2. **Specifically exclude user data directory**:
+     - Add the `user-data-dir` folder specified in `chrlauncher.ini`
+     - Default: `%LOCALAPPDATA%\Cromite\User Data`
+</Accordion>
+
+<Accordion title="Windows: Network sandbox error">
+  **Cause**: Network process sandbox not properly configured.
+  
+  **Solution**:
+  
+  Run this command as Administrator in the directory containing `chrome.exe`:
+  
+  ```batch
+  icacls . /grant "*S-1-15-2-2:(OI)(CI)(RX)"
+  ```
+  
+  See [Auto-Updates guide](/guides/auto-updates#enable-network-process-sandbox) for details.
+</Accordion>
+
+## Search and Omnibox Issues
+
+<Accordion title="Search not working in address bar">
+  **Cause**: No default search engine set.
+  
+  **Solution**:
+  
+  <Steps>
+    <Step title="Open Settings">
+      Navigate to **Settings** → **Search engine**.
+    </Step>
+    
+    <Step title="Select default">
+      Choose a default search engine from the list.
+    </Step>
+    
+    <Step title="Add custom engine">
+      Or add a custom search engine if needed.
+    </Step>
+  </Steps>
+  
+  <Note>
+    Cromite doesn't set a default search engine; you choose during first launch or in settings.
+  </Note>
+</Accordion>
+
+<Accordion title="Single-word searches don't work">
+  **Cause**: Requests for single-word omnibar searches are disabled by default.
+  
+  **Expected behavior**: Single words are treated as search queries, not URLs.
+  
+  **Workaround**: Explicitly use your search engine or add the search keyword manually.
+</Accordion>
+
+## Import/Export Issues
+
+<Accordion title="Can't import bookmarks">
+  **Solutions**:
+  
+  <Steps>
+    <Step title="Export from other browser">
+      Export bookmarks as HTML file from your previous browser.
+    </Step>
+    
+    <Step title="Open Cromite">
+      Navigate to **Settings** → **Bookmarks**.
+    </Step>
+    
+    <Step title="Import">
+      Select **Import bookmarks** and choose your HTML file.
+    </Step>
+  </Steps>
+  
+  <Tip>
+    Cromite supports standard HTML bookmark format compatible with Chrome, Firefox, and others.
+  </Tip>
+</Accordion>
+
+<Accordion title="Can't export bookmarks">
+  **Solution**:
+  
+  Android version:
+  <Steps>
+    <Step title="Open menu">
+      Tap the three-dot menu.
+    </Step>
+    
+    <Step title="Bookmarks">
+      Go to **Bookmarks**.
+    </Step>
+    
+    <Step title="Export">
+      Look for bookmark import/export actions in the menu.
+    </Step>
+  </Steps>
+</Accordion>
+
+## General Troubleshooting Steps
+
+<Steps>
+  <Step title="Clear browser cache">
+    **Settings** → **Privacy and Security** → **Clear browsing data**
+    
+    Select:
+    - Cached images and files
+    - Cookies and site data (if needed)
+  </Step>
+  
+  <Step title="Disable extensions/flags">
+    If you've enabled experimental flags or extensions, try disabling them:
+    - `chrome://flags` → Reset all to default
+    - `chrome://extensions` → Disable all extensions
+  </Step>
+  
+  <Step title="Check for updates">
+    Ensure you're running the latest version:
+    - **Settings** → **About Cromite**
+    - Or check [GitHub releases](https://github.com/uazo/cromite/releases)
+  </Step>
+  
+  <Step title="Reset site settings">
+    Reset permissions for problematic sites:
+    - Navigate to site → Lock icon → **Site settings** → **Reset permissions**
+  </Step>
+  
+  <Step title="Create new profile">
+    Test with a fresh profile:
+    - Android: Reinstall the app
+    - Desktop: Use a different `--user-data-dir`
+  </Step>
+</Steps>
+
+## Getting Help
+
+<CardGroup cols={2}>
+  <Card title="GitHub Issues" icon="github" href="https://github.com/uazo/cromite/issues">
+    Report bugs and request features
+  </Card>
+  <Card title="GitHub Discussions" icon="comments" href="https://github.com/uazo/cromite/discussions">
+    Ask questions and discuss usage
+  </Card>
+  <Card title="FAQ" icon="circle-question" href="https://github.com/uazo/cromite/blob/master/docs/FAQ.md">
+    Check the official FAQ
+  </Card>
+  <Card title="Features" icon="list" href="https://github.com/uazo/cromite/blob/master/docs/FEATURES.md">
+    Review all Cromite features
+  </Card>
+</CardGroup>
+
+<Warning>
+  When reporting issues, include:
+  - Cromite version
+  - Platform (Android/Windows/Linux)
+  - Device/OS version
+  - Steps to reproduce
+  - Expected vs. actual behavior
+</Warning>
+
+<Tip>
+  Before reporting an issue, search existing GitHub issues to see if it's already known or fixed.
+</Tip>

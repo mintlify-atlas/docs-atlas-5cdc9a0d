@@ -1,0 +1,383 @@
+---
+title: Settings & Configuration
+description: Configure Cromite's privacy and security settings
+icon: gear
+---
+
+Cromite provides extensive privacy and security configuration options through built-in settings pages and chrome:// URLs.
+
+## Chrome Settings Pages
+
+Cromite includes special configuration pages accessible via `chrome://` URLs:
+
+<CardGroup cols={3}>
+  <Card title="chrome://flags" icon="flag">
+    Enable or disable experimental features and Cromite-specific flags.
+  </Card>
+  <Card title="chrome://adblock" icon="shield">
+    Configure ad blocking filter lists and rules.
+  </Card>
+  <Card title="chrome://proxy" icon="network-wired">
+    Set up proxy configuration for network connections.
+  </Card>
+</CardGroup>
+
+## Privacy Settings
+
+### Core Privacy Features
+
+Cromite enables strong privacy protections by default:
+
+<Accordion title="Do Not Track & Global Privacy Control">
+  Both **Do Not Track (DNT)** and **Global Privacy Control (GPC)** are enabled by default, signaling your privacy preferences to websites.
+  
+  These headers inform websites that you don't want to be tracked, though compliance is voluntary.
+</Accordion>
+
+<Accordion title="Third-Party Cookie Blocking">
+  Cromite partitions all cookies by top frame domain, similar to Firefox's Total Cookie Protection.
+  
+  This prevents cross-site tracking while maintaining site functionality.
+</Accordion>
+
+<Accordion title="Network Isolation">
+  - Third-party storage partitioning enabled
+  - Blink memory cache partitioned
+  - Blob URLs partitioned by top frame
+  - HSTS cache partitioned by Network Anonymization Key (NAK)
+</Accordion>
+
+<Accordion title="HTTP Referrer Removal">
+  HTTP referrers are removed on cross-origin navigation to prevent tracking across sites.
+</Accordion>
+
+### Android-Specific Privacy
+
+<Accordion title="Session Management">
+  **Clear Data Between Restarts**: Automatically clear browsing data when closing Cromite.
+  
+  Navigate to **Settings** → **Privacy and Security** → **Clear data on exit**.
+</Accordion>
+
+<Accordion title="Tab Persistence">
+  **Don't Reopen Tabs**: Prevent tabs from reopening between sessions.
+  
+  Find this option in **Settings** → **Privacy and Security** → **Tab behavior**.
+</Accordion>
+
+<Accordion title="Page Snapshots">
+  Disable disk snapshots of pages, including in incognito mode.
+  
+  Navigate to **chrome://flags** and search for "page snapshots".
+</Accordion>
+
+<Accordion title="Permission Duration">
+  Grant camera, microphone, or geolocation access:
+  - **Only once** (single use)
+  - **Until page is closed** (session-based)
+  - **Until device is closed**
+  - **Always allow** (permanent)
+</Accordion>
+
+## Security Settings
+
+### DNS over HTTPS (DoH)
+
+<Note>
+  DoH secure mode is enabled by default for encrypted DNS queries.
+</Note>
+
+Configure DoH settings:
+
+<Steps>
+  <Step title="Open Settings">
+    Navigate to **Settings** → **Privacy and Security**.
+  </Step>
+  
+  <Step title="Security Section">
+    Scroll to **Use secure DNS**.
+  </Step>
+  
+  <Step title="Configure Provider">
+    Choose your preferred DNS provider or enter a custom DoH URL.
+  </Step>
+</Steps>
+
+### Certificate Transparency
+
+Certificate Transparency is enabled by default, validating SSL/TLS certificates against public logs to detect mis-issued certificates.
+
+### User Certificates
+
+<Warning>
+  User certificates are disabled by default to prevent unauthorized proxies and man-in-the-middle attacks.
+</Warning>
+
+If you need to use custom certificates (e.g., corporate proxies):
+
+1. Navigate to **chrome://flags**
+2. Search for "user certificates"
+3. Enable the flag
+4. Restart Cromite
+
+### HTTPS-Only Mode (Android)
+
+Block all non-HTTPS connections:
+
+<Steps>
+  <Step title="Open chrome://flags">
+    Navigate to `chrome://flags` in the address bar.
+  </Step>
+  
+  <Step title="Search for HTTPS-only">
+    Find the "Block non-HTTPS connections" flag.
+  </Step>
+  
+  <Step title="Enable">
+    Enable the flag and restart the browser.
+  </Step>
+</Steps>
+
+<Warning>
+  This may break access to HTTP-only websites.
+</Warning>
+
+## Ad Blocking Configuration
+
+### chrome://adblock
+
+Access the ad blocking configuration page at `chrome://adblock`.
+
+<Info>
+  Cromite uses AdBlock Plus (ABP) implemented in C++ with enhanced features:
+  - CNAME uncloaking support
+  - Blocking in workers
+  - No "acceptable ads" tracking
+</Info>
+
+### Filter Lists
+
+Cromite uses public filter lists for ad blocking. If ads appear on a website:
+
+<Steps>
+  <Step title="Check Filter Lists">
+    Navigate to `chrome://adblock` and verify your active filter lists.
+  </Step>
+  
+  <Step title="Update Lists">
+    Ensure filter lists are up to date.
+  </Step>
+  
+  <Step title="Report Issues">
+    If the issue persists, report it to the appropriate filter list maintainer, not Cromite.
+  </Step>
+</Steps>
+
+<Tip>
+  Common filter lists include EasyList, EasyPrivacy, and regional lists.
+</Tip>
+
+## Site Settings
+
+Configure per-site permissions and behaviors:
+
+### Available Site Settings
+
+<CardGroup cols={2}>
+  <Card title="JavaScript" icon="code">
+    Enable or disable JavaScript execution per site.
+  </Card>
+  <Card title="Cookies" icon="cookie">
+    Control cookie access on a per-site basis.
+  </Card>
+  <Card title="Images" icon="image">
+    Allow or block image loading.
+  </Card>
+  <Card title="Autoplay" icon="play">
+    Control media autoplay behavior.
+  </Card>
+  <Card title="Ad Blocking" icon="shield">
+    Enable or disable ad blocking per site.
+  </Card>
+  <Card title="Pop-ups" icon="window-restore">
+    Block or allow pop-up windows.
+  </Card>
+</CardGroup>
+
+### Accessing Site Settings
+
+<Steps>
+  <Step title="From Settings Menu">
+    Navigate to **Settings** → **Site settings**.
+  </Step>
+  
+  <Step title="From Page Info">
+    Tap the lock icon in the address bar, then **Site settings**.
+  </Step>
+  
+  <Step title="Configure Permissions">
+    Adjust permissions for the current site or global defaults.
+  </Step>
+</Steps>
+
+## Chrome Flags
+
+### Accessing chrome://flags
+
+Navigate to `chrome://flags` to access experimental features:
+
+<Warning>
+  Flags are experimental and may cause instability. Change settings carefully.
+</Warning>
+
+### Recommended Flags
+
+<Accordion title="Vibration API">
+  **Flag**: `#vibration-api`
+  
+  Disable the Vibration API for privacy and battery saving.
+  
+  **Recommendation**: Disabled
+</Accordion>
+
+<Accordion title="WebGL">
+  **Flag**: `#webgl`
+  
+  WebGL is disabled by default for fingerprinting protection.
+  
+  **Recommendation**: Keep disabled unless needed for specific sites
+</Accordion>
+
+<Accordion title="WebRTC">
+  **Flag**: `#webrtc`
+  
+  WebRTC is disabled by default to prevent IP address leaks.
+  
+  **Recommendation**: Keep disabled unless needed for video calls
+</Accordion>
+
+<Accordion title="Save Data Header">
+  **Flag**: `#save-data-header`
+  
+  Sends a Save-Data header to request optimized content.
+  
+  **Recommendation**: Use with caution (fingerprinting risk)
+</Accordion>
+
+<Accordion title="JavaScript JIT">
+  **Flag**: `#enable-javascript-jit`
+  
+  Enable Just-In-Time JavaScript compilation for better performance.
+  
+  **Recommendation**: Enable per-site via Site Settings (see [JIT Configuration](/guides/jit-configuration))
+</Accordion>
+
+## Anti-Fingerprinting Settings
+
+Cromite includes extensive anti-fingerprinting protections:
+
+### Canvas Fingerprinting
+Canvas and Rect API fingerprinting mitigations are enabled by default.
+
+### Audio Fingerprinting
+AudioBuffer and AnalyserNode fingerprinting protections are active.
+
+### Hardware Information
+- Device memory reported as generic values
+- CPU information obscured
+- Battery API disabled
+- GamePad API disabled by default
+
+### Custom Timezone
+
+Set a custom timezone or use a random one:
+
+<Steps>
+  <Step title="Open chrome://flags">
+    Navigate to `chrome://flags`.
+  </Step>
+  
+  <Step title="Search Timezone">
+    Search for "timezone" flags.
+  </Step>
+  
+  <Step title="Configure">
+    Set a custom timezone or enable random timezone.
+  </Step>
+</Steps>
+
+## User Agent Customization
+
+Customize your User Agent string:
+
+<Steps>
+  <Step title="Access Settings">
+    Navigate to **Settings** → **Privacy and Security**.
+  </Step>
+  
+  <Step title="User Agent">
+    Find the "User Agent" option.
+  </Step>
+  
+  <Step title="Enter Custom String">
+    Enter your desired User Agent or choose from presets.
+  </Step>
+</Steps>
+
+<Warning>
+  Custom User Agents may break site compatibility or increase fingerprinting risk.
+</Warning>
+
+## History Management
+
+Control how long browsing history is retained:
+
+<Steps>
+  <Step title="Open Settings">
+    Navigate to **Settings** → **Privacy and Security**.
+  </Step>
+  
+  <Step title="History Settings">
+    Find "History number of days" setting.
+  </Step>
+  
+  <Step title="Set Duration">
+    Choose how many days to retain history (or disable entirely).
+  </Step>
+</Steps>
+
+## Disabled Features
+
+The following privacy-invasive features are disabled in Cromite:
+
+<Note>
+  These features cannot be re-enabled as they require Google APIs or compromise privacy:
+</Note>
+
+- Google Sync
+- Google Translate
+- Google Safe Browsing
+- Data Saver (Google servers)
+- IP Protection (Google servers)
+- Media Router and Casting (requires Play Store blobs)
+- Push Notifications (requires Google Cloud Messaging)
+- TWA/PWA installation (requires googleapis.com)
+- DRM media playback
+
+## Desktop-Specific Settings
+
+### High Efficiency Mode
+
+Enabled by default on desktop to reduce resource usage for inactive tabs.
+
+### Keyboard Layout API Mitigation
+
+Protects against keyboard layout fingerprinting.
+
+### ManifestV2 Extension Support
+
+Cromite continues supporting ManifestV2 extensions on desktop.
+
+<Tip>
+  Access extension settings at `chrome://extensions`.
+</Tip>

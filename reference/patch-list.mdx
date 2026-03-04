@@ -1,0 +1,405 @@
+---
+title: 'Patch List'
+description: 'Complete list of patches applied to Chromium'
+icon: 'code-branch'
+---
+
+Cromite applies **332 patches** to Chromium to enhance privacy, security, and functionality. This page lists all patches organized by category.
+
+<Note>
+For detailed information about each patch, including the full code changes, visit the [Cromite patches directory](https://github.com/uazo/cromite/tree/master/build/patches) on GitHub.
+</Note>
+
+## Build System Patches
+
+<Accordion title="Build Configuration & Tooling (7 patches)">
+- **Do-not-link-with-libatomic.patch** - Compiler has built-in support thus libatomic linking is no more needed
+- **Force-use-vpython3-for-all-scripts.patch** - Forces the use of python in the virtual environment
+- **bromite-build-utils.patch** - Build utilities for Cromite
+- **Add-cromite-flags-support.patch** - Adds SET_CROMITE_FEATURE_ENABLED/DISABLED macros
+- **Permit-PGO-for-debug-builds.patch** - Allows PGO optimization for debug builds
+- **Fix-chromium-vanilla.patch** - Fixes some crashes in start-up (only chromium vanilla)
+- **Final-patch-for-chromium-vanilla.patch** - Final build fixes
+</Accordion>
+
+## Privacy & Security Patches
+
+<Accordion title="Core Privacy Features (25+ patches)">
+- **Remove-EV-certificates.patch** - Let EV certificates appear just like normal certificates
+- **Disable-privacy-sandbox.patch** - Permanently removes FLoC support and Privacy Sandbox
+- **Disable-fetching-of-all-field-trials.patch** - Disable seed-based field trials
+- **Disable-various-metrics.patch** - Disable metrics on all I/O threads
+- **Disable-crash-reporting.patch** - Log and crash upload are disabled
+- **ungoogled-chromium-Disable-webRTC-log-uploader.patch** - Disable WebRTC logging uploads
+- **ungoogled-chromium-Disable-untraceable-URLs.patch** - Remove untraceable URL endpoints
+- **ungoogled-chromium-Disable-translate-integration.patch** - Remove translate integration
+- **ungoogled-chromium-Disable-profile-avatar.patch** - Disable profile avatar features
+- **ungoogled-chromium-Disable-intranet-detector.patch** - Disable intranet detection
+- **ungoogled-chromium-no-special-hosts-domains.patch** - Remove all code that uses pointers to Google servers
+- **ungoogled-chromium-Disable-Network-Time-Tracker.patch** - Never use network time
+- **Disable-all-promo-dialogs.patch** - Disable all promotional dialogs
+- **Disable-update-scheduler.patch** - Disable automatic update scheduling
+- **Internal-firewall.patch** - Introduces a firewall on http calls with selective blocking
+- **Remove-binary-blob-integrations.patch** - Remove Play Store binary integrations
+- **Remove-SMS-integration.patch** - Remove SMS integration
+- **Remove-voice-recognition-integration.patch** - Remove voice recognition
+- **Do-not-compile-QR-code-sharing.patch** - Remove QR code sharing feature
+- **Disable-conversion-measurement-api.patch** - Disable Conversion Measurement API
+- **Disable-idle-detection.patch** - Disable idle detection API
+- **Disable-FedCm.patch** - Disable Federated Credential Management
+- **Disable-integration-with-Gemini.patch** - Disable Gemini AI integration
+- **Disable-Compose-feature.patch** - Disable Compose AI writing feature
+- **Disable-Read-Aloud-by-default.patch** - Disable Read Aloud feature
+</Accordion>
+
+<Accordion title="Fingerprinting Mitigations (15 patches)">
+- **Multiple-fingerprinting-mitigations.patch** - Canvas noise, measureText randomization
+- **Fonts-fingerprinting-mitigation.patch** - Disables use of non-standard fonts
+- **Android-fonts-fingerprinting-mitigation.patch** - Replaces system fonts with predefined set
+- **AudioBuffer-AnalyserNode-fp-mitigations.patch** - Truncate base latency precision
+- **Battery-API-return-nothing.patch** - Return dummy battery information
+- **disable-battery-status-updater.patch** - Disable battery status API
+- **Media-fingerprinting-mitigations.patch** - Removes video card capability detection
+- **PublicKeyCredential-fingerprinting-mitigations.patch** - Remove Windows Hello detection
+- **Keyboard-protection-flag.patch** - Hides user keyboard preference
+- **Disable-support-for-pointer-device-id.patch** - Disable pointer device identification
+- **Disable-speechSynthesis-getVoices-API.patch** - Disable voice enumeration
+- **Remove-support-for-device-memory-and-cpu-recovery.patch** - Hide device capabilities
+- **Disable-plugins-enumeration.patch** - Disable plugin detection
+- **Prevent-mouse-wheel-fingerprinting-on-Windows.patch** - Normalize mouse wheel behavior
+- **High-Resolution-Timing-Mitigation.patch** - Decreases high timer resolution
+</Accordion>
+
+<Accordion title="Network Privacy (20 patches)">
+- **webRTC-do-not-expose-local-IP-addresses.patch** - Prevent WebRTC IP leaks
+- **Block-gateway-attacks-via-websockets.patch** - Prevent websocket-based attacks
+- **Disable-requests-for-single-word-Omnibar-searches.patch** - No DNS lookups for single words
+- **Disable-references-to-fonts.googleapis.com.patch** - Remove Google Fonts connections
+- **Never-fetch-popular-sites.patch** - Disable popular sites fetching
+- **DoH-improvements.patch** - Enable secure DNS mode by default
+- **Replace-DoH-probe-domain-with-RIPE-domain.patch** - Use RIPE for connectivity checks
+- **Reduce-HTTP-headers-in-DoH-requests-to-bare-minimum.patch** - Minimize DoH headers
+- **dns-send-IPv6-connectivity-probes-to-RIPE-DNS.patch** - Use RIPE for IPv6 probes
+- **Add-flag-to-disable-IPv6-probes.patch** - Allow disabling IPv6 connectivity checks
+- **Disable-AsyncDNS-by-default.patch** - Disable async DNS for privacy
+- **Never-use-HTTP-probes-for-connection-detection.patch** - No HTTP probes
+- **Disable-TLS-resumption.patch** - Disable TLS session resumption to prevent tracking
+- **Close-Sessions-On-Ip-Change.patch** - Close QUIC connections on IP change
+- **Ask-for-restart-on-connection-change.patch** - Warn user on network change
+- **Enable-ClientHello-Segmentation.patch** - Segment ClientHello to bypass censorship
+- **Disable-remote-altsvc-for-h3-connections.patch** - Disable remote alt-svc
+- **Disable-device-bound-session.patch** - Disable DBSC for privacy
+- **Remove-detection-of-captive-portals.patch** - Remove captive portal detection
+- **Disable-csp-reports.patch** - Disable CSP reporting
+</Accordion>
+
+## Storage & Partitioning Patches
+
+<Accordion title="Cookie & Storage Partitioning (10 patches)">
+- **Partitioning-all-cookies-by-top-frame-domain.patch** - Partition cookies by top frame
+- **Enable-third-party-storage-partitioning.patch** - Enable storage partitioning
+- **Partition-Blink-memory-cache.patch** - Partition Blink's in-memory cache
+- **Partition-blobs-by-top-frame-URL.patch** - Partition blob storage
+- **Partition-HSTS-cache-by-NAK.patch** - Partition HSTS cache
+- **Partition-MediaDeviceId-by-default.patch** - Partition media device IDs
+- **Enable-network-isolation-features.patch** - Enable various isolation features
+- **Enable-StrictOriginIsolation-and-SitePerProcess.patch** - Enable strict origin isolation
+- **Clear-CORS-Preflight-Cache-on-clearing-data.patch** - Clear CORS cache
+- **Remove-window-name-on-cross-origin-navigation.patch** - Clear window name on navigation
+</Accordion>
+
+## User Interface & Customization
+
+<Accordion title="UI Enhancements (30+ patches)">
+- **Restore-classic-new-tab-page.patch** - Restore classic NTP
+- **Always-use-new-tab-page-for-default-home-page.patch** - Use NTP as home page
+- **Add-option-to-use-home-page-as-NTP.patch** - Allow custom NTP
+- **Show-NTP-at-startup.patch** - Show NTP on startup
+- **Restore-Simplified-NTP-launch.patch** - Simplified NTP interface
+- **Add-exit-menu-item.patch** - Add exit option to menu
+- **Remove-help-menu-item.patch** - Remove help menu
+- **Add-menu-item-to-view-source.patch** - Add view source menu item
+- **Add-menu-item-to-bookmark-all-tabs.patch** - Bookmark all tabs feature
+- **Enable-menu-on-reload-button.patch** - Add reload button menu
+- **Move-navigation-bar-to-bottom.patch** - Bottom navigation bar option
+- **Add-option-to-force-tablet-UI.patch** - Force tablet interface
+- **Android-Toolbar-Scroll-Ablation-setting.patch** - Prevent toolbar hiding
+- **Enable-darken-websites-checkbox-in-themes.patch** - Dark mode option
+- **Cromite-Branding.patch** - Cromite branding
+- **Cromite-Branding--improve-settings-ui.patch** - Enhanced settings UI
+- **Welcome-screen.patch** - Custom welcome screen
+- **Customize-selection-popup.patch** - Customizable text selection menu
+- **Enable-snackbar-swipe.patch** - Swipe to dismiss notifications
+- **Use-list-mode-for-tab-switcher.patch** - List view for tabs
+- **Bubble-Locking-on-UI-DevTools.patch** - UI DevTools improvements
+</Accordion>
+
+<Accordion title="Settings & Preferences (25+ patches)">
+- **Modify-default-preferences.patch** - Privacy-friendly default settings
+- **Do-not-store-passwords-by-default.patch** - Passwords not saved by default
+- **Disable-NTP-remote-suggestions-by-default.patch** - No remote NTP suggestions
+- **Add-option-to-not-persist-tabs-across-sessions.patch** - Don't save tabs
+- **Add-option-to-disable-snapshots.patch** - Disable tab screenshots
+- **Add-setting-to-clear-data-on-exit.patch** - Clear data on exit
+- **Add-setting-to-invert-tap-and-long-tap.patch** - Accessibility option
+- **History-number-of-days-privacy-setting.patch** - Configure history retention
+- **Move-some-account-settings-back-to-privacy-settings.patch** - Reorganize settings
+- **Add-an-always-incognito-mode.patch** - Always use incognito
+- **Keep-flag-to-allow-screenshots-in-Incognito-mode.patch** - Allow incognito screenshots
+- **Add-custom-tab-intents-privacy-option.patch** - Custom tabs privacy
+- **Add-a-proxy-configuration-page.patch** - Built-in proxy settings
+- **User-agent-customization.patch** - Customize user agent
+- **Client-hints-overrides.patch** - Override client hints
+- **Override-Navigator-Language.patch** - Language override
+- **Timezone-customization.patch** - Timezone customization
+- **Guard-for-user-agent-reduction.patch** - Prevent UA reduction
+- **Enable-Do-Not-Track-by-default.patch** - DNT enabled by default
+- **Enable-Global-Privacy-Control.patch** - GPC enabled by default
+</Accordion>
+
+## Content Settings & Site Permissions
+
+<Accordion title="Site Settings Infrastructure (15 patches)">
+- **Content-settings-infrastructure.patch** - Infrastructure for custom site settings
+- **Add-lifetime-options-for-permissions.patch** - Temporary permissions
+- **Add-autoplay-site-setting.patch** - Control autoplay per site
+- **Site-setting-for-images.patch** - Control images per site
+- **JIT-site-settings.patch** - Control JavaScript JIT per site
+- **Add-webGL-site-setting.patch** - Control WebGL per site
+- **Add-webRTC-site-settings.patch** - Control WebRTC per site
+- **Show-site-settings-for-cookies-javascript-and-ads.patch** - Enhanced site settings UI
+- **Change-popup-site-setting.patch** - Block all popups per site
+- **Private-network-access-content-settings.patch** - Control local network access
+- **Add-site-engagement-flag.patch** - Disable site engagement tracking
+- **Viewport-Protection-flag.patch** - Protect viewport information
+- **Add-a-flag-to-disable-GamePad-API.patch** - Disable GamePad API
+- **Disallowing-MIDI-permission-by-default.patch** - Block MIDI by default
+- **Disable-WebGPU.patch** - Disable WebGPU API
+</Accordion>
+
+## Browsing Features
+
+<Accordion title="Navigation & Browsing (15 patches)">
+- **Allow-playing-audio-in-background.patch** - Background audio playback
+- **Add-flag-to-control-video-playback-resume-feature.patch** - Video resume control
+- **Disable-BackForwardCache.patch** - Disable BFCache
+- **Disable-text-fragments-by-default.patch** - Disable text fragments
+- **Enable-share-intent.patch** - Share via Android intents
+- **Add-flag-to-disable-external-intent-requests.patch** - Block external app launches
+- **Block-Intents-While-Locked.patch** - Security for locked device
+- **Disallow-Android-App-Scheme-as-referrer.patch** - Remove app referrers
+- **Remove-HTTP-referrals-in-cross-origin-navigation.patch** - Remove cross-origin referrers
+- **Remove-auth-header-upon-cross-origin-redirect.patch** - Remove auth on redirects
+- **Disable-Sticky-User-Activation-Across-Same-Origin-Navigation.patch** - Reset activation
+- **Disable-BackForwardCache.patch** - Disable page caching
+- **Disable-offline-pages-in-CCT.patch** - No offline pages in custom tabs
+- **Enable-Document-Open-Inheritance-Removal.patch** - Security enhancement
+- **Revert-Permit-blocking-of-view-source.patch** - Allow view source
+</Accordion>
+
+<Accordion title="Downloads & Bookmarks (8 patches)">
+- **Do-not-ignore-download-location-prompt-setting.patch** - Always ask download location
+- **prefs-always-prompt-for-download-directory.patch** - Download prompts
+- **Add-support-for-writing-URIs.patch** - URI file writing support
+- **Restore-BookmarkToolbar-setCurrentFolder.patch** - Bookmark toolbar enhancement
+- **Add-bookmark-import-export-actions.patch** - Import/export bookmarks
+- **Bookmarks-select-all-menu-entry.patch** - Select all bookmarks
+- **Remove-blocklisted-URLs-upon-bookmark-creation.patch** - Clean bookmark URLs
+- **Enable-ImprovedBookmarks-by-default.patch** - Enhanced bookmarks UI
+</Accordion>
+
+## Search & Omnibox
+
+<Accordion title="Search Features (10 patches)">
+- **Add-search-engine.patch** - Add privacy-respecting search engines
+- **Restore-Search-Ready-Omnibox-flag.patch** - Search ready omnibox
+- **Add-flag-for-omnibox-autocomplete-filtering.patch** - Filter autocomplete sources
+- **Increase-number-of-autocomplete-matches-to-10.patch** - More suggestions
+- **Disable-requests-for-single-word-Omnibar-searches.patch** - No single word searches
+- **Dictionary-suggestions-for-the-Omnibox.patch** - Dictionary suggestions
+- **OpenSearch-miscellaneous.patch** - OpenSearch fixes
+- **Disable-Real-Box.patch** - Disable NTP search box
+- **Enable-search-engine-settings-desktop-ui.patch** - Desktop search settings
+- **Add-Alt-D-hotkey-to-focus-address-bar.patch** - Alt+D hotkey
+</Accordion>
+
+## AdBlock & Content Filtering
+
+<Accordion title="AdBlock Integration (5 patches)">
+- **Bromite-subresource-adblocker.patch** - Core adblock functionality
+- **eyeo-133.0.6943.49-base.patch** - Eyeo AdBlock base
+- **eyeo-133.0.6943.49-chrome_integration.patch** - Chrome integration
+- **eyeo-133.0.6943.49-android_api.patch** - Android API
+- **eyeo-133.0.6943.49-android_settings.patch** - Android settings
+- **eyeo-133.0.6943.49-extension_api.patch** - Extension API
+- **Eyeo-Adblock-for-Cromite.patch** - Cromite-specific adblock changes
+- **disable-AdsBlockedInfoBar.patch** - Hide ads blocked notifications
+</Accordion>
+
+## Performance & Stability
+
+<Accordion title="Performance Optimizations (12 patches)">
+- **Switch-to-fstack-protector-strong.patch** - Enhanced stack protection
+- **Enable-fwrapv-in-Clang-for-non-UBSan-builds.patch** - Safer integer handling
+- **Add-flag-to-configure-maximum-connections-per-host.patch** - Connection limits
+- **Use-64-bit-WebView-processes.patch** - 64-bit processes
+- **Enable-HighEfficiencyMode-by-default.patch** - Background tab freezing
+- **Add-PartialLowEndModeOnMidRangeDevices-flag.patch** - Low-end device mode
+- **Revert-flags-remove-num-raster-threads.patch** - Raster threads control
+- **Enable-Android-Dynamic-Performance-Framework.patch** - Performance framework
+- **enable-ftrivial-auto-var-init-zero.patch** - Variable initialization
+- **Disable-Service-and-Shared-workers-on-3P-iframe.patch** - Block 3P workers
+- **Immediately-destroy-shared-workers-when-closing-the-page.patch** - Worker cleanup
+- **Enable-Socket-Pool-Limit-Randomization.patch** - Socket pool randomization
+</Accordion>
+
+## Security Enhancements
+
+<Accordion title="Security Hardening (20+ patches)">
+- **Improve-the-browser-sandbox.patch** - Enhanced sandboxing
+- **Enable-StrictOriginIsolation-and-SitePerProcess.patch** - Process isolation
+- **Enable-Certificate-Transparency.patch** - Certificate transparency
+- **Invalidate-components-public-key.patch** - Prevent component usage
+- **Enable-Cert-Management-UI.patch** - Certificate management
+- **Add-AllowUserCertificates-flag.patch** - User certificate control
+- **Add-IsCleartextPermitted-flag.patch** - Cleartext traffic control
+- **Disable-some-signed-exchange-features.patch** - Disable SXG
+- **Enable-Certificate-Transparency.patch** - CT enforcement
+- **Lock-Profile-Cookie-Database.patch** - Cookie DB protection
+- **Disable-devtools-remote-and-custom-protocols.patch** - Secure DevTools
+- **Remove-ChromiumNetworkAdapter.patch** - Remove Java network access
+- **Warning-message-for-unsupported-hardware-aes.patch** - AES warnings
+- **enable-gwp-asan-on-Android.patch** - Memory safety
+- **Supporting-Dangling-Ptr-Detection-via-BackupRefPtr.patch** - Pointer safety
+- **Log-dangling-attributes-in-some-html-elements.patch** - Security logging
+</Accordion>
+
+## Extension Support
+
+<Accordion title="Extensions (5 patches)">
+- **Experimental-support-for-extensions-on-Android.patch** - Android extension support
+- **Enable-extension-in-incognito.patch** - Extensions in incognito
+- **Chrome-web-store-protection.patch** - Privacy-enhanced extension install
+- **Override-the-MV2-deprecation.patch** - Keep Manifest V2 support
+- **Allow-building-without-enable_reporting.patch** - Build without reporting
+</Accordion>
+
+## Platform-Specific Patches
+
+<Accordion title="Windows Platform (15 patches)">
+- **WIN-enable-pdf-plugin.patch** - PDF viewer support
+- **WIN-disable-annotate-downloads.patch** - Disable download annotation
+- **WIN-Disable-TabHoverCard-images.patch** - Disable tab hover previews
+- **WIN-Fix-log-to-file.patch** - Logging fixes
+- **WIN-Disable-updater.patch** - Disable auto-updater
+- **WIN-Disable-first-run.patch** - Skip first run
+- **WIN-Add-some-prefs-to-secure-preferences.patch** - Secure preferences
+- **WIN-Disable-search-for-image.patch** - Disable image search
+- **Do-not-use-Windows-ClearType-Text-Tuner-setting.patch** - Font rendering
+- **Prevent-mouse-wheel-fingerprinting-on-Windows.patch** - Mouse wheel privacy
+- **Enable-Cert-Management-UI.patch** - Certificate UI
+- **Disable-Web-Bluetooth-by-default-in-desktop-platforms.patch** - Bluetooth control
+</Accordion>
+
+<Accordion title="Android Platform (10 patches)">
+- **Bromite-package-name.patch** - Cromite package naming
+- **Enable-native-Android-autofill.patch** - Native autofill support
+- **Logcat-crash-reports-UI.patch** - Crash reporting UI
+- **Enable-share-intent.patch** - Share functionality
+- **Disable-Android-AppRestrictions.patch** - Remove app restrictions
+- **Disable-Android-Tab-Declutter.patch** - Disable tab declutter
+- **Enable-platform-aac-audio-and-h264-video.patch** - Native media codecs
+- **Android-fonts-fingerprinting-mitigation.patch** - Font privacy
+- **Android-Pixel-Perfect-Mode.patch** - Display geometry protection (WIP)
+- **Add-cromite-test-support.patch** - Testing support
+</Accordion>
+
+## Developer Features
+
+<Accordion title="Developer Tools (8 patches)">
+- **Add-cromite-test-support.patch** - Test automation support
+- **Add-support-for-ISupportHelpAndFeedback.patch** - Feedback support
+- **Bubble-Locking-on-UI-DevTools.patch** - UI DevTools enhancements
+- **Always-allow-inspect-fallback.patch** - Remote debugging
+- **Enables-deactivation-of-the-js-debugger-statement.patch** - Debugger control
+- **Experimental-user-scripts-support.patch** - User scripts functionality
+- **Add-kill-switch-for-unsupported-clangd-flags.patch** - Build compatibility
+- **Add-a-GN-flag-to-disable-trybot-verification.patch** - Build system
+</Accordion>
+
+## Miscellaneous Features
+
+<Accordion title="Additional Features (15 patches)">
+- **Bromite-auto-updater.patch** - Built-in update checker
+- **Enable-component-updater.patch** - Component updates
+- **autofill-miscellaneous.patch** - Autofill improvements
+- **translate-disable-fetching-of-languages-from-server.patch** - Offline translate
+- **profile-resetter-disable-send-settings.patch** - Profile reset privacy
+- **Disable-feeds-support-by-default.patch** - Disable news feeds
+- **Disable-smart-selection-by-default.patch** - Smart selection control
+- **Disable-the-DIAL-repeating-discovery.patch** - Disable DIAL
+- **Hardening-against-incognito-mode-detection.patch** - Incognito protection
+- **Restore-offline-indicator-v2-flag.patch** - Offline indicator
+- **Restore-LastTabStandingTracker.patch** - Last tab tracker
+- **Keep-empty-tabs-between-sessions.patch** - Empty tab persistence
+- **Restore-adaptive-button-in-top-toolbar-customization.patch** - Adaptive button
+- **Add-flag-to-disable-vibration.patch** - Vibration control
+- **mime_util-force-text-x-suse-ymp-to-be-downloaded.patch** - MIME handling
+</Accordion>
+
+## Temporary & WIP Patches
+
+<Accordion title="Work in Progress (10 patches)">
+- **Temp-disable-predictive-back-gesture.patch** - Predictive back gesture fix
+- **TEMP-Add-a-log-to-track-strange-behavior.patch** - Debug logging
+- **Temp-guard-FileSystemAccessPersistentPermissions.patch** - File system access
+- **Never-treat-Proguard-warnings-as-errors.patch** - Build fix
+- **Temp-disable-experimental-web-platform-features.patch** - Platform features
+- **Block-leakage-of-urls-in-sandbox-iframes.patch** - Sandbox iframe protection (WIP)
+- **Fix-chromium-build-bugs.patch** - Build bug fixes
+- **Try-to-fix-2082.patch** - Issue fix
+- **Temp-use-PREVIEW-for-IDCompositionDevice5.patch** - Windows fix
+- **Temp-disable-UseContextSnapshot.patch** - Context snapshot fix
+- **Android-Pixel-Perfect-Mode.patch** - Display protection (WIP - contains visual glitches)
+- **Allow-the-download-of-clang-for-windows-crossbuild.patch** - Cross-compilation support
+</Accordion>
+
+## Disabled Features
+
+<Accordion title="Permanently Disabled APIs & Features (25+ patches)">
+- **Disable-privacy-sandbox.patch** - FLoC, Topics, Fledge
+- **Disable-FedCm.patch** - Federated Credential Management
+- **Disable-WebGPU.patch** - WebGPU API
+- **Disable-GetInstalledRelatedApps-API.patch** - Related apps API
+- **Disable-GSA-by-default.patch** - Google Search App integration
+- **Disable-idle-detection.patch** - Idle Detection API
+- **Disable-Compression-Dictionary-Transport.patch** - Compression dictionary
+- **Disable-DRM-media-origin-IDs-preprovisioning.patch** - DRM provisioning
+- **Disable-Device-Attributes-API.patch** - Device attributes
+- **Disable-Posture-API.patch** - Device posture
+- **Disable-CSSDynamicRangeLimit.patch** - HDR brightness control
+- **Disable-prefers-reduced-motion.patch** - Reduced motion query
+- **Disable-css-preferred-text-scale.patch** - Font scale query
+- **Disable-Viewport-Segments.patch** - Foldable device API
+- **Disable-visited-pseudo-class.patch** - :visited CSS selector
+- **Disable-CSS-blink-feature-support.patch** - Internal CSS selectors
+- **Keep-ComputePressure-disabled.patch** - Compute Pressure API
+- **Keep-disabled-CpuPerformance.patch** - CPU Performance API
+- **Keep-disabled-FetchLaterAPI.patch** - FetchLater API
+- **Keep-disabled-WebViewMediaIntegrityApi.patch** - Media integrity
+- **Keep-disabled-cache-sharing-for-pervasive-scripts.patch** - Cache sharing
+- **Keep-Side-Panel-Companion-disabled.patch** - Side panel
+- **Keep-Manta-Service-Disabled.patch** - Manta service
+- **Disable-PrivacyGuide.patch** - Privacy guide
+- **Disable-minidump-upload-scheduling.patch** - Crash uploads
+</Accordion>
+
+---
+
+<Info>
+**Patch Documentation**
+
+For the most up-to-date list of patches and detailed descriptions, see:
+- [PATCHES.md](https://github.com/uazo/cromite/blob/master/docs/PATCHES.md) - Detailed patch table
+- [Patches directory](https://github.com/uazo/cromite/tree/master/build/patches) - Full patch files
+</Info>

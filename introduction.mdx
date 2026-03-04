@@ -1,0 +1,257 @@
+---
+title: Introduction
+description: Take back your browser with Cromite - a privacy-focused Chromium fork with built-in ad blocking and tracking protection
+mode: custom
+---
+
+<div className="relative overflow-hidden bg-gradient-to-b from-[#34373b] to-[#1a1d27] dark:from-[#34373b] dark:to-[#0f1117] py-20">
+  <div className="max-w-6xl mx-auto px-6 lg:px-8">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+      <div className="lg:col-span-7">
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6">
+          Take Back Your Browser
+        </h1>
+        <p className="text-lg sm:text-xl text-gray-300 dark:text-gray-300 mb-8 max-w-2xl">
+          Cromite is a privacy-focused Chromium fork with built-in ad blocking, comprehensive anti-fingerprinting, and complete Google service removal. Browse the web on your terms.
+        </p>
+        <div className="flex flex-wrap gap-4">
+          <a 
+            href="/installation" 
+            className="inline-flex items-center px-6 py-3 bg-[#9a9d9e] hover:bg-[#7a7d7e] text-white font-semibold rounded-lg transition-colors"
+          >
+            Get Started
+          </a>
+          <a 
+            href="/features/overview" 
+            className="inline-flex items-center px-6 py-3 border border-white/30 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-lg transition-colors"
+          >
+            Explore Features
+          </a>
+        </div>
+      </div>
+      <div className="lg:col-span-5 flex justify-center lg:justify-end">
+        <div className="relative w-64 h-64 lg:w-80 lg:h-80">
+          <div className="absolute inset-0 bg-[#9a9d9e]/20 rounded-full blur-3xl"></div>
+          <img 
+            src="/logo.png" 
+            alt="Cromite Browser Logo" 
+            className="relative w-full h-full object-contain"
+            noZoom
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div className="mt-16 mb-16 max-w-5xl mx-auto px-6">
+  <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900 dark:text-white mb-4">
+    Why Cromite?
+  </h2>
+  <p className="text-base text-gray-600 dark:text-gray-400 mb-8">
+    Cromite combines the performance of Chromium with uncompromising privacy and security. Built on the foundation of Bromite, it continues the mission to give users full control over their browsing experience.
+  </p>
+
+  <CardGroup cols={3}>
+    <Card title="Privacy First" icon="shield" href="/features/privacy">
+      Complete Google service removal, third-party cookie partitioning, and tracking protection built-in
+    </Card>
+    <Card title="Ad Blocking" icon="ban" href="/features/ad-blocking">
+      Integrated AdBlock Plus engine with CNAME uncloaking and WebSocket blocking
+    </Card>
+    <Card title="Anti-Fingerprinting" icon="eye-slash" href="/features/anti-fingerprinting">
+      Canvas randomization, WebGL protection, and comprehensive API mitigations
+    </Card>
+    <Card title="Enhanced Security" icon="lock" href="/features/security">
+      JIT disabled by default, DOH secure mode, and certificate transparency enabled
+    </Card>
+    <Card title="Cross-Platform" icon="laptop-mobile" href="/installation">
+      Available for Android (ARM64, ARM32, x86), Windows x64, and Linux x64
+    </Card>
+    <Card title="Open Source" icon="code-branch" href="/development/building">
+      Fully transparent with 332+ patches - build it yourself or use official releases
+    </Card>
+  </CardGroup>
+</div>
+
+<div className="mt-16 mb-16 max-w-5xl mx-auto px-6">
+  <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900 dark:text-white mb-4">
+    Quick Start
+  </h2>
+  <p className="text-base text-gray-600 dark:text-gray-400 mb-8">
+    Get Cromite up and running in minutes
+  </p>
+
+  <Steps>
+    <Step title="Download Cromite for your platform">
+      Visit the [GitHub Releases](https://github.com/uazo/cromite/releases/latest) page and download the appropriate package:
+      
+      - **Android**: `arm64_ChromePublic.apk` (for most devices), `arm_ChromePublic.apk`, or `x64_ChromePublic.apk`
+      - **Windows**: `chrome-win.zip`
+      - **Linux**: `chrome-lin64.tar.gz`
+
+      <Note>
+        For Android, you can also use the [official F-Droid repository](https://www.cromite.org/fdroid/repo) for automatic updates.
+      </Note>
+    </Step>
+
+    <Step title="Install the browser">
+      <Tabs>
+        <Tab title="Android">
+          1. Enable installation from unknown sources in your device settings
+          2. Open the downloaded APK file
+          3. Follow the installation prompts
+          4. Grant necessary permissions when prompted
+        </Tab>
+        <Tab title="Windows">
+          1. Extract `chrome-win.zip` to your preferred location
+          2. Run `icacls . /grant "*S-1-15-2-2:(OI)(CI)(RX)"` to enable network process sandbox
+          3. Launch `chrome.exe`
+          4. (Optional) Set up auto-updates with [chrlauncher](https://github.com/henrypp/chrlauncher/releases)
+        </Tab>
+        <Tab title="Linux">
+          1. Extract `chrome-lin64.tar.gz`: `tar -xzf chrome-lin64.tar.gz`
+          2. Move to your applications directory
+          3. Launch `chrome-lin/chrome`
+          4. On Ubuntu 24.04+, configure AppArmor for unprivileged namespaces
+        </Tab>
+      </Tabs>
+    </Step>
+
+    <Step title="Configure your privacy settings">
+      On first launch, Cromite will ask about auto-updates and other privacy settings. Review and configure:
+      
+      - **Auto-updates**: Enable to receive notifications about new releases (Android only)
+      - **Ad blocking**: Pre-configured with default filter lists at `chrome://adblock`
+      - **Search engine**: Choose your preferred search engine (defaults are privacy-respecting)
+      - **JIT compilation**: Disabled by default for security - enable per-site if needed
+
+      <Tip>
+        Visit `chrome://flags` to explore advanced privacy and security features, including always-incognito mode and external intent blocking.
+      </Tip>
+    </Step>
+
+    <Step title="Start browsing privately">
+      You're all set! Cromite is now protecting your privacy with:
+      
+      - ✅ Built-in ad blocking
+      - ✅ Anti-fingerprinting mitigations
+      - ✅ Third-party cookie partitioning
+      - ✅ No Google service connections
+      - ✅ Enhanced security features
+
+      Explore the [Features](/features/overview) documentation to learn about advanced capabilities.
+    </Step>
+  </Steps>
+</div>
+
+<div className="mt-16 mb-16 max-w-5xl mx-auto px-6">
+  <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900 dark:text-white mb-4">
+    Platform Guides
+  </h2>
+  <p className="text-base text-gray-600 dark:text-gray-400 mb-8">
+    Platform-specific setup and configuration
+  </p>
+
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <a href="/platform-guides/android" className="group block rounded-2xl border border-gray-200 dark:border-[#27272a] hover:border-[#9a9d9e] dark:hover:border-[#9a9d9e] overflow-hidden no-underline transition-colors">
+      <div className="h-48 bg-gray-100 dark:bg-[#1a1d27] flex items-center justify-center overflow-hidden">
+        <div className="text-6xl">📱</div>
+      </div>
+      <div className="p-5 bg-white dark:bg-[#1a1d27]">
+        <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-2">Android Setup</h3>
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+          Install on Android devices with F-Droid integration and auto-updates
+        </p>
+        <span className="inline-flex items-center text-sm font-medium text-[#9a9d9e] group-hover:text-[#7a7d7e]">
+          Learn more
+          <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </span>
+      </div>
+    </a>
+
+    <a href="/platform-guides/windows" className="group block rounded-2xl border border-gray-200 dark:border-[#27272a] hover:border-[#9a9d9e] dark:hover:border-[#9a9d9e] overflow-hidden no-underline transition-colors">
+      <div className="h-48 bg-gray-100 dark:bg-[#1a1d27] flex items-center justify-center overflow-hidden">
+        <div className="text-6xl">💻</div>
+      </div>
+      <div className="p-5 bg-white dark:bg-[#1a1d27]">
+        <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-2">Windows Setup</h3>
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+          Configure Windows with enhanced sandbox and network protection
+        </p>
+        <span className="inline-flex items-center text-sm font-medium text-[#9a9d9e] group-hover:text-[#7a7d7e]">
+          Learn more
+          <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </span>
+      </div>
+    </a>
+
+    <a href="/platform-guides/linux" className="group block rounded-2xl border border-gray-200 dark:border-[#27272a] hover:border-[#9a9d9e] dark:hover:border-[#9a9d9e] overflow-hidden no-underline transition-colors">
+      <div className="h-48 bg-gray-100 dark:bg-[#1a1d27] flex items-center justify-center overflow-hidden">
+        <div className="text-6xl">🐧</div>
+      </div>
+      <div className="p-5 bg-white dark:bg-[#1a1d27]">
+        <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-2">Linux Setup</h3>
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+          Deploy on Linux with AppArmor configuration for Ubuntu 24.04+
+        </p>
+        <span className="inline-flex items-center text-sm font-medium text-[#9a9d9e] group-hover:text-[#7a7d7e]">
+          Learn more
+          <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </span>
+      </div>
+    </a>
+  </div>
+</div>
+
+<div className="mt-16 mb-16 max-w-5xl mx-auto px-6">
+  <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900 dark:text-white mb-4">
+    Resources & Community
+  </h2>
+  
+  <CardGroup cols={2}>
+    <Card title="FAQ" icon="circle-question" href="/reference/faq">
+      Common questions about Cromite features, limitations, and usage
+    </Card>
+    <Card title="Privacy Policy" icon="file-shield" href="/reference/privacy-policy">
+      Detailed breakdown of data collection and third-party connections
+    </Card>
+    <Card title="GitHub Discussions" icon="comments" href="https://github.com/uazo/cromite/discussions">
+      Join the community to discuss features and ask questions
+    </Card>
+    <Card title="Report Issues" icon="bug" href="https://github.com/uazo/cromite/issues">
+      Found a bug or have a feature request? Let us know
+    </Card>
+  </CardGroup>
+</div>
+
+<div className="mt-20 mb-16 max-w-5xl mx-auto px-6">
+  <div className="rounded-2xl bg-gradient-to-br from-[#34373b] to-[#1a1d27] dark:from-[#34373b] dark:to-[#242838] p-8 sm:p-12 border border-gray-200 dark:border-[#27272a]">
+    <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
+      Ready to take control of your privacy?
+    </h2>
+    <p className="text-base sm:text-lg text-gray-300 dark:text-gray-300 mb-6 max-w-2xl">
+      Download Cromite today and experience browsing without tracking, ads, or Google services.
+    </p>
+    <div className="flex flex-col sm:flex-row gap-4">
+      <a 
+        href="https://github.com/uazo/cromite/releases/latest" 
+        className="inline-flex items-center justify-center px-6 py-3 bg-[#9a9d9e] hover:bg-[#7a7d7e] text-white font-semibold rounded-lg transition-colors no-underline"
+      >
+        Download Latest Release
+      </a>
+      <a 
+        href="/development/building" 
+        className="inline-flex items-center justify-center px-6 py-3 border border-white/30 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-lg transition-colors no-underline"
+      >
+        Build from Source
+      </a>
+    </div>
+  </div>
+</div>

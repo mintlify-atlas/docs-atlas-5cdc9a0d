@@ -1,0 +1,351 @@
+---
+title: 'Anti-Fingerprinting'
+description: 'Comprehensive fingerprinting mitigations for Canvas, WebGL, Media APIs, and more'
+icon: 'fingerprint'
+---
+
+Cromite provides comprehensive protection against browser fingerprinting through API disabling, spoofing, and active mitigations. Fingerprinting is a tracking technique that creates unique identifiers based on your browser and device characteristics.
+
+## Disabled APIs
+
+Cromite disables numerous APIs that can be used for fingerprinting:
+
+<AccordionGroup>
+  <Accordion title="Device and Sensor APIs">
+    APIs that expose device-specific information:
+
+    - **Battery API** - Disabled by default
+      - Prevents battery level fingerprinting
+      - See: https://www.w3.org/TR/battery-status/#security-and-privacy-considerations
+    
+    - **ComputePressure API** - Disabled by default
+      - Prevents CPU pressure fingerprinting
+      - See: https://www.w3.org/TR/compute-pressure/#security-and-privacy-considerations
+    
+    - **Idle Detection** - Disabled
+      - Prevents idle state detection
+      - See: https://wicg.github.io/idle-detection/#security-and-privacy
+    
+    - **GamePad API** - Disabled by default
+      - Prevents gamepad enumeration fingerprinting
+      - Also disables gamepadconnected and gamepaddisconnected events
+      - See: https://www.w3.org/TR/gamepad/#fingerprinting-mitigation
+      - Additional context: https://jshelter.org/gp/
+    
+    - **Posture API** - Disabled by default
+      - Prevents device posture fingerprinting (folding devices)
+      - See: https://github.com/w3c/device-posture/blob/gh-pages/security-privacy-self-assessment.md
+    
+    - **MIDI permission** - Disabled by default
+      - Prevents MIDI device enumeration
+  </Accordion>
+
+  <Accordion title="Graphics and Media APIs">
+    APIs that can fingerprint via rendering or media capabilities:
+
+    - **WebGL** - Disabled by default
+      - Prevents GPU fingerprinting via rendering
+      - Major fingerprinting vector when enabled
+    
+    - **WebGPU** - Disabled
+      - Prevents next-generation GPU fingerprinting
+    
+    - **Canvas API** - Mitigations enabled (not fully disabled)
+      - Active fingerprinting mitigations applied
+      - Adds noise to canvas rendering
+    
+    - **DRM media** - Disabled
+      - Prevents Encrypted Media Extensions fingerprinting
+    
+    - **SpeechSynthesis API** - Disabled
+      - Prevents voice enumeration fingerprinting
+  </Accordion>
+
+  <Accordion title="Client and User Identification APIs">
+    APIs that directly identify or profile users:
+
+    - **Client Hints API** - Disabled
+      - Prevents high-entropy client identification
+      - See: https://wicg.github.io/client-hints-infrastructure/#privacy
+    
+    - **UA full version and getHighEntropyValues()** - Disabled
+      - Prevents detailed User-Agent fingerprinting
+    
+    - **GetInstalledRelatedApps API** - Disabled
+      - Prevents installed app enumeration
+      - See: https://wicg.github.io/get-installed-related-apps/EXPLAINER.html
+    
+    - **FedCm (Federated Credential Management)** - Disabled
+      - Prevents federated identity tracking
+      - See: https://w3c-fedid.github.io/FedCM/#privacy
+  </Accordion>
+
+  <Accordion title="Network and Tracking APIs">
+    APIs that enable network-based fingerprinting:
+
+    - **Variations and field trials** - Disabled
+      - Prevents A/B test fingerprinting
+      - Disables activation, fetch, and reporting to sites
+    
+    - **Compression Dictionary Transport** - Disabled
+      - Prevents dictionary-based fingerprinting
+      - See: https://github.com/WICG/compression-dictionary-transport
+    
+    - **Beacon API** - Disabled
+      - Prevents tracking beacon fingerprinting
+      - See: https://w3c.github.io/beacon/#privacy-and-security
+    
+    - **FetchLater API** - Disabled
+      - Prevents delayed fetch fingerprinting
+      - See: https://chromestatus.com/feature/4654499737632768
+    
+    - **TLS resumption** - Disabled
+      - Prevents TLS session fingerprinting
+      - See: https://arxiv.org/abs/1810.07304
+  </Accordion>
+
+  <Accordion title="Other Fingerprinting Vectors">
+    - **CSS blink-feature() support** - Disabled
+      - Prevents CSS feature detection fingerprinting
+    
+    - **Visited pseudo class** - Disabled
+      - Prevents browser history fingerprinting
+    
+    - **Pointer device ID** - Disabled
+      - Prevents pointer device fingerprinting
+      - See: https://groups.google.com/a/chromium.org/g/blink-dev/c/3eU-AHH8x4k
+    
+    - **prefers-reduced-transparency media query** - Disabled
+      - Prevents accessibility setting fingerprinting
+      - See: https://groups.google.com/a/mozilla.org/g/dev-platform/c/l410J8odZjA
+    
+    - **Caret blink setting retrieval** - Disabled
+      - Prevents caret customization fingerprinting
+    
+    - **Screen frame rate retrieval** - Disabled
+      - Prevents actual frame rate fingerprinting
+  </Accordion>
+</AccordionGroup>
+
+## Active Mitigations
+
+For APIs that cannot be completely disabled without breaking functionality, Cromite applies active fingerprinting mitigations:
+
+### Canvas and Rect API
+
+<Info>
+Canvas fingerprinting is one of the most powerful fingerprinting techniques. Cromite enables canvas fingerprinting mitigations that add noise to canvas rendering operations.
+</Info>
+
+**How it works:**
+- Adds imperceptible noise to canvas pixel data
+- Makes canvas fingerprints unique per session/domain
+- Maintains visual appearance for legitimate use
+- Breaks canvas-based fingerprinting scripts
+
+### Media API Mitigations
+
+Cromite implements comprehensive media API fingerprinting protections:
+
+<Accordion title="Audio Fingerprinting Protection">
+  Audio fingerprinting uses subtle differences in audio processing to identify browsers.
+
+  **Protected APIs:**
+  - **AudioBuffer** - Adds noise to audio buffer data
+  - **AnalyserNode** - Protects frequency analysis data
+  
+  Reference: https://fingerprint.com/blog/audio-fingerprinting/
+
+  **How it works:**
+  - Adds imperceptible noise to audio processing
+  - Randomizes timing information
+  - Maintains audio quality for playback
+</Accordion>
+
+### MediaDevice ID Partitioning
+
+<Note>
+MediaDevice IDs (camera, microphone identifiers) are partitioned by default, preventing cross-site device tracking.
+</Note>
+
+**Behavior:**
+- Each site sees different MediaDevice IDs
+- Same device has different ID per site
+- Prevents device-based tracking
+
+### WebRTC Protections
+
+<Warning>
+WebRTC is disabled by default, but when enabled, Cromite protects against IP address leakage.
+</Warning>
+
+- **Do not expose local IP addresses with WebRTC**
+- WebRTC disabled by default (can be enabled per-site)
+- Prevents WebRTC IP leak vulnerability
+
+## Spoofing and Overrides
+
+Cromite spoofs or randomizes several fingerprinting vectors:
+
+### Navigator API Overrides
+
+<CardGroup cols={2}>
+  <Card title="navigator.language" icon="language">
+    Language API overridden to prevent language fingerprinting
+  </Card>
+  <Card title="navigator.connection" icon="wifi">
+    Connection info spoofed to prevent network fingerprinting
+  </Card>
+  <Card title="navigator.deviceMemory" icon="memory">
+    Device memory spoofed to prevent hardware fingerprinting
+  </Card>
+  <Card title="navigator.hardwareConcurrency" icon="microchip">
+    CPU core count spoofed to prevent CPU fingerprinting
+  </Card>
+</CardGroup>
+
+### Timezone Protection
+
+<Tip>
+Cromite allows you to specify a custom timezone or use a random one, preventing timezone-based fingerprinting and correlation.
+</Tip>
+
+**Options:**
+- Use system timezone (default, fingerprinting risk)
+- Specify custom timezone (e.g., UTC)
+- Use random timezone per session
+- Use random timezone per domain
+
+### Viewport Protection
+
+**Viewport Protection site setting** - Prevents screen resolution and window size fingerprinting
+
+<Note>
+Viewport dimensions are a strong fingerprinting signal. Viewport protection normalizes or randomizes viewport information.
+</Note>
+
+## Incognito Mode Protections
+
+<Info>
+Cromite includes hardening against incognito mode detection, preventing sites from determining if you're browsing in incognito mode.
+</Info>
+
+Many fingerprinting scripts detect incognito mode through:
+- FileSystem API availability
+- Quota API responses
+- Storage behavior differences
+
+Cromite normalizes these behaviors to prevent detection.
+
+## Network Fingerprinting Protections
+
+### Remote AltSvc Restrictions
+
+- **Disable remote altsvc for h3 connections on non-443 port**
+  - Prevents HTTP/3 QUIC fingerprinting on non-standard ports
+
+### Multi-Screen Window Placement API
+
+- **Multi-Screen Window Placement API fix** - Fixes `screen.isExtended` fingerprinting
+  - Prevents multi-monitor configuration fingerprinting
+
+### Private Network Access
+
+- **Private network access content settings** - Prevents probing of local network resources for fingerprinting
+
+## DocumentPiP API Restriction
+
+<Warning>
+The DocumentPiP API is only allowed when the popup content setting is explicitly allowed.
+</Warning>
+
+- Prevents unauthorized Picture-in-Picture tracking
+- See: https://wicg.github.io/document-picture-in-picture/#privacy-considerations
+
+## Platform-Specific Protections
+
+### Android
+
+<Accordion title="Android-Specific Mitigations">
+  - **Do not follow night mode for dark mode preference** when theme is set to system default
+    - Prevents dark mode fingerprinting
+  
+  - **Replaces system fonts with a predefined set**
+    - Prevents font-based fingerprinting
+    - See: https://github.com/uazo/cromite/issues/1829
+</Accordion>
+
+### Desktop
+
+<Accordion title="Desktop-Specific Mitigations">
+  - **Enable HighEfficiencyMode by default**
+    - Normalizes performance characteristics
+  
+  - **Enable percent-based scrolling for mousewheel**
+    - Prevents scroll fingerprinting
+  
+  - **Enable Keyboard Layout API mitigation**
+    - Prevents keyboard layout fingerprinting
+  
+  - **Disable Bluetooth API by default**
+    - Prevents Bluetooth device enumeration
+</Accordion>
+
+### Windows
+
+<Accordion title="Windows-Specific Mitigations">
+  - **Disable Windows ClearType Text Tuner setting** (active in RDP sessions)
+    - Prevents font rendering fingerprinting
+  
+  - **Hide presence of webcam** if user has not given permission
+    - Prevents webcam enumeration fingerprinting
+  
+  - **PublicKeyCredential fingerprinting mitigations**
+    - Protects WebAuthn from fingerprinting
+    - See: #1758
+  
+  - **Disable use of non-standard and local fonts**
+    - Prevents font enumeration fingerprinting
+    - Major fingerprinting vector eliminated
+</Accordion>
+
+## Hardware Security
+
+<Warning>
+Cromite displays a warning message for unsupported hardware AES.
+</Warning>
+
+Some fingerprinting techniques detect hardware cryptography support. The warning helps users understand when their hardware lacks AES acceleration, which could be used for fingerprinting.
+
+## Trade-offs
+
+<Note>
+**Important considerations:**
+
+Anti-fingerprinting protections can break some legitimate functionality:
+
+- **WebGL disabled** - Breaks WebGL games and 3D visualizations
+- **Canvas noise** - May break canvas-based captchas (rare)
+- **Spoofed navigator properties** - May cause incorrect language/locale detection
+- **Disabled APIs** - Some web apps require gamepad, WebRTC, or other APIs
+
+**Recommendation:** Enable features per-site as needed via site settings.
+</Note>
+
+## Testing Your Fingerprint
+
+You can test Cromite's anti-fingerprinting effectiveness using:
+
+- **AmIUnique** - https://amiunique.org/
+- **Panopticlick** - https://panopticlick.eff.org/
+- **BrowserLeaks** - https://browserleaks.com/
+- **Cover Your Tracks** - https://coveryourtracks.eff.org/
+
+<Tip>
+With Cromite's anti-fingerprinting features enabled, you should see:
+
+- Many APIs reported as "not available"
+- Randomized canvas/audio fingerprints
+- Normalized navigator properties
+- Hidden device characteristics
+</Tip>

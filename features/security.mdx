@@ -1,0 +1,316 @@
+---
+title: 'Security Features'
+description: 'Enhanced security with JIT disabled, DOH, certificate transparency, and sandboxing'
+icon: 'lock'
+---
+
+Cromite provides enhanced security features beyond standard Chromium, including JIT compilation disabled by default, improved sandboxing, certificate transparency, and DNS-over-HTTPS.
+
+## JIT Compilation Disabled
+
+<Warning>
+**Just-In-Time (JIT) compilation is disabled by default** for security reasons.
+</Warning>
+
+JIT compilation is a major attack surface in modern browsers. Disabling JIT eliminates entire classes of vulnerabilities:
+
+### Why Disable JIT?
+
+- **Attack Surface Reduction** - JIT engines are complex and frequently targeted
+- **Memory Safety** - JIT-related memory corruption vulnerabilities eliminated
+- **Exploit Mitigation** - Many browser exploits rely on JIT spraying and manipulation
+- **Zero-day Protection** - Prevents exploitation of unknown JIT vulnerabilities
+
+### Performance Impact
+
+<Info>
+Disabling JIT will impact JavaScript performance on complex web applications. Most websites will work fine, but JavaScript-heavy apps may be slower.
+</Info>
+
+**What to expect:**
+- Normal browsing: Minimal impact
+- Complex web apps: Noticeable slowdown
+- JavaScript games: Significant performance reduction
+- Simple sites: No noticeable difference
+
+**Configuration:**
+JIT can be re-enabled per-site or globally via `chrome://flags` if needed.
+
+## Isolation and Sandboxing
+
+### Origin Isolation
+
+Cromite enables strict origin isolation by default:
+
+<CardGroup cols={2}>
+  <Card title="StrictOriginIsolation" icon="shield-halved">
+    Ensures each origin runs in its own process
+  </Card>
+  <Card title="SitePerProcess" icon="cubes">
+    Each site gets its own renderer process
+  </Card>
+</CardGroup>
+
+**Security benefits:**
+- Cross-origin attacks prevented
+- Process-level isolation between sites
+- Spectre/Meltdown mitigation
+- Memory safety between origins
+
+### Document Isolation
+
+<Note>
+Document Open Inheritance and CookieURL Removal enabled to prevent inheritance-based attacks.
+</Note>
+
+Reference: https://docs.google.com/document/d/1_89X4cNUab-PZE0iBDTKIftaQZsFbk7SbFmHbqY54os/edit
+
+Prevents documents from inheriting security contexts inappropriately.
+
+## DNS-over-HTTPS (DoH)
+
+<Info>
+**DOH secure mode is enabled by default** for DNS privacy and security.
+</Info>
+
+DNS-over-HTTPS encrypts DNS queries, preventing:
+- DNS hijacking
+- DNS-based tracking
+- ISP DNS logging
+- Man-in-the-middle DNS attacks
+
+### DoH Configuration
+
+Cromite uses secure DoH providers by default (not Google DNS):
+- Queries are encrypted via HTTPS
+- DNS provider cannot correlate queries with IP address easily
+- ISP cannot see DNS queries
+
+**Headers reduced:** HTTP headers in DoH requests are reduced to bare minimum to prevent fingerprinting.
+
+## Certificate Transparency
+
+**Certificate Transparency is enabled by default** for enhanced HTTPS security.
+
+### What is Certificate Transparency?
+
+Certificate Transparency (CT) is a security mechanism that:
+- Logs all issued TLS certificates publicly
+- Allows detection of mis-issued certificates
+- Prevents certificate-based man-in-the-middle attacks
+- Provides audit trail for certificate issuance
+
+<Tip>
+With CT enabled, Cromite will reject certificates that don't appear in CT logs, protecting against rogue certificate authorities.
+</Tip>
+
+## Enhanced Sandboxing (Windows)
+
+Cromite significantly improves the browser sandbox on Windows:
+
+<AccordionGroup>
+  <Accordion title="Network Service Sandbox">
+    The network service runs in a separate sandbox process:
+    
+    - Network operations isolated from renderer
+    - Prevents network-based exploits from escaping
+    - Additional process boundary for security
+  </Accordion>
+
+  <Accordion title="Code Integrity Guard (CIG)">
+    CIG prevents dynamic code loading:
+    
+    - Blocks unsigned DLL injection
+    - Prevents code injection attacks
+    - Hardens renderer processes
+    - Enabled by default in sandbox
+  </Accordion>
+
+  <Accordion title="Arbitrary Code Guard (ACG)">
+    **ACG is enabled by default** to prevent dynamic code execution:
+    
+    - Prevents runtime code generation
+    - Blocks JIT-based exploits
+    - Prevents memory exploitation techniques
+    - Major security hardening feature
+    
+    <Warning>
+    ACG may break some browser extensions or web apps that rely on dynamic code generation.
+    </Warning>
+  </Accordion>
+
+  <Accordion title="File System Access Blocklist">
+    File system access blocklist enabled to prevent access to sensitive system files:
+    
+    - Blocks access to system directories
+    - Prevents sensitive file enumeration
+    - Reduces attack surface
+  </Accordion>
+</AccordionGroup>
+
+## Memory Safety
+
+### GWP-ASan
+
+Cromite boosts internal GWP-ASan (Guarded Memory Allocator) checks:
+
+<Info>
+GWP-ASan detects memory safety bugs like use-after-free and heap buffer overflow at runtime.
+</Info>
+
+**Platforms:**
+- **Android** - Opt-in gwpAsanMode enabled
+  - See: https://developer.android.com/ndk/guides/gwp-asan
+- **All platforms** - Boosted internal GWP-ASan checks
+
+**Benefits:**
+- Catches memory corruption bugs
+- Prevents exploitation of memory vulnerabilities
+- Minimal performance overhead
+- Automatic bug detection
+
+## Security Services Disabled
+
+<Warning>
+Cromite disables undocumented Google services that could pose security risks:
+</Warning>
+
+- **Manta service** - Undocumented service disabled
+- **Orca service** - Undocumented service disabled
+
+These services are not publicly documented and disabled for security and privacy.
+
+## Certificate Handling (Android)
+
+<Warning>
+**User certificates are disabled by default on Android** to prevent security issues.
+</Warning>
+
+### Why Disable User Certificates?
+
+User-installed certificates can be used for:
+- Unauthorized proxy usage
+- Man-in-the-middle attacks
+- SSL/TLS interception
+- Corporate/malware spying
+
+**Prevents bugs like:** https://issues.chromium.org/issues/40089326
+
+<Note>
+If you need to use a legitimate proxy or corporate certificate, you can re-enable user certificates via `chrome://flags`.
+</Note>
+
+## HTTPS Enforcement (Android)
+
+<Tip>
+Cromite includes a flag allowing the blocking of all non-HTTPS connections (disabled by default).
+</Tip>
+
+**When enabled:**
+- All HTTP requests are blocked
+- Only HTTPS sites are accessible
+- Maximum security for sensitive work
+- Prevents downgrade attacks
+
+**Configuration:** `chrome://flags/#block-non-https`
+
+## Auto-Update Security (Android)
+
+<Info>
+**Browser auto-updater included** to ensure you always have the latest security patches.
+</Info>
+
+Automatic updates are critical for security:
+- Patches vulnerabilities quickly
+- No manual intervention required
+- Reduces exposure window for exploits
+
+## Enterprise Policy Protection
+
+### Disabled Enterprise Features
+
+Cromite disables several enterprise management features for security:
+
+<Accordion title="Enterprise Policies Ignored">
+  Cromite ignores enterprise policies that could be abused:
+  
+  - No remote management
+  - No forced configuration
+  - No policy enforcement
+  - Full user control
+</Accordion>
+
+<Accordion title="AppRestrictions Disabled (Android)">
+  Android AppRestrictions disabled to prevent:
+  
+  - Unauthorized app management
+  - Enterprise control of personal devices
+  - Configuration forcing
+</Accordion>
+
+## Google Side Panel Disabled (Desktop)
+
+<Warning>
+Google side panel search companion feature disabled for security and privacy.
+</Warning>
+
+The Google side panel could:
+- Send browsing context to Google
+- Create security vulnerabilities
+- Leak private information
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Keep JIT Disabled" icon="toggle-off">
+    Unless you need maximum performance, keep JIT disabled for security
+  </Card>
+  <Card title="Use HTTPS-Only Mode" icon="lock">
+    Enable HTTPS-only mode for maximum security (Android flag)
+  </Card>
+  <Card title="Keep Auto-Update Enabled" icon="rotate">
+    Allow automatic updates to receive security patches immediately
+  </Card>
+  <Card title="Don't Install User Certs" icon="certificate">
+    Avoid installing user certificates unless absolutely necessary
+  </Card>
+  <Card title="Use DoH" icon="shield-alt">
+    Keep DoH enabled for DNS privacy and security
+  </Card>
+  <Card title="Enable ACG (Windows)" icon="shield-halved">
+    Keep ACG enabled unless extensions break (Windows)
+  </Card>
+</CardGroup>
+
+## Security vs. Compatibility
+
+<Note>
+Cromite's security features prioritize security over compatibility. Some features may break:
+
+**Potentially broken:**
+- JavaScript-heavy web apps (JIT disabled)
+- Some browser extensions (ACG on Windows)
+- Sites requiring WebRTC (disabled by default)
+- Corporate proxies (user certificates disabled)
+
+**Recommendation:** Enable features per-site or via flags only when necessary. The security trade-offs are worth it for most users.
+</Note>
+
+## Testing Security
+
+Verify Cromite's security features:
+
+<Steps>
+  <Step title="Check Isolation">
+    Open Task Manager and verify each tab has its own process (SitePerProcess)
+  </Step>
+  <Step title="Test HTTPS">
+    Visit https://badssl.com/ to test certificate handling
+  </Step>
+  <Step title="Verify DoH">
+    Check `chrome://net-internals/#dns` to confirm DoH is active
+  </Step>
+  <Step title="Confirm JIT Status">
+    Visit JavaScript benchmarks - should be slower with JIT disabled
+  </Step>
+</Steps>

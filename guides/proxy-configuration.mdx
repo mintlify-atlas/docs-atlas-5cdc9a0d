@@ -1,0 +1,426 @@
+---
+title: Proxy Configuration
+description: Configure proxy settings using chrome://proxy
+icon: network-wired
+---
+
+Cromite includes a built-in proxy configuration page for managing network proxy settings.
+
+## Accessing Proxy Settings
+
+Cromite provides a dedicated configuration page at:
+
+```
+chrome://proxy
+```
+
+<Steps>
+  <Step title="Open Address Bar">
+    Tap or click on the address bar in Cromite.
+  </Step>
+  
+  <Step title="Enter URL">
+    Type `chrome://proxy` and press Enter.
+  </Step>
+  
+  <Step title="Configure Settings">
+    Use the proxy configuration interface to set up your proxy.
+  </Step>
+</Steps>
+
+<Note>
+  The proxy configuration page provides a user-friendly interface for Chromium's built-in proxy support.
+</Note>
+
+## Proxy Configuration Options
+
+Cromite supports various proxy configuration methods:
+
+### Direct Connection
+
+No proxy is used; all connections go directly to the destination.
+
+```text
+Mode: Direct
+Description: No proxy server
+Use case: Default configuration
+```
+
+### Manual Proxy Configuration
+
+Specify proxy servers manually for different protocols:
+
+<CodeGroup>
+```text HTTP Proxy
+Proxy Type: HTTP
+Address: proxy.example.com
+Port: 8080
+```
+
+```text HTTPS Proxy
+Proxy Type: HTTPS
+Address: secure-proxy.example.com
+Port: 8443
+```
+
+```text SOCKS Proxy
+Proxy Type: SOCKS4/SOCKS5
+Address: socks-proxy.example.com
+Port: 1080
+```
+</CodeGroup>
+
+### Proxy Auto-Configuration (PAC)
+
+Use a PAC script URL for automatic proxy configuration:
+
+```text
+PAC URL: http://proxy.example.com/proxy.pac
+```
+
+<Info>
+  PAC scripts allow dynamic proxy selection based on URL, hostname, or other criteria.
+</Info>
+
+### System Proxy Settings
+
+Use the operating system's proxy configuration:
+
+<Tabs>
+  <Tab title="Windows">
+    Cromite uses Windows Internet Options proxy settings.
+    
+    Access via: **Control Panel** → **Internet Options** → **Connections** → **LAN settings**
+  </Tab>
+  
+  <Tab title="Linux">
+    Cromite respects system environment variables:
+    - `http_proxy`
+    - `https_proxy`
+    - `ftp_proxy`
+    - `no_proxy`
+  </Tab>
+  
+  <Tab title="Android">
+    Android system-wide proxy settings are used when configured in network settings.
+  </Tab>
+</Tabs>
+
+## Command-Line Proxy Configuration
+
+Alternatively, configure proxies via command-line switches:
+
+<CodeGroup>
+```bash HTTP Proxy
+--proxy-server="http://proxy.example.com:8080"
+```
+
+```bash HTTPS Proxy
+--proxy-server="https://secure-proxy.example.com:8443"
+```
+
+```bash SOCKS5 Proxy
+--proxy-server="socks5://socks-proxy.example.com:1080"
+```
+
+```bash Separate Proxies by Protocol
+--proxy-server="http=http://proxy:8080;https=https://secure:8443;ftp=ftp://ftp-proxy:3128"
+```
+
+```bash PAC Script URL
+--proxy-pac-url="http://proxy.example.com/proxy.pac"
+```
+
+```bash Bypass List
+--proxy-bypass-list="localhost;127.0.0.1;*.local;internal.company.com"
+```
+</CodeGroup>
+
+### Windows Configuration Example
+
+In your `chrlauncher.ini`:
+
+```ini
+[chrlauncher]
+ChromiumCommandLine=--proxy-server="http://proxy.example.com:8080" --proxy-bypass-list="localhost;*.local" --user-data-dir="%LOCALAPPDATA%\Cromite\User Data"
+```
+
+### Linux Configuration Example
+
+```bash
+./chrome --proxy-server="socks5://localhost:1080" --proxy-bypass-list="localhost;127.0.0.1"
+```
+
+## Proxy Authentication
+
+If your proxy requires authentication:
+
+<Steps>
+  <Step title="Configure Proxy">
+    Set up the proxy server address and port via `chrome://proxy` or command line.
+  </Step>
+  
+  <Step title="Trigger Authentication">
+    When you first access a website, Cromite will prompt for credentials.
+  </Step>
+  
+  <Step title="Enter Credentials">
+    Provide your username and password in the authentication dialog.
+  </Step>
+  
+  <Step title="Save Credentials (Optional)">
+    Choose whether to save credentials for future sessions.
+  </Step>
+</Steps>
+
+<Warning>
+  Saved proxy credentials are stored in your browser profile. Use with caution on shared devices.
+</Warning>
+
+## Proxy Bypass Rules
+
+Specify domains or IP addresses that should bypass the proxy:
+
+### Bypass Syntax
+
+```text
+localhost              # Bypass localhost
+127.0.0.1             # Bypass loopback address
+*.local               # Bypass .local domains
+internal.company.com  # Bypass specific domain
+192.168.*             # Bypass IP range
+<local>               # Bypass all local addresses
+```
+
+### Common Bypass Patterns
+
+<Accordion title="Local Development">
+  ```text
+  localhost;127.0.0.1;*.local;*.test;*.localhost
+  ```
+</Accordion>
+
+<Accordion title="Internal Network">
+  ```text
+  *.internal;*.corp;10.*;192.168.*;172.16.*
+  ```
+</Accordion>
+
+<Accordion title="Specific Services">
+  ```text
+  mail.company.com;vpn.company.com;git.company.com
+  ```
+</Accordion>
+
+## Testing Proxy Configuration
+
+Verify your proxy setup:
+
+<Steps>
+  <Step title="Check IP Address">
+    Visit a site like `https://ifconfig.me` or `https://ipinfo.io` to verify your public IP changes through the proxy.
+  </Step>
+  
+  <Step title="Check DNS Resolution">
+    Ensure DNS queries are handled correctly by the proxy.
+  </Step>
+  
+  <Step title="Test Bypass Rules">
+    Access a bypassed domain to confirm direct connections.
+  </Step>
+  
+  <Step title="Verify Protocols">
+    Test HTTP, HTTPS, and WebSocket connections.
+  </Step>
+</Steps>
+
+<Tip>
+  Use `chrome://net-internals/#proxy` to view detailed proxy resolution information.
+</Tip>
+
+## SOCKS Proxy Configuration
+
+### SOCKS4 vs SOCKS5
+
+<CardGroup cols={2}>
+  <Card title="SOCKS4" icon="4">
+    - Basic proxy protocol
+    - No authentication
+    - IPv4 only
+    - No UDP support
+  </Card>
+  <Card title="SOCKS5" icon="5">
+    - Advanced proxy protocol
+    - Authentication support
+    - IPv6 support
+    - UDP support
+  </Card>
+</CardGroup>
+
+### SOCKS5 Example
+
+```bash
+--proxy-server="socks5://user:password@proxy.example.com:1080"
+```
+
+<Note>
+  SOCKS5 is recommended for better security and functionality.
+</Note>
+
+## PAC Script Examples
+
+Proxy Auto-Configuration scripts allow dynamic proxy selection:
+
+<CodeGroup>
+```javascript Basic PAC Script
+function FindProxyForURL(url, host) {
+  // Direct connection for local addresses
+  if (isPlainHostName(host) || isInNet(host, "192.168.0.0", "255.255.0.0")) {
+    return "DIRECT";
+  }
+  
+  // Use proxy for everything else
+  return "PROXY proxy.example.com:8080";
+}
+```
+
+```javascript Advanced PAC Script
+function FindProxyForURL(url, host) {
+  // Direct for localhost
+  if (host == "localhost" || host == "127.0.0.1") {
+    return "DIRECT";
+  }
+  
+  // Direct for internal network
+  if (isInNet(host, "10.0.0.0", "255.0.0.0") ||
+      isInNet(host, "172.16.0.0", "255.240.0.0") ||
+      isInNet(host, "192.168.0.0", "255.255.0.0")) {
+    return "DIRECT";
+  }
+  
+  // SOCKS proxy for specific domains
+  if (shExpMatch(host, "*.onion")) {
+    return "SOCKS5 127.0.0.1:9050";
+  }
+  
+  // HTTP proxy for external sites
+  return "PROXY proxy.example.com:8080; DIRECT";
+}
+```
+</CodeGroup>
+
+## Troubleshooting
+
+### Common Issues
+
+<Accordion title="Proxy Connection Failed">
+  **Symptoms**: Unable to load any websites
+  
+  **Solutions**:
+  1. Verify proxy server address and port
+  2. Check proxy server is running and accessible
+  3. Confirm network connectivity to proxy
+  4. Check firewall settings
+  5. Test with `chrome://net-internals/#proxy`
+</Accordion>
+
+<Accordion title="Authentication Keeps Prompting">
+  **Symptoms**: Repeated credential requests
+  
+  **Solutions**:
+  1. Verify username and password are correct
+  2. Check proxy server authentication method
+  3. Clear saved credentials and re-enter
+  4. Check proxy server logs for auth errors
+</Accordion>
+
+<Accordion title="Some Sites Not Working">
+  **Symptoms**: Partial connectivity through proxy
+  
+  **Solutions**:
+  1. Check proxy bypass list
+  2. Verify DNS resolution through proxy
+  3. Test with different proxy protocols
+  4. Check for SSL/TLS certificate issues
+</Accordion>
+
+<Accordion title="PAC Script Not Loading">
+  **Symptoms**: PAC URL doesn't apply
+  
+  **Solutions**:
+  1. Verify PAC URL is accessible
+  2. Check PAC script syntax
+  3. Test PAC script locally
+  4. Ensure PAC server returns correct MIME type (`application/x-ns-proxy-autoconfig`)
+</Accordion>
+
+## Security Considerations
+
+<Warning>
+  Proxies can see and modify all your unencrypted traffic.
+</Warning>
+
+### Best Practices
+
+1. **Use HTTPS**: Always prefer HTTPS for end-to-end encryption
+2. **Trust**: Only use proxies you trust completely
+3. **Authentication**: Use authenticated proxies when available
+4. **Credentials**: Don't save credentials on shared devices
+5. **Bypass Lists**: Keep bypass lists minimal and specific
+6. **PAC Security**: Ensure PAC scripts come from trusted sources
+
+### Corporate Proxies
+
+<Info>
+  Corporate proxies may inspect SSL/TLS traffic using certificates.
+</Info>
+
+If your organization uses SSL inspection:
+
+1. You may need to install corporate root certificates
+2. Enable user certificates in Cromite (see [Settings Guide](/guides/settings))
+3. Be aware that your traffic can be monitored
+
+<Warning>
+  Cromite disables user certificates by default to prevent man-in-the-middle attacks.
+</Warning>
+
+## Advanced Configuration
+
+### Network Internals
+
+Access detailed proxy information:
+
+```
+chrome://net-internals/#proxy
+```
+
+View:
+- Current proxy configuration
+- Effective proxy settings
+- PAC script execution results
+- Proxy resolution logs
+
+### Environment Variables (Linux)
+
+Set system-wide proxy via environment:
+
+```bash
+export http_proxy="http://proxy.example.com:8080"
+export https_proxy="http://proxy.example.com:8080"
+export ftp_proxy="http://proxy.example.com:8080"
+export no_proxy="localhost,127.0.0.1,.local"
+```
+
+Make permanent by adding to `~/.bashrc` or `~/.profile`.
+
+## Additional Resources
+
+<CardGroup cols={2}>
+  <Card title="Chromium Proxy Documentation" icon="book" href="https://chromium.googlesource.com/chromium/src/+/HEAD/net/docs/proxy.md">
+    Official Chromium proxy configuration documentation
+  </Card>
+  <Card title="PAC File Specification" icon="file-code" href="https://en.wikipedia.org/wiki/Proxy_auto-config">
+    PAC script format and function reference
+  </Card>
+</CardGroup>

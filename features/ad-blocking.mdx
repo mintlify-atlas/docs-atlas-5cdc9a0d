@@ -1,0 +1,293 @@
+---
+title: 'Ad Blocking'
+description: 'Built-in AdBlock Plus engine with CNAME uncloaking and advanced filtering'
+icon: 'ban'
+---
+
+Cromite includes a built-in modified AdBlock Plus engine with enhanced capabilities including DNS CNAME support, WebSocket blocking, and automatic filter updates.
+
+## Modified AdBlock Plus Engine
+
+Cromite uses a modified version of AdBlock Plus that has been enhanced for better privacy and security while removing some potentially dangerous features.
+
+### Engine Modifications
+
+<AccordionGroup>
+  <Accordion title="Removed Features (Security)">
+    The following AdBlock Plus features have been removed for security reasons:
+
+    - **Header and CSP filter option** - Removed for security
+    - **json-override snippet** - Removed to prevent script injection
+    - **simulate-event-poc snippet** - Removed to prevent event simulation abuse
+    - **simulate-mouse-event snippet** - Removed to prevent mouse event abuse
+    - **Sitekey support** - Removed for simplicity
+  </Accordion>
+
+  <Accordion title="Modified Features">
+    - **override-property-read snippet** - Modified to allow only 0 and 1 as numeric arguments (prevents arbitrary value injection)
+  </Accordion>
+
+  <Accordion title="Added Features">
+    Cromite adds several powerful features to the AdBlock Plus engine:
+
+    - **DNS CNAME support** - Uncovers tracking domains hidden behind CNAME records
+    - **WebSocket blocking** - Blocks WebSocket connections used for tracking
+    - **WebTransport blocking** - Blocks WebTransport URLs
+    - **Service Worker fetch blocking** - Blocks service worker network requests
+  </Accordion>
+</AccordionGroup>
+
+## CNAME Uncloaking
+
+<Info>
+One of Cromite's most powerful ad blocking features is CNAME uncloaking. Many trackers hide behind CNAME DNS records to evade ad blockers. Cromite resolves CNAME records to identify and block these hidden trackers.
+</Info>
+
+### How CNAME Uncloaking Works
+
+When a website loads content from `analytics.example.com`, that domain might be a CNAME pointing to `tracker.adnetwork.com`. Traditional ad blockers only see the first domain. Cromite's CNAME support resolves the chain and blocks based on the final destination.
+
+**Example:**
+```
+analytics.example.com (appears legitimate)
+  → CNAME: metrics.cdn.com
+    → CNAME: tracker.adnetwork.com (blocked!)
+```
+
+## WebSocket and WebTransport Blocking
+
+<Note>
+Cromite can block WebSocket and WebTransport connections, which are increasingly used for tracking and real-time bidding in advertising.
+</Note>
+
+Traditional ad blockers struggle with WebSocket connections because they bypass normal HTTP request filtering. Cromite's modified engine blocks these at the protocol level.
+
+**Blocked protocols:**
+- `ws://` and `wss://` (WebSocket)
+- WebTransport URLs
+- Service Worker fetch requests
+
+### Gateway Attack Prevention
+
+<Warning>
+Cromite specifically blocks gateway attacks via WebSockets - a technique where malicious sites establish WebSocket connections to internal network resources.
+</Warning>
+
+## Filter Lists
+
+Cromite downloads filter lists from `www.cromite.org/filters` URLs.
+
+### Adding Custom Filter Lists
+
+<Steps>
+  <Step title="Navigate to AdBlock Settings">
+    Open `chrome://adblock` in your address bar
+  </Step>
+  <Step title="Add Filter List URL">
+    Enter HTTPS URLs to custom filter lists
+    
+    <Warning>
+    HTTP URL redirection is prohibited for security. Only HTTPS filter list URLs are allowed.
+    </Warning>
+  </Step>
+  <Step title="Save and Update">
+    Filter lists will be downloaded and applied immediately
+  </Step>
+</Steps>
+
+## Update Mechanism
+
+<Info>
+The Cromite AdBlock Update Service provides automatic filter updates to ensure you're protected against the latest ads and trackers.
+</Info>
+
+### Update Schedule
+
+- **Frequency:** Daily checks for new filters
+- **Source:** `www.cromite.org/filters`
+- **Privacy:** www.cromite.org does not record any logs during filter updates
+- **Automatic:** Updates happen in the background without user interaction
+
+### Manual Updates
+
+You can manually trigger a filter update from `chrome://adblock`.
+
+## Configuration
+
+Access the AdBlock configuration page to customize filtering behavior:
+
+### chrome://adblock
+
+The AdBlock configuration page allows you to:
+
+<CardGroup cols={2}>
+  <Card title="Manage Filter Lists" icon="list">
+    Add, remove, and update filter list subscriptions
+  </Card>
+  <Card title="Custom Filters" icon="code">
+    Add your own custom filter rules
+  </Card>
+  <Card title="Whitelist Domains" icon="check">
+    Allow ads on specific domains
+  </Card>
+  <Card title="View Statistics" icon="chart-simple">
+    See how many requests have been blocked
+  </Card>
+</CardGroup>
+
+## Site Settings Integration
+
+Cromite integrates ad blocking with Chrome's site settings system.
+
+### Per-Site AdBlock Control
+
+<Steps>
+  <Step title="Open Site Settings">
+    Navigate to `chrome://settings/content/adblock` or click the lock icon in the address bar
+  </Step>
+  <Step title="Configure for Site">
+    Enable or disable ad blocking for the current site
+  </Step>
+  <Step title="Set Default Behavior">
+    Configure the default ad blocking behavior for all sites
+  </Step>
+</Steps>
+
+<Note>
+The site settings integration allows you to easily whitelist specific sites while maintaining strong ad blocking everywhere else.
+</Note>
+
+## Content Settings
+
+Cromite provides granular content settings for ad blocking:
+
+- **Adblock** - Main ad blocking toggle
+- **Cookies** - Cookie blocking (works with ad blocker)
+- **JavaScript** - JavaScript blocking (extreme privacy)
+- **Images** - Image blocking (reduces bandwidth)
+- **Autoplay** - Autoplay blocking (prevents video ads)
+- **Pop-ups** - Pop-up blocking (enabled by default)
+
+### All Pop-ups Blocking
+
+<Info>
+Cromite enables blocking of ALL pop-ups by default, including those that would normally bypass Chrome's pop-up blocker.
+</Info>
+
+## Limitations
+
+<Warning>
+Important limitations of Cromite's ad blocking engine:
+</Warning>
+
+### No CSS Rules Support
+
+The current AdBlock Plus engine implementation does not support CSS-based filtering rules. This means:
+
+- Cosmetic filtering is limited
+- Some ads may still be visible (but network requests are blocked)
+- Element hiding rules are not applied
+
+**Impact:** You may see empty ad containers on some sites. The tracking requests are blocked, but the visual elements may remain.
+
+### Filter List Compatibility
+
+Not all AdBlock Plus filter lists are fully compatible due to removed features:
+
+- Lists using `header` or `csp` options won't work
+- Lists using removed snippets will have those rules skipped
+- Most standard filter lists work fine
+
+## Legacy Bromite Engine
+
+Cromite also includes the legacy Bromite ad blocking engine (disabled by default).
+
+<Accordion title="About the Legacy Engine">
+  Since v77, Bromite used Chromium's built-in subresource filter. This engine:
+
+  - Uses Chromium's native subresource filter
+  - Does not support CSS rules
+  - Less powerful than the AdBlock Plus engine
+  - Disabled by default in Cromite
+  - Checks for updates weekly (legacy behavior)
+
+  **Note:** The legacy engine is maintained for compatibility but the AdBlock Plus engine is recommended.
+</Accordion>
+
+## Privacy Benefits
+
+Ad blocking provides significant privacy benefits beyond removing visual clutter:
+
+<CardGroup cols={2}>
+  <Card title="Tracking Prevention" icon="eye-slash">
+    Blocks tracking pixels, beacons, and analytics scripts
+  </Card>
+  <Card title="Fingerprinting Reduction" icon="fingerprint">
+    Prevents fingerprinting scripts from loading
+  </Card>
+  <Card title="Malware Protection" icon="shield-virus">
+    Blocks malicious advertising networks
+  </Card>
+  <Card title="Bandwidth Savings" icon="gauge">
+    Reduces data usage by blocking large ad content
+  </Card>
+  <Card title="Performance" icon="bolt">
+    Pages load faster without ad network requests
+  </Card>
+  <Card title="Battery Life" icon="battery-full">
+    Reduces CPU usage from ad scripts and animations
+  </Card>
+</CardGroup>
+
+## Performance Impact
+
+<Info>
+Cromite's ad blocking has minimal performance impact:
+</Info>
+
+- Filter list parsing happens at startup
+- Blocking decisions are made at the network layer
+- No CSS parsing overhead (due to lack of cosmetic filtering)
+- CNAME resolution adds minimal latency
+- WebSocket blocking is protocol-level
+
+## Troubleshooting
+
+### Site Breaking
+
+If a site breaks due to ad blocking:
+
+<Steps>
+  <Step title="Check if AdBlock is the cause">
+    Temporarily disable ad blocking for the site via `chrome://adblock`
+  </Step>
+  <Step title="Whitelist the domain">
+    Add the domain to your whitelist if it requires ads to function
+  </Step>
+  <Step title="Report false positives">
+    Report overly aggressive blocking to the filter list maintainers
+  </Step>
+</Steps>
+
+### Filter Updates Not Working
+
+<Note>
+If filter updates aren't working:
+</Note>
+
+1. Check your internet connection
+2. Verify `www.cromite.org` is not blocked by a firewall
+3. Manually trigger an update from `chrome://adblock`
+4. Check for error messages in `chrome://adblock`
+
+## Best Practices
+
+<Tip>
+**Recommended configuration:**
+
+1. Keep the default filter lists enabled
+2. Enable automatic updates (default)
+3. Only whitelist sites you trust
+4. Use HTTPS-only filter lists
+5. Combine with privacy features for maximum protection
+</Tip>

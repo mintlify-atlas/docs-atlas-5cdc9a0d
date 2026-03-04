@@ -1,0 +1,416 @@
+---
+title: "Windows Installation"
+description: "Install Cromite on Windows with enhanced security features"
+---
+
+Cromite for Windows provides a privacy-focused browsing experience with enhanced security features including network process sandboxing and renderer app containerization.
+
+## System Requirements
+
+- **Windows Version**: Windows 10 or later
+- **Architecture**: x64 (64-bit)
+- **Storage**: ~200MB free space
+- **Administrator Access**: Required for initial security configuration
+
+## Installation
+
+<Steps>
+  <Step title="Download Windows Package">
+    Download the latest Windows release:
+    - [chrome-win.zip](https://github.com/uazo/cromite/releases/latest/download/chrome-win.zip)
+    
+    Extract the ZIP file to your preferred location, for example:
+    - `C:\Program Files\Cromite`
+    - `%LOCALAPPDATA%\Cromite`
+    - Any directory of your choice
+  </Step>
+  
+  <Step title="Enable Network Process Sandbox">
+    This step is **critical for security** and must be performed on first installation.
+    
+    Open **Command Prompt** or **PowerShell** as Administrator:
+    
+    ```powershell
+    cd "C:\path\to\cromite\directory"
+    icacls . /grant "*S-1-15-2-2:(OI)(CI)(RX)"
+    ```
+    
+    Replace `C:\path\to\cromite\directory` with your actual installation path.
+    
+    <Warning>
+      This command grants the necessary permissions for the network process sandbox to function. Without it, network isolation will be disabled, reducing security.
+    </Warning>
+    
+    **What this does:**
+    - Grants Read and Execute permissions to the ALL_APP_PACKAGES security principal
+    - `(OI)` = Object Inherit - applies to files
+    - `(CI)` = Container Inherit - applies to subdirectories
+    - `(RX)` = Read and Execute permissions
+    
+    See [issue #51](https://github.com/uazo/bromite-buildtools/issues/51) for technical details.
+  </Step>
+  
+  <Step title="Enable RendererAppContainer (Recommended)">
+    For maximum security, enable the RendererAppContainer feature.
+    
+    **Option 1: Command Line Flag**
+    
+    Launch Cromite with the following flag:
+    ```batch
+    chrome.exe --enable-features=RendererAppContainer
+    ```
+    
+    **Option 2: Create a Shortcut**
+    
+    1. Right-click on `chrome.exe` → **Create shortcut**
+    2. Right-click the shortcut → **Properties**
+    3. In the **Target** field, append the flag:
+    ```
+    "C:\path\to\cromite\chrome.exe" --enable-features=RendererAppContainer
+    ```
+    4. Click **OK**
+    
+    <Note>
+      RendererAppContainer requires the icacls permissions from Step 2 to function properly.
+    </Note>
+    
+    **What this does:**
+    - Runs renderer processes in Windows AppContainers
+    - Provides stronger isolation between web content and the system
+    - Limits damage from potential browser exploits
+    - Highly recommended for security-conscious users
+  </Step>
+  
+  <Step title="Launch Cromite">
+    Run `chrome.exe` from your installation directory or use the shortcut you created.
+    
+    On first launch:
+    1. Choose your default search engine
+    2. Configure data directory location (optional)
+    3. Review initial settings
+  </Step>
+</Steps>
+
+## Automatic Updates with chrlauncher
+
+chrlauncher is a lightweight launcher that automatically updates Cromite and provides additional configuration options.
+
+<Tip>
+  chrlauncher is the recommended way to run Cromite on Windows for automatic updates and enhanced configuration.
+</Tip>
+
+### Installation Steps
+
+<Steps>
+  <Step title="Download chrlauncher">
+    Download the latest version from:
+    - https://github.com/henrypp/chrlauncher/releases
+    
+    Extract chrlauncher to the same directory as your Cromite installation or a separate directory.
+  </Step>
+  
+  <Step title="Create Configuration File">
+    Create a file named `chrlauncher.ini` in the same directory as `chrlauncher.exe`.
+    
+    <CodeGroup>
+      ```ini Basic Configuration
+      [chrlauncher]
+      
+      # Custom Chromium update URL (string):
+      ChromiumUpdateUrl=https://github.com/uazo/cromite/releases/latest/download/updateurl.txt
+      
+      # Command line for Chromium (string):
+      # note --user-data-dir= works better if path is absolute
+      # See here: http://peter.sh/experiments/chromium-command-line-switches/
+      ChromiumCommandLine=--user-data-dir="%LOCALAPPDATA%\Cromite\User Data" --no-default-browser-check
+      
+      # Chromium executable file name (string):
+      ChromiumBinary=chrome.exe
+      
+      # Chromium binaries directory (string):
+      # Relative (to chrlauncher directory) or full path (env. variables supported).
+      ChromiumDirectory=.\bin
+      ```
+      
+      ```ini With Security Features
+      [chrlauncher]
+      
+      ChromiumUpdateUrl=https://github.com/uazo/cromite/releases/latest/download/updateurl.txt
+      
+      # Enable RendererAppContainer for enhanced security
+      ChromiumCommandLine=--user-data-dir="%LOCALAPPDATA%\Cromite\User Data" --no-default-browser-check --enable-features=RendererAppContainer
+      
+      ChromiumBinary=chrome.exe
+      ChromiumDirectory=.\bin
+      ```
+      
+      ```ini With Debug Logging
+      [chrlauncher]
+      
+      ChromiumUpdateUrl=https://github.com/uazo/cromite/releases/latest/download/updateurl.txt
+      
+      # Enable full logging in C:\temp\log.txt (daily rotate, no automatic deletion)
+      ChromiumCommandLine=--enable-logging --v=0 --log-file=C:\temp\log.txt --user-data-dir="%LOCALAPPDATA%\Cromite\User Data" --no-default-browser-check
+      
+      ChromiumBinary=chrome.exe
+      ChromiumDirectory=.\bin
+      ```
+    </CodeGroup>
+  </Step>
+  
+  <Step title="Configure User Data Directory">
+    The `--user-data-dir` parameter specifies where Cromite stores your profile data.
+    
+    **Recommended locations:**
+    - `%LOCALAPPDATA%\Cromite\User Data` (default)
+    - `%APPDATA%\Cromite\User Data`
+    - Custom path of your choice (use absolute paths)
+    
+    <Warning>
+      To prevent Microsoft Defender from deleting Cromite binaries during updates, add the user-data-dir folder to Defender's exclusion list:
+      
+      1. Open **Windows Security**
+      2. Go to **Virus & threat protection → Manage settings**
+      3. Scroll to **Exclusions → Add or remove exclusions**
+      4. Add your Cromite directories
+    </Warning>
+  </Step>
+  
+  <Step title="Run icacls Command">
+    Apply the security permissions to the chromium binaries directory:
+    
+    ```powershell
+    cd "C:\path\to\chrlauncher\bin"
+    icacls . /grant "*S-1-15-2-2:(OI)(CI)(RX)"
+    ```
+    
+    This may need to be run after each update if the directory is recreated.
+  </Step>
+  
+  <Step title="Launch via chrlauncher">
+    Run `chrlauncher.exe` instead of `chrome.exe`.
+    
+    On first launch, chrlauncher will:
+    1. Download the latest Cromite release
+    2. Extract it to the `bin` directory
+    3. Launch Cromite with your configured parameters
+    
+    Subsequent launches will check for updates automatically.
+  </Step>
+</Steps>
+
+### chrlauncher Configuration Options
+
+<Accordion title="Command Line Switches">
+  Add these to `ChromiumCommandLine` in `chrlauncher.ini`:
+  
+  **Privacy & Security:**
+  - `--no-default-browser-check` - Skip default browser prompt
+  - `--disable-background-networking` - Disable background connections
+  - `--disable-sync` - Disable Google Sync
+  - `--enable-features=RendererAppContainer` - Enable renderer isolation
+  
+  **Data Location:**
+  - `--user-data-dir="<path>"` - Set profile directory (use absolute paths)
+  - `--disk-cache-dir="<path>"` - Set cache directory
+  
+  **Debugging:**
+  - `--enable-logging` - Enable logging
+  - `--v=0` - Set verbosity level (0-2)
+  - `--log-file=<path>` - Specify log file location
+  
+  See [Chromium Command Line Switches](http://peter.sh/experiments/chromium-command-line-switches/) for more options.
+</Accordion>
+
+<Accordion title="Update Frequency">
+  chrlauncher checks for updates on each launch. To customize:
+  
+  1. Check the chrlauncher documentation for update configuration options
+  2. Consider running chrlauncher at Windows startup for seamless updates
+  3. Updates download automatically but won't interrupt your browsing
+</Accordion>
+
+<Accordion title="Directory Structure">
+  Recommended directory structure with chrlauncher:
+  
+  ```
+  C:\Program Files\Cromite\
+  ├── chrlauncher.exe
+  ├── chrlauncher.ini
+  └── bin\
+      ├── chrome.exe
+      ├── chrome.dll
+      └── [other Cromite files]
+  ```
+  
+  The `bin` directory is managed by chrlauncher and will be updated automatically.
+</Accordion>
+
+## Security Features
+
+### Network Process Sandbox
+
+The network process sandbox isolates network operations from the main browser process.
+
+**Benefits:**
+- Limits damage from network-related vulnerabilities
+- Prevents network exploits from accessing local resources
+- Required for full security posture
+
+**Verification:**
+1. Launch Cromite
+2. Navigate to `chrome://sandbox`
+3. Check that "Network Process" shows "Sandboxed"
+
+<Warning>
+  If the network process shows "Not sandboxed", verify you ran the icacls command correctly.
+</Warning>
+
+### RendererAppContainer
+
+RendererAppContainer uses Windows AppContainer technology to isolate renderer processes.
+
+**Benefits:**
+- Stronger isolation than traditional sandboxing
+- Prevents renderer exploits from accessing the file system
+- Limits lateral movement in case of compromise
+- Recommended by security researchers
+
+**Verification:**
+1. Launch Cromite with `--enable-features=RendererAppContainer`
+2. Navigate to `chrome://sandbox`
+3. Check renderer process isolation status
+
+<Tip>
+  Both network sandbox and RendererAppContainer should be enabled for maximum security.
+</Tip>
+
+## Troubleshooting
+
+<Accordion title="icacls Command Fails">
+  **Error: Access is denied**
+  - Ensure you're running Command Prompt/PowerShell as Administrator
+  - Right-click → "Run as administrator"
+  
+  **Error: Invalid parameter**
+  - Verify the SID is correct: `*S-1-15-2-2`
+  - Check for typos in the command
+  - Ensure you're in the correct directory
+</Accordion>
+
+<Accordion title="Sandbox Not Working">
+  If `chrome://sandbox` shows processes as "Not sandboxed":
+  
+  1. Verify icacls was run in the correct directory
+  2. Check Windows version (Windows 10+ required)
+  3. Ensure User Account Control (UAC) is enabled
+  4. Try running icacls on parent directory
+  5. Restart Cromite after applying permissions
+</Accordion>
+
+<Accordion title="Microsoft Defender Deletes Files">
+  If Defender quarantines Cromite binaries:
+  
+  1. Restore files from Defender quarantine
+  2. Add exclusions for:
+     - Cromite installation directory
+     - User data directory
+     - chrlauncher directory
+  3. Whitelist `chrome.exe` and `chrome.dll`
+  
+  **Alternative:** Use Windows Security's "Controlled folder access" to allow Cromite explicitly.
+</Accordion>
+
+<Accordion title="chrlauncher Won't Update">
+  **Check these items:**
+  1. Internet connection active
+  2. GitHub not blocked by firewall
+  3. `updateurl.txt` URL is correct in config
+  4. Write permissions in `ChromiumDirectory`
+  5. Sufficient disk space
+  
+  **Manual update:**
+  1. Download latest chrome-win.zip
+  2. Extract to `bin` directory
+  3. Run icacls command
+  4. Launch via chrlauncher
+</Accordion>
+
+<Accordion title="Custom Data Directory Not Working">
+  **Common issues:**
+  - Relative paths may not work reliably
+  - Use absolute paths in `--user-data-dir`
+  - Ensure the directory exists or Cromite can create it
+  - Check folder permissions
+  
+  **Example working configuration:**
+  ```ini
+  ChromiumCommandLine=--user-data-dir="C:\Users\YourName\AppData\Local\Cromite\User Data"
+  ```
+</Accordion>
+
+## Advanced Configuration
+
+### Creating a Desktop Shortcut
+
+<Steps>
+  <Step title="Locate Executable">
+    Find either:
+    - `chrome.exe` (manual installation)
+    - `chrlauncher.exe` (with auto-updater)
+  </Step>
+  
+  <Step title="Create Shortcut">
+    Right-click the executable → **Send to → Desktop (create shortcut)**
+  </Step>
+  
+  <Step title="Configure Shortcut">
+    Right-click the shortcut → **Properties**:
+    
+    1. **Target**: Add command line flags
+    ```
+    "C:\Program Files\Cromite\chrome.exe" --enable-features=RendererAppContainer
+    ```
+    
+    2. **Start in**: Set working directory
+    ```
+    C:\Program Files\Cromite
+    ```
+    
+    3. **Icon**: Optionally change the icon
+  </Step>
+</Steps>
+
+### Running as Portable Application
+
+To run Cromite from a USB drive or without installation:
+
+1. Extract chrome-win.zip to your portable drive
+2. Create a `chrlauncher.ini` with relative paths:
+   ```ini
+   ChromiumCommandLine=--user-data-dir=".\UserData"
+   ChromiumDirectory=.\bin
+   ```
+3. Run icacls command on the target machine
+4. Launch via chrlauncher
+
+<Note>
+  icacls permissions may need to be reapplied on each machine you use the portable installation on.
+</Note>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Privacy Settings" icon="shield" href="/features/privacy">
+    Configure privacy features and anti-fingerprinting
+  </Card>
+  <Card title="Ad Blocking" icon="ban" href="/features/ad-blocking">
+    Set up content blocking and custom filters
+  </Card>
+  <Card title="Settings Guide" icon="gear" href="/guides/settings">
+    Configure advanced settings and features
+  </Card>
+  <Card title="FAQ" icon="question" href="/reference/faq">
+    Find answers to common questions
+  </Card>
+</CardGroup>

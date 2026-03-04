@@ -1,0 +1,242 @@
+---
+title: 'Privacy Features'
+description: 'Complete Google service removal, tracking protection, and privacy-first settings'
+icon: 'shield'
+---
+
+Cromite provides comprehensive privacy protection through complete Google service removal, aggressive tracking prevention, and privacy-first defaults.
+
+## Tracking Navigation
+
+Cromite implements advanced network isolation and partitioning features to prevent cross-site tracking.
+
+### Network Isolation
+
+<Accordion title="Core Network Isolation Features">
+  Cromite enables multiple layers of network isolation to prevent tracking across sites:
+
+  - **Network isolation features enabled** - Comprehensive isolation of network requests
+  - **Third-party storage partitioning** - Prevents cross-site storage access
+  - **Partition all cookies by top frame domain** - Similar to Firefox Total Cookie Protection, ensures cookies are isolated per top-level site
+  - **Partition Blink memory cache** - Memory cache is isolated by site (http://crbug.com/1127971)
+  - **Partition blob URLs by top frame URL** - Blob URLs cannot leak across sites
+  - **Partition HSTS cache by NAK** - HSTS cache is network-isolated
+</Accordion>
+
+### Cookie and Storage Protection
+
+<Info>
+Cromite partitions all cookies by top frame domain, similar to Firefox's Total Cookie Protection. This means cookies set by third-party embeds are isolated per top-level site, preventing cross-site tracking.
+</Info>
+
+- **Disable use of SameSite=None cookies in A/B/A contexts** - Blocks cookie access in nested contexts (like Firefox)
+- **Third-party storage partitioning enabled** - LocalStorage, IndexedDB, and other storage APIs are partitioned
+- **Partition blob URLs by top frame URL** - Prevents blob URL tracking vectors
+
+### Cross-Origin Protections
+
+Cromite reduces information leakage during cross-origin navigation:
+
+- **Remove Auth header upon cross origin redirect** - Credentials don't leak across sites
+- **Remove HTTP referrals in cross origin navigation** - No referer header sent cross-origin
+- **Remove window name on cross origin navigation** - Window.name tracking vector eliminated
+- **Private network access content settings** - Control access to private network resources
+- **Reduce HTTP headers in DoH requests to bare minimum** - Minimize fingerprinting in DNS queries
+
+<Note>
+These protections may break some legitimate use cases where sites expect cross-origin data sharing. Most modern websites should work correctly.
+</Note>
+
+## Privacy Features
+
+Cromite disables numerous privacy-invasive features and services built into Chromium.
+
+### Google Service Removal
+
+Complete removal of all Google services and integrations:
+
+<AccordionGroup>
+  <Accordion title="Google Core Services">
+    - **Disable Google Browser Signin** - No Google account integration
+    - **Disable Google Sync** - No data synchronization with Google servers
+    - **Disable Google Translate** - No translation service calls to Google
+    - **Disable Google ContextualSearch** - No contextual search requests
+    - **Disable sending url-keyed data collection to Google** - No URL-based telemetry
+    - **Disable report metrics to Google** - No metrics or analytics sent
+    - **Disable Google Component Updates** - No automatic component downloads
+  </Accordion>
+
+  <Accordion title="Google Network Services">
+    - **Disable Google DNS address used for IPv6 probes** - Uses RIPE DNS instead
+    - **Disable Google feeds support by default** - No feed integration
+    - **Disable Network Time Tracker** - No Google time synchronization
+    - **Disable Google autofill server by default** - No server-side autofill
+    - **Disable automatic crash reporting and feedback collector** - No crash data sent
+    - **Disable NTP remote suggestions by default** - No new tab page suggestions from Google
+    - **Disable translations and ranker fetcher** - No translation or ranking data fetched
+    - **Disable remote service for geolocation** - No Google location services
+  </Accordion>
+
+  <Accordion title="Google Privacy Issues">
+    - **Disable privacy issues in password manager** - Removes Affiliation service
+    - **Disable integration with google urls** - No hardcoded Google URL connections
+    - **Ignore any partner-provided and search engine home page** - No partner homepage overrides
+    - **Disable send-settings on profile-resetter** - No settings sent during profile reset
+    - **Disable webRTC log uploader** - No WebRTC logs uploaded to Google
+    - **Remove binary blob (google play services) integrations** - No Play Services dependencies
+    - **Remove references to fonts.googleapis.com** - No font loading from Google CDN
+  </Accordion>
+</AccordionGroup>
+
+### Android-Specific Google Removal
+
+<Note>
+On Android, Cromite removes additional Google Play Services integrations:
+</Note>
+
+- **Disable GSA by default** - No Google Search App, Lens, or Voice Assist integration
+- **Disable Google PrivacyGuide and SafetyCheck** - Google's privacy tools removed
+- **Remove preload of com.google.android.gms.fonts** - No Google Play Services fonts
+- **Disable use of gms for geolocation** - No Google Play Services location
+- **Do not store passwords in Google Play Services** - Passwords stored locally only
+- **Disable barcode, face and text detection APIs via Google Play Services**
+
+### Desktop-Specific Google Removal
+
+- **Remove Google Accounts private API** - No Google account integration
+- **Does not allow Chrome Web Store to know list of installed extensions** - Privacy protection for extension usage
+
+## Privacy-First Defaults
+
+Cromite changes default settings to prioritize privacy:
+
+### Disabled by Default
+
+<CardGroup cols={2}>
+  <Card title="Media Router" icon="router">
+    Media router and remoting disabled to prevent device discovery
+  </Card>
+  <Card title="Text Fragments" icon="text">
+    Text fragment navigation disabled to prevent tracking
+  </Card>
+  <Card title="Voice Recognition" icon="microphone">
+    Voice recognition integration disabled
+  </Card>
+  <Card title="Site Engagement" icon="chart-line">
+    Site engagement scoring disabled - you control permissions manually
+  </Card>
+  <Card title="Reporting API" icon="flag">
+    W3C Reporting API disabled (https://w3c.github.io/reporting/#privacy)
+  </Card>
+  <Card title="Preconnect & Prerender" icon="bolt">
+    Disabled - no connections without explicit user consent
+  </Card>
+  <Card title="AI Features" icon="brain">
+    Browser-integrated AI and segmentation platform disabled - no user profiling
+  </Card>
+  <Card title="AsyncDNS" icon="network-wired">
+    Async DNS disabled by default
+  </Card>
+</CardGroup>
+
+### Privacy Features Disabled
+
+<Accordion title="Tracking and Data Collection">
+  - **Disable variations and field trials** - No A/B testing that reports to sites
+  - **Disable Ads conversion measurement API** - No ads tracking
+  - **Disable Google Privacy Sandbox** - All Privacy Sandbox features removed
+  - **Disable requests for single-word Omnibar searches** - No search suggestions sent
+  - **Disable signed exchange features** - No Google SXG support
+  - **Disable annotate downloads by URL** - Downloads not annotated
+</Accordion>
+
+<Accordion title="Advanced Privacy Protections">
+  - **Disable BackForwardCache** - Per-document state doesn't persist after navigation
+  - **Disable Service and Shared workers on 3P iframe** - Like Firefox, prevents third-party worker tracking
+  - **Disable QR code sharing** - No QR code generation/sharing
+  - **Disable Device Attributes API** - No device attribute access
+  - **Ignore enterprise policies** - No enterprise policy enforcement
+  - **Disable custom tab intents by default** (Android) - No custom tab tracking
+  - **Disable external intent requests by default** (Android) - Blocks tying online/in-app browsing
+</Accordion>
+
+### Enabled by Default
+
+<Info>
+Cromite enables privacy-protecting features that are often optional in other browsers:
+</Info>
+
+- **Enable Do-Not-Track by default** - DNT header sent with all requests
+- **Enable Global Privacy Control by default** - GPC signal enabled
+- **Enable cleaning of CORS Preflight Cache on restart** - No persistent CORS cache
+
+## Android Privacy Features
+
+Android-specific privacy enhancements:
+
+### System Integration Control
+
+- **Remove SMS integration** - No SMS access
+- **Never use HTTP probes for connection detection** - No network probes
+- **Disable auto fetch of offline content when browser goes online** - No background fetching
+- **Disable DIAL repeating discovery** - No device discovery
+- **Disable smart text selection by default** - No text analysis
+- **Disable Accessibility service by default** - Privacy over convenience
+- **Disable integration with Android Compose feature**
+
+### Session Management
+
+<Steps>
+  <Step title="Snapshot Control">
+    Add option to disable snapshots of pages on disk in all modes, including incognito (default off)
+  </Step>
+  <Step title="Tab Persistence">
+    Add option not to reopen tabs between sessions - start fresh every time
+  </Step>
+  <Step title="Data Clearing">
+    Add setting to clear data between restarts - automatic privacy cleaning
+  </Step>
+  <Step title="IP Change Handling">
+    Close sessions on IP change instead of automatic reconnection - prevents session correlation
+  </Step>
+</Steps>
+
+### Permission Controls
+
+<Note>
+Cromite provides granular permission control:
+</Note>
+
+Allow user choice for camera/microphone/geolocation access:
+- Only once (single use)
+- Until page is closed
+- Until device is restarted
+- Always allow
+
+## Desktop Privacy Features
+
+- **Disable use of remote endpoint and custom protocols for developer tools** - Local-only DevTools
+- **Does not allow Chrome Web Store to know list of installed extensions** - Extension privacy
+- **Remove Google Accounts private API** - No account integration
+
+## WebView Privacy
+
+<Warning>
+WebView-specific privacy protections:
+</Warning>
+
+- **Disable WebView MediaIntegrity API** - Prevents embedded media attestation (https://android-developers.googleblog.com/2023/11/increasing-trust-for-embedded-media.html)
+
+## Privacy Impact
+
+<Info>
+These privacy features may affect functionality:
+
+- **No Sync** - You must manually backup bookmarks/settings
+- **No Translate** - Use external translation services
+- **No Autofill Server** - Only local autofill works
+- **No Remote Suggestions** - Type complete URLs in address bar
+- **Disabled Preconnect** - Sites may load slightly slower on first visit
+</Info>
+
+The trade-off is complete privacy from Google and third-party tracking, with full control over your browsing data.
