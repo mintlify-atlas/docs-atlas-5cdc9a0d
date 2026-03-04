@@ -1,0 +1,96 @@
+{
+  "projectType": "frontend",
+  "projectName": "Cromite",
+  "projectDescription": "Privacy-focused Chromium fork with built-in ad blocking and tracking protection for Android, Windows, and Linux",
+  "theme": "aspen",
+  "primaryColor": "#9a9d9e",
+  "lightColor": "#34373b",
+  "darkColor": "#d2d3d4",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "installation",
+              "platform-guides/android",
+              "platform-guides/windows",
+              "platform-guides/linux"
+            ]
+          },
+          {
+            "group": "Features",
+            "pages": [
+              "features/overview",
+              "features/privacy",
+              "features/ad-blocking",
+              "features/anti-fingerprinting",
+              "features/security",
+              "features/ui-enhancements"
+            ]
+          },
+          {
+            "group": "Usage Guides",
+            "pages": [
+              "guides/auto-updates",
+              "guides/settings",
+              "guides/jit-configuration",
+              "guides/proxy-configuration",
+              "guides/external-apps",
+              "guides/troubleshooting"
+            ]
+          },
+          {
+            "group": "Development",
+            "pages": [
+              "development/building",
+              "development/patches",
+              "development/docker-setup",
+              "development/contributing"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Reference",
+        "groups": [
+          {
+            "group": "Resources",
+            "pages": [
+              "reference/faq",
+              "reference/privacy-policy",
+              "reference/patch-list",
+              "reference/changelog"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Built-in ad blocking with AdBlock Plus engine and CNAME uncloaking",
+    "Comprehensive anti-fingerprinting mitigations (Canvas, WebGL, Media APIs)",
+    "Complete Google service removal and de-googling",
+    "Third-party cookie partitioning and tracking protection",
+    "JIT compilation disabled by default for security",
+    "Always-incognito mode and privacy-first settings",
+    "User scripts support on Android",
+    "Custom timezone and viewport protection",
+    "Automatic browser updates with F-Droid support"
+  ],
+  "publicApiSurface": [
+    "Chromium patches (332 patches modifying browser behavior)",
+    "AdBlock filter subscription API (www.cromite.org/filters)",
+    "Auto-update mechanism (GitHub releases API)",
+    "F-Droid repository integration",
+    "Chrome flags configuration (chrome://flags)",
+    "Proxy configuration page (chrome://proxy)",
+    "User scripts engine (Android)",
+    "Platform builds: arm64-v8a, arm32-v7a, x86_64 (Android), Windows x64, Linux x64",
+    "SystemWebView APK for Android",
+    "Docker build images (uazo/cromite-build)"
+  ]
+}
